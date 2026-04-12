@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Three Stocks, Three Stories — April 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1a18;
+    --paper: #f7f4ef;
+    --muted: #7a7870;
+    --border: #d8d4cb;
+    --cls-blue: #1a4d8f;
+    --cls-light: #e8f0fb;
+    --pltr-red: #c0392b;
+    --pltr-light: #fdf0ee;
+    --atz-green: #1a7a52;
+    --atz-light: #e8f5ee;
+    --gold: #b8932a;
+    --gold-light: #fdf7e8;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    font-size: 16px;
+    line-height: 1.7;
+  }
+
+  /* ── MASTHEAD ── */
+  .masthead {
+    border-bottom: 2px solid var(--ink);
+    padding: 2.5rem 0 1.5rem;
+    text-align: center;
+    max-width: 860px;
+    margin: 0 auto;
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+  .masthead-kicker {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: .75rem;
+  }
+  .masthead-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.2rem, 5vw, 3.8rem);
+    font-weight: 900;
+    line-height: 1.1;
+    margin-bottom: .75rem;
+    letter-spacing: -.02em;
+  }
+  .masthead-sub {
+    font-size: 15px;
+    color: var(--muted);
+    font-weight: 300;
+    max-width: 560px;
+    margin: 0 auto .75rem;
+  }
+  .masthead-date {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: .08em;
+    text-transform: uppercase;
+  }
+
+  /* ── LAYOUT ── */
+  .page { max-width: 860px; margin: 0 auto; padding: 0 2rem 4rem; }
+
+  /* ── SECTION DIVIDERS ── */
+  .section-label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 2.5rem 0 1rem;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* ── LEAD PARAGRAPH ── */
+  .lead {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.25rem;
+    font-weight: 400;
+    line-height: 1.6;
+    color: var(--ink);
+    border-left: 3px solid var(--ink);
+    padding-left: 1.25rem;
+    margin: 2rem 0;
+  }
+
+  /* ── STOCK CARDS ── */
+  .stock-trio {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+    margin: 1.5rem 0;
+  }
+  .stock-card {
+    padding: 1.25rem 1rem;
+    background: white;
+    border-right: 1px solid var(--border);
+  }
+  .stock-card:last-child { border-right: none; }
+  .stock-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: .875rem;
+  }
+  .stock-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+  .stock-ticker {
+    font-size: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    letter-spacing: .08em;
+    padding: 2px 7px;
+    border-radius: 3px;
+    background: var(--paper);
+    border: 1px solid var(--border);
+    color: var(--muted);
+  }
+  .pattern-tag {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 3px 8px;
+    border-radius: 2px;
+    margin-bottom: .875rem;
+    letter-spacing: .02em;
+  }
+  .tag-cls { background: var(--cls-light); color: var(--cls-blue); }
+  .tag-pltr { background: var(--pltr-light); color: var(--pltr-red); }
+  .tag-atz { background: var(--atz-light); color: var(--atz-green); }
+  .stock-stat {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 5px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 12.5px;
+  }
+  .stock-stat:last-child { border-bottom: none; }
+  .stat-label { color: var(--muted); }
+  .stat-val { font-weight: 500; }
+  .val-up { color: var(--atz-green); }
+  .val-dn { color: var(--pltr-red); }
+  .val-nt { color: var(--gold); }
+
+  /* ── PRINCIPLE BOXES ── */
+  .principle {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1.5rem;
+    margin: 1rem 0;
+    position: relative;
+    overflow: hidden;
+  }
+  .principle::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 4px;
+  }
+  .principle-cls::before { background: var(--cls-blue); }
+  .principle-pltr::before { background: var(--pltr-red); }
+  .principle-atz::before { background: var(--atz-green); }
+  .principle-gold::before { background: var(--gold); }
+  .principle-dark::before { background: var(--ink); }
+
+  .p-kicker {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: .5rem;
+  }
+  .p-head {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-bottom: .5rem;
+    line-height: 1.3;
+  }
+  .p-body {
+    font-size: 14px;
+    color: #3a3a36;
+    line-height: 1.7;
+  }
+
+  /* ── FACTOR TABLE ── */
+  .factor-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+    margin: 1rem 0;
+  }
+  .factor-table th {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 8px 12px;
+    text-align: left;
+    border-bottom: 2px solid var(--ink);
+    background: var(--paper);
+  }
+  .factor-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+    line-height: 1.5;
+  }
+  .factor-table tr:last-child td { border-bottom: none; }
+  .factor-table tr:hover td { background: #f0ece5; }
+  .factor-name { font-weight: 500; color: var(--ink); }
+  .factor-desc { color: #3a3a36; }
+  .f-cls { color: var(--cls-blue); font-weight: 500; font-size: 12px; }
+  .f-pltr { color: var(--pltr-red); font-weight: 500; font-size: 12px; }
+  .f-atz { color: var(--atz-green); font-weight: 500; font-size: 12px; }
+
+  /* ── TIMING SECTION ── */
+  .timing-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin: 1rem 0;
+  }
+  .timing-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1.25rem;
+  }
+  .tc-head {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: .75rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .dot-cls { background: var(--cls-blue); }
+  .dot-atz { background: var(--atz-green); }
+  .tc-item {
+    display: flex;
+    gap: 8px;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 13.5px;
+  }
+  .tc-item:last-child { border-bottom: none; }
+  .tc-icon { flex-shrink: 0; font-size: 13px; margin-top: 2px; }
+  .tc-text { color: #3a3a36; line-height: 1.5; }
+
+  /* ── VALUATION METER ── */
+  .val-meter-row {
+    display: grid;
+    grid-template-columns: 90px 1fr 60px;
+    gap: 12px;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+  .val-meter-row:last-child { border-bottom: none; }
+  .vm-label { font-weight: 500; }
+  .vm-bar-wrap { position: relative; }
+  .vm-bar-bg { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+  .vm-bar-fill { height: 100%; border-radius: 4px; }
+  .vm-value { text-align: right; font-size: 12px; color: var(--muted); }
+  .vm-marker-wrap { position: absolute; top: -3px; }
+  .vm-marker { width: 2px; height: 14px; background: var(--ink); border-radius: 1px; }
+
+  /* ── PULLQUOTE ── */
+  .pullquote {
+    border-top: 2px solid var(--ink);
+    border-bottom: 2px solid var(--ink);
+    padding: 1.5rem 0;
+    margin: 2rem 0;
+    text-align: center;
+  }
+  .pullquote p {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+    font-weight: 700;
+    line-height: 1.4;
+    max-width: 640px;
+    margin: 0 auto;
+    letter-spacing: -.01em;
+  }
+
+  /* ── EARNINGS CALENDAR ── */
+  .cal-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 13.5px;
+  }
+  .cal-row:last-child { border-bottom: none; }
+  .cal-date {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    min-width: 80px;
+  }
+  .cal-ticker-badge {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: .08em;
+    padding: 2px 7px;
+    border-radius: 2px;
+    min-width: 42px;
+    text-align: center;
+  }
+  .ctb-cls { background: var(--cls-light); color: var(--cls-blue); }
+  .ctb-atz { background: var(--atz-light); color: var(--atz-green); }
+  .ctb-pltr { background: var(--pltr-light); color: var(--pltr-red); }
+  .cal-note { color: #3a3a36; flex: 1; }
+  .cal-signal { font-size: 12px; font-weight: 500; }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 2px solid var(--ink);
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 1.5rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11px;
+    color: var(--muted);
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 680px) {
+    .stock-trio { grid-template-columns: 1fr; }
+    .stock-card { border-right: none; border-bottom: 1px solid var(--border); }
+    .stock-card:last-child { border-bottom: none; }
+    .timing-grid { grid-template-columns: 1fr; }
+    .factor-table th:nth-child(2), .factor-table td:nth-child(2) { display: none; }
+    footer { flex-direction: column; align-items: flex-start; }
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .masthead, .page > * {
+    animation: fadeUp .5s ease both;
+  }
+  .stock-card:nth-child(1) { animation-delay: .05s; }
+  .stock-card:nth-child(2) { animation-delay: .12s; }
+  .stock-card:nth-child(3) { animation-delay: .19s; }
+</style>
+</head>
+<body>
+
+<div class="masthead">
+  <div class="masthead-kicker">Personal Investment Research Note</div>
+  <h1 class="masthead-title">Three Stocks,<br>Three Stories</h1>
+  <p class="masthead-sub">A plain-English breakdown of what's driving CLS, PLTR, and ATZ — and whether the moment to act has passed.</p>
+  <div class="masthead-date">April 2026 &nbsp;·&nbsp; Prepared for family</div>
+</div>
+
+<div class="page">
+
+  <!-- THE CORE IDEA -->
+  <div class="lead">
+    Charts don't lie — but they do require translation. What looks like three unrelated stocks moving in three different directions is actually one coherent story about a single idea: is the stock cheap or expensive relative to what the business is actually worth right now?
+  </div>
+
+  <!-- SNAPSHOT -->
+  <div class="section-label">The three stocks at a glance</div>
+  <div class="stock-trio">
+    <div class="stock-card">
+      <div class="stock-head">
+        <div class="stock-name">Celestica</div>
+        <span class="stock-ticker">CLS · NYSE</span>
+      </div>
+      <span class="pattern-tag tag-cls">▲ Healthy consolidation</span>
+      <div class="stock-stat"><span class="stat-label">Business</span><span class="stat-val">Builds AI servers & hardware</span></div>
+      <div class="stock-stat"><span class="stat-label">Price (Apr 7)</span><span class="stat-val">US$297</span></div>
+      <div class="stock-stat"><span class="stat-label">From peak</span><span class="stat-val val-nt">−17% below ATH</span></div>
+      <div class="stock-stat"><span class="stat-label">Revenue growth</span><span class="stat-val val-up">+28% in 2025 · +37% guided 2026</span></div>
+      <div class="stock-stat"><span class="stat-label">Valuation feel</span><span class="stat-val val-up">Reasonable — ~34× fwd earnings</span></div>
+      <div class="stock-stat"><span class="stat-label">Chart trend</span><span class="stat-val">Still above 200-day average ✓</span></div>
+    </div>
+    <div class="stock-card">
+      <div class="stock-head">
+        <div class="stock-name">Palantir</div>
+        <span class="stock-ticker">PLTR · Nasdaq</span>
+      </div>
+      <span class="pattern-tag tag-pltr">▼ Triple top breakdown</span>
+      <div class="stock-stat"><span class="stat-label">Business</span><span class="stat-val">AI analytics software</span></div>
+      <div class="stock-stat"><span class="stat-label">Price (Apr 10)</span><span class="stat-val">US$128</span></div>
+      <div class="stock-stat"><span class="stat-label">From peak</span><span class="stat-val val-dn">−38% below ATH of $208</span></div>
+      <div class="stock-stat"><span class="stat-label">Revenue growth</span><span class="stat-val val-up">+56% in 2025 · strong business</span></div>
+      <div class="stock-stat"><span class="stat-label">Valuation feel</span><span class="stat-val val-dn">Very stretched — ~100× fwd earnings</span></div>
+      <div class="stock-stat"><span class="stat-label">Chart trend</span><span class="stat-val val-dn">Fighting to hold key support levels</span></div>
+    </div>
+    <div class="stock-card">
+      <div class="stock-head">
+        <div class="stock-name">Aritzia</div>
+        <span class="stock-ticker">ATZ · TSX</span>
+      </div>
+      <span class="pattern-tag tag-atz">▲ Triple bottom breakout</span>
+      <div class="stock-stat"><span class="stat-label">Business</span><span class="stat-val">Women's fashion retail (Canada/US)</span></div>
+      <div class="stock-stat"><span class="stat-label">Price (Apr 9)</span><span class="stat-val">C$127</span></div>
+      <div class="stock-stat"><span class="stat-label">From ATH</span><span class="stat-val val-up">Only −9% from Jan 2026 peak</span></div>
+      <div class="stock-stat"><span class="stat-label">Revenue growth</span><span class="stat-val val-up">+43% Q3 FY26 · US revenue +54%</span></div>
+      <div class="stock-stat"><span class="stat-label">Valuation feel</span><span class="stat-val val-up">Recovering from cheap — earnings exploding</span></div>
+      <div class="stock-stat"><span class="stat-label">Chart trend</span><span class="stat-val val-up">Fresh breakout from a long base ✓</span></div>
+    </div>
+  </div>
+
+  <!-- THE BIG PRINCIPLE -->
+  <div class="pullquote">
+    <p>"A great business and a great stock are two different things. What separates them is the price you're paying relative to what that business is actually earning today."</p>
+  </div>
+
+  <!-- PART 1: WHY PATTERNS DIVERGED -->
+  <div class="section-label">Part 1 — Why the charts went in opposite directions</div>
+
+  <p style="font-size:14px;color:#3a3a36;line-height:1.7;margin-bottom:1rem">The most important thing to understand is that stock charts don't generate their own direction — they are a consequence of the relationship between <strong>what the business is worth</strong> and <strong>what people are paying for it</strong>. All three patterns below are logical outcomes of that relationship.</p>
+
+  <div class="principle principle-pltr">
+    <div class="p-kicker">Palantir · Triple top + descending breakdown</div>
+    <div class="p-head">The price ran years ahead of the earnings</div>
+    <div class="p-body">Palantir's business is genuinely excellent — revenue grew 56% in 2025, they are profitable, and their AI software is used by the US military and major corporations. The problem is not the business. The problem is the price investors were willing to pay for it.<br><br>At its peak ($208 in November 2025), Palantir was trading at over 200 times its annual earnings. That means investors were paying $200 for every $1 of profit the company made per year. For context, the average stock in the S&P 500 trades at about 20–25 times earnings. Palantir was priced at roughly 8–10x that level.<br><br>A <strong>triple top</strong> forms when the stock tries three times to push through a price ceiling — and fails each time. Why does it fail? Because rational, experienced investors look at a $200 price with 200× earnings and say: "even if this company grows perfectly for the next decade, I'm not buying at this price." Those sellers overwhelm the buyers at that level, three times in a row.<br><br>The <strong>descending triangle breakdown</strong> that follows is what happens next: each rally is weaker than the last, lower and lower highs, while a floor temporarily holds — until even the floor breaks. This is not the company falling apart. This is the price falling back toward something more justifiable. The business is still growing at 60%+.</div>
+  </div>
+
+  <div class="principle principle-atz">
+    <div class="p-kicker">Aritzia · Triple bottom + upside breakout</div>
+    <div class="p-head">The price was punished far below what the business was worth</div>
+    <div class="p-body">Aritzia went through a difficult 2023–2024. They over-ordered inventory during supply chain chaos, warehousing costs exploded, profit margins got squeezed. The stock collapsed from prior highs all the way to C$38 — a drop of well over 60%. The market was pricing in "this brand is broken."<br><br>But the brand wasn't broken. The problems were temporary operational headaches, not structural failures. The stores kept doing well. US customers kept discovering Aritzia. The underlying loyal customer base was intact.<br><br>A <strong>triple bottom</strong> forms when the stock falls to the same low price three separate times — and each time, it bounces. Why does it bounce? Because value investors, who had done their homework, saw a business earning real money being sold at a deep discount, and they kept buying. Three times, the sellers couldn't push it lower.<br><br>The <strong>upside breakout</strong> in March 2026 happened because the numbers finally proved the bears wrong, quarter after quarter. Revenue grew 33%, then 32%, then 43%. US revenue surged 54% in a single quarter. Profit margins bounced back strongly. When the fundamentals recover faster than the stock does, the stock eventually catches up — sometimes very quickly.</div>
+  </div>
+
+  <div class="principle principle-cls">
+    <div class="p-kicker">Celestica · Healthy bull consolidation</div>
+    <div class="p-head">The price was late to catch up to a business that had quietly transformed</div>
+    <div class="p-body">Celestica spent years being treated by the market as a boring, low-margin electronics manufacturer. Then the AI data centre boom happened, and it turned out that the servers, switches, and networking hardware that all this AI runs on — Celestica was one of the companies building them. Revenue went from $9.7B in 2024 to $12.4B in 2025, with $17B guided for 2026.<br><br>The stock spent much of 2022–2023 in the $20–40 range. It then re-rated dramatically as investors woke up to what Celestica actually was. The chart looks similar to Aritzia's recovery — a base period followed by a sharp re-rating when earnings confirmed the thesis.<br><br>The current pullback from ATH ($363 → ~$297) is a normal digestion period after a very large move. The stock remains well above its 200-day moving average and the underlying business is still guided to grow 37% next year. This is consolidation, not collapse.</div>
+  </div>
+
+  <!-- PART 2: THE KEY FACTORS TABLE -->
+  <div class="section-label">Part 2 — The key factors behind each chart pattern</div>
+
+  <table class="factor-table">
+    <thead>
+      <tr>
+        <th>Contributing factor</th>
+        <th>Plain English</th>
+        <th>CLS</th>
+        <th>PLTR</th>
+        <th>ATZ</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="factor-name">Starting valuation</span></td>
+        <td class="factor-desc">Was the stock cheap or expensive relative to earnings when the pattern began?</td>
+        <td><span class="f-cls">Cheap — priced as a legacy manufacturer</span></td>
+        <td><span class="f-pltr">Extremely expensive — 200× earnings</span></td>
+        <td><span class="f-atz">Cheap — priced as a broken business</span></td>
+      </tr>
+      <tr>
+        <td><span class="factor-name">Earnings momentum</span></td>
+        <td class="factor-desc">Was the business getting better or worse as the chart formed?</td>
+        <td><span class="f-cls">Strongly accelerating — AI hardware demand exploded</span></td>
+        <td><span class="f-pltr">Also accelerating — but irrelevant at 200× PE</span></td>
+        <td><span class="f-atz">Recovering sharply — margins and revenue surging back</span></td>
+      </tr>
+      <tr>
+        <td><span class="factor-name">Business model</span></td>
+        <td class="factor-desc">Does the company make physical things, or sell software licenses?</td>
+        <td><span class="f-cls">Physical manufacturing — capital-intensive, real assets</span></td>
+        <td><span class="f-pltr">Pure software — nearly infinite scalability, high margins</span></td>
+        <td><span class="f-atz">Physical retail + eCommerce — capital-intensive, real stores</span></td>
+      </tr>
+      <tr>
+        <td><span class="factor-name">Multiple regime</span></td>
+        <td class="factor-desc">How much is the market willing to pay per dollar of earnings?</td>
+        <td><span class="f-cls">34× forward — growth stock premium, but grounded</span></td>
+        <td><span class="f-pltr">100–200× — narrative/story premium, fragile</span></td>
+        <td><span class="f-atz">Moderate — re-rating higher as earnings compound</span></td>
+      </tr>
+      <tr>
+        <td><span class="factor-name">Sentiment risk</span></td>
+        <td class="factor-desc">How vulnerable is the stock to changes in mood or narrative?</td>
+        <td><span class="f-cls">Moderate — customer concentration risk, tariff noise</span></td>
+        <td><span class="f-pltr">Very high — any AI competitor news triggers selloff</span></td>
+        <td><span class="f-atz">Moderate — tariff fears, consumer spending slowdown risk</span></td>
+      </tr>
+      <tr>
+        <td><span class="factor-name">Pattern resolution driver</span></td>
+        <td class="factor-desc">What actually caused the chart to break up or down?</td>
+        <td><span class="f-cls">Earnings beats quarter after quarter confirmed the AI hardware thesis</span></td>
+        <td><span class="f-pltr">Valuation gravity — price too far from earnings reality</span></td>
+        <td><span class="f-atz">Margin recovery + US revenue explosion proved the critics wrong</span></td>
+      </tr>
+      <tr>
+        <td><span class="factor-name">Where it sits today</span></td>
+        <td class="factor-desc">Is the stock above or below key technical trend indicators?</td>
+        <td><span class="f-cls">Above 200-day moving average — uptrend intact</span></td>
+        <td><span class="f-pltr">Fighting to reclaim the 200-day — trend uncertain</span></td>
+        <td><span class="f-atz">Fresh breakout — strongest technical posture of the three</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- PART 3: IS IT TOO LATE? -->
+  <div class="section-label">Part 3 — Is it too late to add CLS or introduce ATZ?</div>
+
+  <div class="principle principle-gold">
+    <div class="p-kicker">The real question to ask</div>
+    <div class="p-head">"Cheap" is not about whether the stock went up. It's about whether today's price is low relative to what the business will earn.</div>
+    <div class="p-body">This is the most important reframe. A stock that has risen 200% can still be cheap if its earnings are growing fast enough. A stock that has fallen 40% can still be expensive if it was priced for absolute perfection. The question is not "did I miss the move?" — it's "is the current price a good deal relative to the earnings power of this business today and over the next 2–3 years?"</div>
+  </div>
+
+  <div class="timing-grid">
+    <div class="timing-card">
+      <div class="tc-head">
+        <div class="dot dot-cls"></div>
+        <span>Celestica (CLS) — adding more</span>
+      </div>
+      <div class="tc-item">
+        <div class="tc-icon">✓</div>
+        <div class="tc-text"><strong>The business is still accelerating.</strong> Revenue guided to $17B in 2026 (+37%). New hyperscaler win for 1.6T switching platform. AMD Helios AI rack partnership announced March 2026.</div>
+      </div>
+      <div class="tc-item">
+        <div class="tc-icon">✓</div>
+        <div class="tc-text"><strong>The valuation is not stretched.</strong> At ~34× forward earnings, CLS is priced as a growth company but not as a miracle. If $17B revenue is delivered and margins hold at ~7.5%, that is fully supportable at current prices.</div>
+      </div>
+      <div class="tc-item">
+        <div class="tc-icon">✓</div>
+        <div class="tc-text"><strong>The chart pullback is healthy, not broken.</strong> −17% from ATH with stock above 200-day MA is a normal breather after a large move, not a trend reversal. The 52-week low was $58 — it is not "too high" in historical context.</div>
+      </div>
+      <div class="tc-item">
+        <div class="tc-icon">⚠</div>
+        <div class="tc-text"><strong>The risk to watch:</strong> Three customers = 63% of revenue. If the largest hyperscaler cuts orders, the stock reacts sharply. Q1 2026 earnings on <strong>April 27</strong> is the first update — pay close attention to tariff guidance revision and demand commentary.</div>
+      </div>
+      <div class="tc-item">
+        <div class="tc-icon">→</div>
+        <div class="tc-text"><strong>Verdict:</strong> Not "chasing high." The stock is consolidating within a continuing growth story. Adding on dips toward the $270–280 range (closer to 200-day MA) improves entry risk. Not urgent to buy ahead of April 27 earnings.</div>
+      </div>
+    </div>
+    <div class="timing-card">
+      <div class="tc-head">
+        <div class="dot dot-atz"></div>
+        <span>Aritzia (ATZ) — introducing a position</span>
+      </div>
+      <div class="tc-item">
+        <div class="tc-icon">✓</div>
+        <div class="tc-text"><strong>The breakout is fresh.</strong> The triple bottom resolved upward only in March 2026 — buyers issued from a pivot bottom and the stock has risen ~19% since. Early in the new uptrend, not late.</div>
+      </div>
+      <div class="tc-item">
+        <div class="tc-icon">✓</div>
+        <div class="tc-text"><strong>The earnings trajectory is compelling.</strong> US revenue +54% in Q3 FY26. Net income up 87%. EBITDA margins expanding toward 19–20% target despite tariff headwinds. The recovery is broad-based and accelerating.</div>
+      </div>
+      <div class="tc-item">
+        <div class="tc-icon">✓</div>
+        <div class="tc-text"><strong>Long US expansion runway.</strong> 66 US boutiques today, targeting 200+. New stores have 12–18 month payback on a $4M investment generating $10M revenue. The growth engine has many years of runway.</div>
+      </div>
+      <div class="tc-item">
+        <div class="tc-icon">⚠</div>
+        <div class="tc-text"><strong>Risks are real:</strong> Tariffs create ~280 basis points of gross margin pressure. US consumer spending could slow in a recession. The stock is a TSX-listed CAD stock — currency impact on USD-based investors matters.</div>
+      </div>
+      <div class="tc-item">
+        <div class="tc-icon">→</div>
+        <div class="tc-text"><strong>Verdict:</strong> The fresh breakout from a multi-year base is technically the strongest posture of the three stocks. Not a "chase" — this is a first-inning entry into a recovery story that still has significant room. Q4 FY26 earnings on <strong>April 30</strong> is the near-term catalyst to watch.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VALUATION COMPARISON -->
+  <div class="section-label">Valuation at a glance — how "cheap" is each stock today?</div>
+
+  <div class="principle principle-dark" style="padding: 1.25rem 1.5rem">
+    <div style="font-size:11px;color:var(--muted);margin-bottom:1rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase">Forward P/E ratio — how many dollars you pay per $1 of annual profit (lower = cheaper)</div>
+    <div class="val-meter-row">
+      <div class="vm-label" style="color:var(--cls-blue)">Celestica</div>
+      <div class="vm-bar-wrap">
+        <div class="vm-bar-bg"><div class="vm-bar-fill" style="width:17%;background:var(--cls-blue)"></div></div>
+      </div>
+      <div class="vm-value">~34×</div>
+    </div>
+    <div class="val-meter-row">
+      <div class="vm-label" style="color:var(--atz-green)">Aritzia</div>
+      <div class="vm-bar-wrap">
+        <div class="vm-bar-bg"><div class="vm-bar-fill" style="width:22%;background:var(--atz-green)"></div></div>
+      </div>
+      <div class="vm-value">~40–45×</div>
+    </div>
+    <div class="val-meter-row">
+      <div class="vm-label">S&P 500 avg</div>
+      <div class="vm-bar-wrap">
+        <div class="vm-bar-bg"><div class="vm-bar-fill" style="width:11%;background:var(--muted)"></div></div>
+      </div>
+      <div class="vm-value">~22×</div>
+    </div>
+    <div class="val-meter-row">
+      <div class="vm-label" style="color:var(--pltr-red)">Palantir</div>
+      <div class="vm-bar-wrap">
+        <div class="vm-bar-bg"><div class="vm-bar-fill" style="width:100%;background:var(--pltr-red)"></div></div>
+      </div>
+      <div class="vm-value">&gt;100×</div>
+    </div>
+    <div style="font-size:12px;color:var(--muted);margin-top:.75rem;line-height:1.5">CLS and ATZ are both priced at a premium to the average stock — because they're growing much faster than the average stock. But neither is priced at Palantir's extreme, where even exceptional growth may not justify the cost. The question is whether their growth justifies the premium — and recent earnings suggest it does.</div>
+  </div>
+
+  <!-- EARNINGS CALENDAR -->
+  <div class="section-label">Upcoming catalysts — earnings season is here</div>
+  <div style="background:white;border:1px solid var(--border);border-radius:4px;padding:1rem 1.25rem;">
+    <div class="cal-row">
+      <div class="cal-date">Apr 27</div>
+      <span class="cal-ticker-badge ctb-cls">CLS</span>
+      <div class="cal-note">Celestica Q1 2026 results (after market). Key focus: tariff guidance update, ATS segment A&D commentary, hyperscaler demand signals for H2 2026. Conference call April 28 at 8am ET.</div>
+      <div class="cal-signal" style="color:var(--atz-green)">High impact ↑</div>
+    </div>
+    <div class="cal-row">
+      <div class="cal-date">Apr 30</div>
+      <span class="cal-ticker-badge ctb-atz">ATZ</span>
+      <div class="cal-note">Aritzia Q4 FY2026 results. Watch for full-year FY2027 guidance — this will set the stage for whether the US expansion trajectory continues at 50%+ or begins to moderate.</div>
+      <div class="cal-signal" style="color:var(--atz-green)">High impact ↑</div>
+    </div>
+    <div class="cal-row">
+      <div class="cal-date">May 11</div>
+      <span class="cal-ticker-badge ctb-pltr">PLTR</span>
+      <div class="cal-note">Palantir Q1 2026. If US commercial growth shows any deceleration from 120%+ to even "only" 80%, the multiple compresses rapidly. A beat could trigger a significant bounce — the stock is down 38% from ATH and short interest is elevated.</div>
+      <div class="cal-signal" style="color:var(--gold)">Volatile either way</div>
+    </div>
+  </div>
+
+  <!-- CLOSING PRINCIPLE -->
+  <div class="pullquote" style="margin-top:2.5rem">
+    <p>Buying "high" is only chasing if the price has run past the fundamentals. Buying a stock that's gone up but whose earnings have gone up more is not chasing — it's recognising value that took time to become obvious.</p>
+  </div>
+
+  <!-- DISCLAIMER -->
+  <div class="principle principle-dark" style="margin-top:1.5rem">
+    <div class="p-kicker">A note on this document</div>
+    <div class="p-body" style="font-size:13px">This is a personal research summary prepared for family sharing. It reflects the author's analysis of publicly available financial data as of April 2026. It is not professional investment advice, and all investment decisions carry risk of loss. Past earnings growth does not guarantee future results. Always do your own research before making any investment decisions.</div>
+  </div>
+
+</div><!-- /page -->
+
+<footer>
+  <span>Three Stocks, Three Stories &nbsp;·&nbsp; Personal Research Note</span>
+  <span>Data as of April 9–11, 2026</span>
+  <span>CLS · PLTR · ATZ</span>
+</footer>
+
+</body>
+</html>
