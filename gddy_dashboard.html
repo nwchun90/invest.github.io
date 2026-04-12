@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GoDaddy (GDDY) Deep Dive</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f3; color: #1a1a18; padding: 24px; font-size: 14px; line-height: 1.5; }
+  .wrap { max-width: 960px; margin: 0 auto; }
+  h1 { font-size: 22px; font-weight: 500; margin-bottom: 2px; }
+  .sub { font-size: 13px; color: #888780; margin-bottom: 24px; }
+  .price-big { font-size: 32px; font-weight: 600; margin-bottom: 4px; }
+  .sl { font-size: 10px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: #888780; margin: 24px 0 8px; }
+  .card { background: #fff; border: 0.5px solid rgba(0,0,0,0.12); border-radius: 12px; padding: 16px 20px; margin-bottom: 12px; }
+  .g4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  .g3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .met { background: #f1efe8; border-radius: 8px; padding: 12px 14px; }
+  .ml { font-size: 11px; color: #888780; margin-bottom: 3px; }
+  .mv { font-size: 17px; font-weight: 600; }
+  .ms { font-size: 11px; color: #888780; margin-top: 2px; }
+  .row { display: flex; justify-content: space-between; align-items: center; padding: 7px 0; border-bottom: 0.5px solid rgba(0,0,0,.08); font-size: 13px; }
+  .row:last-child { border-bottom: none; }
+  .rl { color: #888780; }
+  .rv { font-weight: 500; }
+  .up { color: #1D9E75; } .dn { color: #E24B4A; } .am { color: #BA7517; }
+  .badge { font-size: 11px; padding: 2px 8px; border-radius: 6px; font-weight: 600; display: inline-block; }
+  .b-dn { background: #FCEBEB; color: #791F1F; }
+  .b-up { background: #E1F5EE; color: #085041; }
+  .b-am { background: #FAEEDA; color: #633806; }
+  .b-bl { background: #E6F1FB; color: #0C447C; }
+  .ev { display: flex; gap: 10px; padding: 8px 0; border-bottom: 0.5px solid rgba(0,0,0,.08); font-size: 13px; }
+  .ev:last-child { border-bottom: none; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 4px; flex-shrink: 0; }
+  .bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .bar-lbl { font-size: 12px; color: #888780; width: 110px; flex-shrink: 0; }
+  .bar-track { flex: 1; background: #f1efe8; border-radius: 4px; height: 8px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 4px; }
+  .alert-box { border-left: 3px solid #E24B4A; padding-left: 12px; margin-bottom: 12px; }
+  @media (max-width: 600px) { .g4 { grid-template-columns: repeat(2,1fr); } .g3 { grid-template-columns: repeat(2,1fr); } .g2 { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>GoDaddy Inc. (GDDY) — Deep Dive Research</h1>
+  <div class="sub">NYSE: GDDY &nbsp;|&nbsp; April 6, 2026 &nbsp;|&nbsp; For informational purposes only — not financial advice</div>
+
+  <div style="display:flex;align-items:baseline;gap:14px;margin-bottom:4px;">
+    <span class="price-big">$80.57</span>
+    <span class="badge b-dn" style="font-size:13px;">-56% from 52-wk high</span>
+  </div>
+  <div style="font-size:12px;color:#888780;margin-bottom:8px;">52-week range: $73.06 – $193.55 &nbsp;|&nbsp; Market cap: $10.71B &nbsp;|&nbsp; YTD: -33% &nbsp;|&nbsp; Since IPO 2015: +207%</div>
+
+  <div class="sl">what happened — the collapse narrative</div>
+  <div class="card alert-box">
+    <div style="font-size:13px;line-height:1.7;">
+      GDDY peaked at <strong>$193.55</strong> in early 2025 riding AI/Airo optimism. On <strong>Feb 25, 2026</strong>, Q4 earnings beat EPS and revenue estimates — but 2026 revenue guidance of $5.20–5.28B missed consensus by ~$10M (tiny in dollar terms, huge in signal terms). The stock fell <span class="dn"><strong>-15.6% in a single day</strong></span> — the largest S&P 500 decline that session — as a wave of analyst target cuts followed. The market re-rated GDDY from a high-growth AI story to a mature, slower-growth cash flow business. It hasn't recovered.
+    </div>
+  </div>
+
+  <div class="sl">fundamental scorecard</div>
+  <div class="g4" style="margin-bottom:10px;">
+    <div class="met"><div class="ml">Revenue FY2025</div><div class="mv">$4.95B</div><div class="ms up">+8.3% YoY</div></div>
+    <div class="met"><div class="ml">Net income TTM</div><div class="mv">$875M</div><div class="ms">17.7% margin</div></div>
+    <div class="met"><div class="ml">Free cash flow</div><div class="mv up">$1.61B</div><div class="ms up">+19% YoY</div></div>
+    <div class="met"><div class="ml">Norm. EBITDA</div><div class="mv">$1.60B</div><div class="ms">32% margin</div></div>
+  </div>
+  <div class="g4">
+    <div class="met"><div class="ml">EPS TTM</div><div class="mv">$6.24</div><div class="ms">fwd ~$7.20</div></div>
+    <div class="met"><div class="ml">P/E ratio</div><div class="mv up">12.87×</div><div class="ms">near 10-yr low</div></div>
+    <div class="met"><div class="ml">FCF yield</div><div class="mv up">~15%</div><div class="ms">at $80.57</div></div>
+    <div class="met"><div class="ml">EV/EBITDA</div><div class="mv up">~7.9×</div><div class="ms">FY2026E</div></div>
+  </div>
+
+  <div class="sl">q4 2025 results</div>
+  <div class="g2">
+    <div class="card">
+      <div class="row"><span class="rl">Total revenue</span><span class="rv up">$1.27B (+6.8%)</span></div>
+      <div class="row"><span class="rl">A&C segment</span><span class="rv up">$498M (+13%)</span></div>
+      <div class="row"><span class="rl">Core platform</span><span class="rv am">$776M (+3%)</span></div>
+      <div class="row"><span class="rl">Norm. EBITDA margin</span><span class="rv up">34% (+160bps)</span></div>
+      <div class="row"><span class="rl">Operating margin</span><span class="rv up">25% (+350bps)</span></div>
+    </div>
+    <div class="card">
+      <div class="row"><span class="rl">EPS</span><span class="rv up">$1.80 (beat $1.58, +14%)</span></div>
+      <div class="row"><span class="rl">Total customers</span><span class="rv dn">20.42M (-0.4% YoY)</span></div>
+      <div class="row"><span class="rl">ARPU</span><span class="rv up">$242 (+10% YoY)</span></div>
+      <div class="row"><span class="rl">ARR</span><span class="rv">$4.34B (+7.3%)</span></div>
+      <div class="row"><span class="rl">Int'l revenue</span><span class="rv up">$420M (+10%)</span></div>
+    </div>
+  </div>
+
+  <div class="sl">2026 guidance</div>
+  <div class="g3">
+    <div class="met"><div class="ml">Revenue guidance</div><div class="mv am">$5.20–5.28B</div><div class="ms dn">missed consensus $5.29B</div></div>
+    <div class="met"><div class="ml">Norm. EBITDA margin</div><div class="mv up">&gt;33%</div><div class="ms">+100bps vs 2025</div></div>
+    <div class="met"><div class="ml">Free cash flow</div><div class="mv up">$1.80B</div><div class="ms up">+12% vs 2025</div></div>
+  </div>
+
+  <div class="sl">two-speed business — revenue mix</div>
+  <div class="card">
+    <div style="font-size:12px;color:#888780;margin-bottom:12px;">A&C growing from ~20% → ~39% of total revenue over 5 years. The transformation is real but unfinished — Core Platform still dominates at low growth.</div>
+    <div class="bar-row"><span class="bar-lbl">A&C — fast growth</span><div class="bar-track"><div class="bar-fill" style="width:100%;background:#1D9E75;"></div></div><span style="font-size:12px;font-weight:600;width:90px;text-align:right;">$1.89B +13%</span></div>
+    <div class="bar-row" style="margin-bottom:0;"><span class="bar-lbl">Core — slow growth</span><div class="bar-track"><div class="bar-fill" style="width:62%;background:#B4B2A9;"></div></div><span style="font-size:12px;font-weight:600;width:90px;text-align:right;">$3.06B +3%</span></div>
+  </div>
+
+  <div class="sl">5-year margin expansion + free cash flow</div>
+  <div class="card">
+    <div style="position:relative;height:220px;"><canvas id="marginChart"></canvas></div>
+    <div style="display:flex;gap:16px;margin-top:10px;font-size:12px;color:#888780;">
+      <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#378ADD;margin-right:4px;"></span>Norm. EBITDA margin %</span>
+      <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#1D9E75;margin-right:4px;"></span>Free cash flow ($B)</span>
+    </div>
+  </div>
+
+  <div class="sl">competitive landscape</div>
+  <div class="card">
+    <div style="font-size:12px;color:#888780;margin-bottom:12px;">Market share across GoDaddy's core battlegrounds</div>
+    <div class="bar-row"><span class="bar-lbl">GoDaddy domains</span><div class="bar-track"><div class="bar-fill" style="width:100%;background:#378ADD;"></div></div><span style="font-size:12px;font-weight:600;width:90px;text-align:right;">~82–89M #1</span></div>
+    <div class="bar-row"><span class="bar-lbl">Namecheap</span><div class="bar-track"><div class="bar-fill" style="width:32%;background:#B4B2A9;"></div></div><span style="font-size:12px;font-weight:600;width:90px;text-align:right;">28.6M</span></div>
+    <div class="bar-row" style="margin-top:8px;"><span class="bar-lbl">Wix (site builder)</span><div class="bar-track"><div class="bar-fill" style="width:45%;background:#EF9F27;"></div></div><span style="font-size:12px;font-weight:600;width:90px;text-align:right;">45% global</span></div>
+    <div class="bar-row"><span class="bar-lbl">Squarespace</span><div class="bar-track"><div class="bar-fill" style="width:17%;background:#B4B2A9;"></div></div><span style="font-size:12px;font-weight:600;width:90px;text-align:right;">16–18%</span></div>
+    <div class="bar-row" style="margin-bottom:0;"><span class="bar-lbl">GoDaddy (site bldr)</span><div class="bar-track"><div class="bar-fill" style="width:11%;background:#378ADD;"></div></div><span style="font-size:12px;font-weight:600;width:90px;text-align:right;">10–12%</span></div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div style="font-size:13px;font-weight:600;margin-bottom:8px;">Domain moat — durable but eroding</div>
+      <div class="ev"><div class="dot" style="background:#378ADD;"></div><div>Near-monopoly at 82–89M domains, 3× Namecheap. Domain→site→payments funnel unmatched at scale with 20.4M customers.</div></div>
+      <div class="ev"><div class="dot" style="background:#EF9F27;"></div><div>Lost 1.25M .com domains YoY while Namecheap gained 1.86M. Renewal price gap ($22 vs $18.48) widening.</div></div>
+      <div class="ev" style="border:none;"><div class="dot" style="background:#E24B4A;"></div><div>Cloudflare offers domains at wholesale cost with zero markup. AI assistants increasingly route users to cheaper alternatives.</div></div>
+    </div>
+    <div class="card">
+      <div style="font-size:13px;font-weight:600;margin-bottom:8px;">AI / Airo platform — promise vs. delivery</div>
+      <div class="ev"><div class="dot" style="background:#1D9E75;"></div><div>25 AI agents live on Airo.ai. Multi-model stack (OpenAI, Claude, Llama via AWS Bedrock). ANS integrated with Salesforce MuleSoft Agent Fabric.</div></div>
+      <div class="ev"><div class="dot" style="background:#EF9F27;"></div><div>Net new customers essentially flat (+4K in Q4 despite Airo). 6% revenue guidance shows AI not yet bending the growth curve.</div></div>
+      <div class="ev" style="border:none;"><div class="dot" style="background:#E24B4A;"></div><div>Independent reviews rank GoDaddy's AI output quality below Wix ADI and 10Web. RBC applies "AI-discounted multiple."</div></div>
+    </div>
+  </div>
+
+  <div class="sl">supply chain & infrastructure dependencies</div>
+  <div class="card">
+    <div class="ev"><div class="dot" style="background:#378ADD;"></div><div><strong>Cloud/AI compute:</strong> Heavy AWS Bedrock usage for AI workloads. As Airo agents scale from 25 toward 100+, inference spend on OpenAI/Anthropic APIs is a rising, undisclosed cost line.</div></div>
+    <div class="ev"><div class="dot" style="background:#1D9E75;"></div><div><strong>ICANN/registry chain:</strong> GoDaddy holds ICANN registrar accreditation and operates its own GoDaddy Registry — giving upstream control of TLD supply and pricing that smaller players lack.</div></div>
+    <div class="ev"><div class="dot" style="background:#EF9F27;"></div><div><strong>Payments stack:</strong> GoDaddy Payments competes with Stripe/Square. Settlement infrastructure relies on Visa/Mastercard card networks — subject to interchange rule changes.</div></div>
+    <div class="ev" style="border:none;"><div class="dot" style="background:#E24B4A;"></div><div><strong>Leverage risk:</strong> Aggressive buybacks ($3.2B+) have increased net debt while growth slows. Interest expense is a rising cost against a decelerating top line.</div></div>
+  </div>
+
+  <div class="sl">analyst consensus — april 2026</div>
+  <div class="card">
+    <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;">
+      <span class="badge b-up">9 Buy/Outperform</span>
+      <span class="badge b-am">4 Hold/Neutral</span>
+      <span class="badge b-dn">2 Sell</span>
+    </div>
+    <div class="row"><span class="rl">Mean price target</span><span class="rv up">~$117–131 (+49–63% upside)</span></div>
+    <div class="row"><span class="rl">RBC Capital (Buy)</span><span class="rv">$100 <span class="dn">(cut from $200)</span></span></div>
+    <div class="row"><span class="rl">JPMorgan (Hold)</span><span class="rv">$167 <span class="dn">(cut from $200)</span></span></div>
+    <div class="row"><span class="rl">Citi</span><span class="rv">$110 <span class="dn">(cut from $195)</span></span></div>
+    <div class="row"><span class="rl">B. Riley (Buy)</span><span class="rv">$190 <span class="dn">(cut from $215)</span></span></div>
+    <div class="row"><span class="rl">Cantor Fitzgerald</span><span class="rv">$90 <span class="dn">(cut from $130)</span></span></div>
+    <div class="row"><span class="rl">Simply Wall St est. fair value</span><span class="rv up">68.8% discount to intrinsic value</span></div>
+    <div class="row"><span class="rl">Next earnings</span><span class="rv">April 30, 2026</span></div>
+  </div>
+
+  <div class="sl">can the $193 high ever be reclaimed?</div>
+  <div class="g2">
+    <div class="card">
+      <div style="font-size:13px;font-weight:600;color:#085041;margin-bottom:8px;">Bull case — yes, it is possible</div>
+      <div class="ev"><div class="dot" style="background:#1D9E75;"></div><div><strong>FCF machine:</strong> $1.61B today → $1.80B guided 2026 → models show $2.57B by 2030. At $80, the FCF yield is ~15% — extraordinarily cheap for a near-monopoly registrar.</div></div>
+      <div class="ev"><div class="dot" style="background:#1D9E75;"></div><div><strong>ARPU flywheel:</strong> High-value customers (>$500/yr) grew 11% YoY. If Airo monetisation inflects and ARPU reaches $350+, revenue re-accelerates without needing new customers.</div></div>
+      <div class="ev"><div class="dot" style="background:#1D9E75;"></div><div><strong>ANS platform layer:</strong> The Salesforce MuleSoft integration extends GoDaddy into enterprise AI agent identity — a new platform layer no current competitor owns at SMB scale.</div></div>
+      <div class="ev" style="border:none;"><div class="dot" style="background:#1D9E75;"></div><div><strong>Margin compounding + buybacks:</strong> 1,000bps EBITDA expansion over 5 years. Share count declining — EPS compounds faster than revenue.</div></div>
+    </div>
+    <div class="card">
+      <div style="font-size:13px;font-weight:600;color:#791F1F;margin-bottom:8px;">Bear case — the $193 high may be structurally gone</div>
+      <div class="ev"><div class="dot" style="background:#E24B4A;"></div><div><strong>Customer shrinkage:</strong> GoDaddy's $193 price required a growth narrative. Customer count declining (-0.4% YoY) removes the forward multiple expansion that drove the ATH.</div></div>
+      <div class="ev"><div class="dot" style="background:#E24B4A;"></div><div><strong>AI as disruptor:</strong> AI builders commoditise GoDaddy's most profitable upsells. Cloudflare, ChatGPT plugins, and no-code tools undercut from below.</div></div>
+      <div class="ev"><div class="dot" style="background:#E24B4A;"></div><div><strong>6% ceiling:</strong> Returning to $193 at current multiples would require ~$7–8B revenue by 2030 — implying 10%+ CAGR from today's 6% guided growth. Achievable only with a major AI monetisation inflection.</div></div>
+      <div class="ev" style="border:none;"><div class="dot" style="background:#E24B4A;"></div><div><strong>Leverage trap:</strong> $3.2B+ in buybacks increased net debt as growth slows. Compresses multiples further and limits strategic flexibility for M&A.</div></div>
+    </div>
+  </div>
+
+  <div class="sl">quant summary</div>
+  <div class="g4">
+    <div class="met"><div class="ml">Beta</div><div class="mv up">0.95</div><div class="ms">near-market volatility</div></div>
+    <div class="met"><div class="ml">Piotroski F-Score</div><div class="mv up">7 / 9</div><div class="ms">healthy financials</div></div>
+    <div class="met"><div class="ml">Beneish M-Score</div><div class="mv up">-2.77</div><div class="ms">no earnings manipulation</div></div>
+    <div class="met"><div class="ml">Institutional ownership</div><div class="mv">100.6%</div><div class="ms">strong institutional hold</div></div>
+  </div>
+
+  <div class="sl" style="margin-top:24px;">verdict summary</div>
+  <div class="card" style="background:#f5f5f3;border:1px solid rgba(0,0,0,.1);">
+    <div style="font-size:13px;line-height:1.8;">
+      GoDaddy today is a <strong>value stock masquerading as a fallen growth stock</strong>. The business is fundamentally healthy — 32% EBITDA margins, $1.6B FCF, a near-monopoly registrar position, and strong ARPU growth. But the market has re-rated it as a mature, 6%-growth business, stripping away the AI premium that drove the $193 ATH.<br><br>
+      The ATH is <strong>not permanently lost</strong> — but recovering it requires Airo to demonstrably accelerate revenue growth (not just margins) within 2–3 quarters. April 30 earnings is the first real test. If A&C bookings growth closes the gap with A&C revenue growth, and net customer adds return positive, the narrative can shift. If not, GDDY risks becoming a value trap: cheap on FCF, structurally ex-growth.<br><br>
+      <span class="am"><strong>Current positioning:</strong></span> The stock at ~$80, 15% FCF yield, 12.87× P/E, and 68.8% below Simply Wall St fair value is pricing in the worst case. For a long-term investor, this is a high-quality business at an unusual discount — but it requires patience and conviction that AI can be a tailwind, not just a headwind.
+    </div>
+  </div>
+
+  <div style="font-size:11px;color:#888780;margin-top:16px;border-top:0.5px solid rgba(0,0,0,.08);padding-top:12px;">
+    This dashboard is for research and informational purposes only. It is not financial or investment advice. Always consult a qualified financial advisor before making investment decisions. Data sourced from public filings, analyst reports, and news as of April 6, 2026.
+  </div>
+</div>
+
+<script>
+new Chart(document.getElementById('marginChart').getContext('2d'), {
+  type: 'bar',
+  data: {
+    labels: ['2021','2022','2023','2024','2025','2026E'],
+    datasets: [
+      {
+        label: 'EBITDA margin %',
+        data: [22,24,27,30.5,32,33],
+        backgroundColor: '#378ADD',
+        yAxisID: 'y',
+        borderRadius: 3,
+      },
+      {
+        label: 'FCF ($B)',
+        type: 'line',
+        data: [0.8,0.95,1.15,1.35,1.61,1.80],
+        borderColor: '#1D9E75',
+        backgroundColor: '#1D9E75',
+        pointRadius: 4,
+        tension: 0.3,
+        yAxisID: 'y2',
+        borderWidth: 2,
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { ticks: { color: '#888780' }, grid: { display: false } },
+      y: {
+        ticks: { color: '#888780', callback: v => v + '%' },
+        grid: { color: 'rgba(136,135,128,.15)' },
+        min: 0, max: 42,
+        title: { display: true, text: 'EBITDA margin', color: '#888780', font: { size: 11 } }
+      },
+      y2: {
+        position: 'right',
+        ticks: { color: '#888780', callback: v => '$' + v + 'B' },
+        grid: { display: false },
+        min: 0, max: 2.5,
+        title: { display: true, text: 'Free cash flow', color: '#888780', font: { size: 11 } }
+      }
+    }
+  }
+});
+</script>
+</body>
+</html>
