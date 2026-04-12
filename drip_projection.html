@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DRIP Growth Projections — $2,000</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --cream: #f7f3ec;
+    --ink: #1a1612;
+    --muted: #7a7060;
+    --rule: #d8d0c4;
+    --jpm: #1a3a6b;
+    --gs: #8c7355;
+    --ry: #14336b;
+    --td: #2d7a45;
+    --accent: #c4a35a;
+  }
+
+  body {
+    background: var(--cream);
+    color: var(--ink);
+    font-family: 'DM Mono', monospace;
+    min-height: 100vh;
+    padding: 32px 24px;
+  }
+
+  header {
+    border-top: 3px solid var(--ink);
+    border-bottom: 1px solid var(--rule);
+    padding: 20px 0 16px;
+    margin-bottom: 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  header .title-block h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(22px, 4vw, 36px);
+    font-weight: 900;
+    letter-spacing: -0.5px;
+    line-height: 1.1;
+  }
+
+  header .title-block p {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 4px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  header .meta {
+    text-align: right;
+    font-size: 11px;
+    color: var(--muted);
+    line-height: 1.8;
+  }
+
+  header .meta strong {
+    color: var(--ink);
+    font-size: 20px;
+    font-family: 'Playfair Display', serif;
+    display: block;
+  }
+
+  /* Controls */
+  .controls {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .controls label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    margin-right: 4px;
+  }
+
+  .btn-group { display: flex; gap: 4px; }
+
+  .btn {
+    background: white;
+    border: 1px solid var(--rule);
+    color: var(--ink);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    padding: 6px 14px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .btn:hover { border-color: var(--ink); }
+  .btn.active { background: var(--ink); color: var(--cream); border-color: var(--ink); }
+
+  /* Summary cards */
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+
+  @media (max-width: 640px) { .cards { grid-template-columns: repeat(2, 1fr); } }
+
+  .card {
+    background: white;
+    border: 1px solid var(--rule);
+    padding: 14px 16px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+
+  .card.jpm::before { background: var(--jpm); }
+  .card.gs::before  { background: var(--gs); }
+  .card.ry::before  { background: var(--ry); }
+  .card.td::before  { background: var(--td); }
+
+  .card .ticker {
+    font-size: 10px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+  }
+
+  .card .bank-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 13px;
+    font-weight: 700;
+    margin: 2px 0 10px;
+    color: var(--ink);
+  }
+
+  .card .val-label { font-size: 9px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); }
+  .card .val-num   { font-size: 18px; font-family: 'Playfair Display', serif; font-weight: 700; color: var(--ink); margin: 1px 0 8px; }
+
+  .card .stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    border-top: 1px solid var(--rule);
+    padding-top: 10px;
+  }
+
+  .card .stat-item { }
+  .card .stat-label { font-size: 9px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+  .card .stat-val   { font-size: 12px; font-weight: 500; margin-top: 1px; }
+
+  /* Chart container */
+  .chart-wrap {
+    background: white;
+    border: 1px solid var(--rule);
+    padding: 24px;
+    margin-bottom: 20px;
+    position: relative;
+  }
+
+  .chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .chart-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    font-weight: 700;
+  }
+
+  .chart-header p { font-size: 10px; color: var(--muted); margin-top: 3px; }
+
+  .chart-header .legend {
+    display: flex;
+    gap: 16px;
+    font-size: 10px;
+    flex-wrap: wrap;
+  }
+
+  .legend-item { display: flex; align-items: center; gap: 6px; }
+  .legend-dot  { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+  canvas { max-width: 100%; }
+
+  /* Income chart */
+  .dual-charts {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  @media (max-width: 700px) { .dual-charts { grid-template-columns: 1fr; } }
+
+  /* Insight bar */
+  .insight {
+    background: var(--ink);
+    color: var(--cream);
+    padding: 16px 20px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    font-size: 11px;
+  }
+
+  @media (max-width: 640px) { .insight { grid-template-columns: repeat(2, 1fr); } }
+
+  .insight-item .ins-label { opacity: 0.5; font-size: 9px; text-transform: uppercase; letter-spacing: 0.1em; }
+  .insight-item .ins-val   { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; margin-top: 2px; }
+  .insight-item .ins-sub   { opacity: 0.6; font-size: 9px; margin-top: 2px; }
+
+  .footnote {
+    text-align: center;
+    font-size: 9px;
+    color: var(--muted);
+    margin-top: 16px;
+    border-top: 1px solid var(--rule);
+    padding-top: 12px;
+    line-height: 1.8;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="title-block">
+    <h1>DRIP Growth Projections</h1>
+    <p>JPM · GS · RY · TD &nbsp;—&nbsp; Dividend Reinvestment Analysis</p>
+  </div>
+  <div class="meta">
+    <strong id="display-investment">$2,000</strong>
+    Initial Investment &nbsp;|&nbsp; <span id="display-years">20</span>-Year Horizon
+  </div>
+</header>
+
+<div class="controls">
+  <label>Horizon:</label>
+  <div class="btn-group">
+    <button class="btn" data-years="10">10 yr</button>
+    <button class="btn active" data-years="20">20 yr</button>
+    <button class="btn" data-years="30">30 yr</button>
+  </div>
+</div>
+
+<!-- Summary Cards -->
+<div class="cards" id="cards"></div>
+
+<!-- Main Portfolio Growth Chart -->
+<div class="chart-wrap">
+  <div class="chart-header">
+    <div>
+      <h2>Portfolio Value Growth (with DRIP)</h2>
+      <p>Compounded total return: price appreciation + reinvested dividends</p>
+    </div>
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:#1a3a6b"></div>JPM</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#8c7355"></div>GS</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#14336b"></div>RY</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#2d7a45"></div>TD</div>
+    </div>
+  </div>
+  <canvas id="growthChart" height="100"></canvas>
+</div>
+
+<!-- Dual charts: Dividend Income + Yield on Cost -->
+<div class="dual-charts">
+  <div class="chart-wrap">
+    <div class="chart-header">
+      <div>
+        <h2>Annual Dividend Income</h2>
+        <p>Dollars received per year as shares compound</p>
+      </div>
+    </div>
+    <canvas id="incomeChart" height="200"></canvas>
+  </div>
+  <div class="chart-wrap">
+    <div class="chart-header">
+      <div>
+        <h2>Yield on Original Cost</h2>
+        <p>Effective dividend yield relative to your $2,000</p>
+      </div>
+    </div>
+    <canvas id="yocChart" height="200"></canvas>
+  </div>
+</div>
+
+<!-- Insight strip -->
+<div class="insight" id="insight-strip"></div>
+
+<p class="footnote">
+  Assumptions: 8% annual price appreciation for all banks. Dividend growth rates applied conservatively at 70% of 5-year historical rate.<br>
+  JPM: 7.53% DGR · GS: 16.01% DGR · RY: 3.30% DGR · TD: 2.97% DGR · All dividends reinvested at current market price.<br>
+  For illustrative purposes only. Not financial advice. Past performance does not guarantee future results.
+</p>
+
+<script>
+  const BANKS = {
+    JPM: { name: "JPMorgan Chase",        color: "#1a3a6b", yield_: 1.9,  annualDiv: 6.00,  price: 307, payout: 28.9, dgr5: 10.76, consec: 16, cls: "jpm" },
+    GS:  { name: "Goldman Sachs",         color: "#8c7355", yield_: 1.94, annualDiv: 18.00, price: 575, payout: 28.1, dgr5: 22.87, consec: 15, cls: "gs"  },
+    RY:  { name: "Royal Bank of Canada",  color: "#14336b", yield_: 2.75, annualDiv: 4.49,  price: 163, payout: 42.0, dgr5: 4.71,  consec: 15, cls: "ry"  },
+    TD:  { name: "Toronto-Dominion Bank", color: "#2d7a45", yield_: 3.13, annualDiv: 3.03,  price: 55,  payout: 44.5, dgr5: 4.23,  consec: 10, cls: "td"  },
+  };
+
+  const INITIAL = 2000;
+  let YEARS = 20;
+  const PRICE_GROWTH = 0.08;
+
+  function project(bank, years) {
+    const dgrDecay = bank.dgr5 / 100 * 0.70;
+    let shares = INITIAL / bank.price;
+    let price  = bank.price;
+    const rows = [];
+
+    for (let y = 0; y <= years; y++) {
+      const divPerShare   = bank.annualDiv * Math.pow(1 + dgrDecay, y);
+      const totalDiv      = shares * divPerShare;
+      const portfolioVal  = shares * price;
+      const yoc           = (totalDiv / INITIAL) * 100;
+      rows.push({ year: y, portfolioVal, totalDiv, shares, price, yoc });
+      shares += totalDiv / price;
+      price  *= (1 + PRICE_GROWTH);
+    }
+    return rows;
+  }
+
+  function fmt(n) {
+    if (n >= 1000000) return `$${(n/1000000).toFixed(2)}M`;
+    if (n >= 1000)    return `$${(n/1000).toFixed(1)}k`;
+    return `$${n.toFixed(0)}`;
+  }
+
+  function pct(n) { return `${n.toFixed(1)}%`; }
+
+  let growthChart, incomeChart, yocChart;
+
+  function buildCards(years) {
+    const container = document.getElementById('cards');
+    container.innerHTML = '';
+    const tickers = Object.keys(BANKS);
+    tickers.forEach(t => {
+      const b    = BANKS[t];
+      const data = project(b, years);
+      const last = data[years];
+      const gain = ((last.portfolioVal - INITIAL) / INITIAL * 100).toFixed(0);
+      container.innerHTML += `
+        <div class="card ${b.cls}">
+          <div class="ticker">${t}</div>
+          <div class="bank-name">${b.name.split(" ").slice(0,2).join(" ")}</div>
+          <div class="val-label">Final Value</div>
+          <div class="val-num">${fmt(last.portfolioVal)}</div>
+          <div class="stats">
+            <div class="stat-item"><div class="stat-label">Total Gain</div><div class="stat-val" style="color:${b.color}">+${gain}%</div></div>
+            <div class="stat-item"><div class="stat-label">Annual Div</div><div class="stat-val">${fmt(last.totalDiv)}</div></div>
+            <div class="stat-item"><div class="stat-label">Yield/Cost</div><div class="stat-val">${pct(last.yoc)}</div></div>
+            <div class="stat-item"><div class="stat-label">Shares</div><div class="stat-val">${last.shares.toFixed(2)}</div></div>
+          </div>
+        </div>`;
+    });
+  }
+
+  function buildInsight(years) {
+    const tickers = Object.keys(BANKS);
+    const results = tickers.map(t => ({ t, data: project(BANKS[t], years) }));
+
+    const best    = results.reduce((a,b) => b.data[years].portfolioVal > a.data[years].portfolioVal ? b : a);
+    const income  = results.reduce((a,b) => b.data[years].totalDiv > a.data[years].totalDiv ? b : a);
+    const yoc_    = results.reduce((a,b) => b.data[years].yoc > a.data[years].yoc ? b : a);
+    const initial = results.reduce((a,b) => b.data[1].totalDiv > a.data[1].totalDiv ? b : a);
+
+    document.getElementById('insight-strip').innerHTML = `
+      <div class="insight-item"><div class="ins-label">Best Total Value (Yr ${years})</div><div class="ins-val">${fmt(best.data[years].portfolioVal)}</div><div class="ins-sub">${best.t} — ${BANKS[best.t].name}</div></div>
+      <div class="insight-item"><div class="ins-label">Highest Annual Income</div><div class="ins-val">${fmt(income.data[years].totalDiv)}</div><div class="ins-sub">${income.t} — Year ${years}</div></div>
+      <div class="insight-item"><div class="ins-label">Best Yield on Cost</div><div class="ins-val">${pct(yoc_.data[years].yoc)}</div><div class="ins-sub">${yoc_.t} — vs $2,000 original</div></div>
+      <div class="insight-item"><div class="ins-label">Most Income in Yr 1</div><div class="ins-val">${fmt(initial.data[1].totalDiv)}</div><div class="ins-sub">${initial.t} — immediate reinvestment</div></div>`;
+  }
+
+  function buildCharts(years) {
+    const tickers = Object.keys(BANKS);
+    const labels  = Array.from({length: years+1}, (_,i) => `Y${i}`);
+    const allData = Object.fromEntries(tickers.map(t => [t, project(BANKS[t], years)]));
+
+    const growthDS = tickers.map(t => ({
+      label: t,
+      data: allData[t].map(d => Math.round(d.portfolioVal)),
+      borderColor: BANKS[t].color,
+      backgroundColor: BANKS[t].color + '18',
+      borderWidth: 2.5,
+      pointRadius: 0,
+      fill: false,
+      tension: 0.35,
+    }));
+
+    const incomeDS = tickers.map(t => ({
+      label: t,
+      data: allData[t].map(d => +d.totalDiv.toFixed(2)),
+      borderColor: BANKS[t].color,
+      backgroundColor: BANKS[t].color + '22',
+      borderWidth: 2,
+      pointRadius: 0,
+      fill: true,
+      tension: 0.35,
+    }));
+
+    const yocDS = tickers.map(t => ({
+      label: t,
+      data: allData[t].map(d => +d.yoc.toFixed(2)),
+      borderColor: BANKS[t].color,
+      borderWidth: 2,
+      pointRadius: 0,
+      fill: false,
+      tension: 0.35,
+    }));
+
+    const tickFont = { family: "'DM Mono', monospace", size: 10 };
+    const gridColor = '#e8e0d4';
+
+    if (growthChart) growthChart.destroy();
+    growthChart = new Chart(document.getElementById('growthChart'), {
+      type: 'line',
+      data: { labels, datasets: growthDS },
+      options: {
+        responsive: true,
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: '#1a1612',
+            titleFont: { family: "'DM Mono', monospace", size: 11 },
+            bodyFont:  { family: "'DM Mono', monospace", size: 10 },
+            callbacks: {
+              label: ctx => ` ${ctx.dataset.label}: $${ctx.parsed.y.toLocaleString()}`
+            }
+          }
+        },
+        scales: {
+          x: { grid: { color: gridColor }, ticks: { font: tickFont, maxTicksLimit: 11 } },
+          y: { grid: { color: gridColor }, ticks: { font: tickFont, callback: v => `$${(v/1000).toFixed(0)}k` } }
+        }
+      }
+    });
+
+    if (incomeChart) incomeChart.destroy();
+    incomeChart = new Chart(document.getElementById('incomeChart'), {
+      type: 'line',
+      data: { labels, datasets: incomeDS },
+      options: {
+        responsive: true,
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: '#1a1612',
+            titleFont: { family: "'DM Mono', monospace", size: 11 },
+            bodyFont:  { family: "'DM Mono', monospace", size: 10 },
+            callbacks: { label: ctx => ` ${ctx.dataset.label}: $${ctx.parsed.y.toFixed(2)}` }
+          }
+        },
+        scales: {
+          x: { grid: { color: gridColor }, ticks: { font: tickFont, maxTicksLimit: 11 } },
+          y: { grid: { color: gridColor }, ticks: { font: tickFont, callback: v => `$${v.toFixed(0)}` } }
+        }
+      }
+    });
+
+    if (yocChart) yocChart.destroy();
+    yocChart = new Chart(document.getElementById('yocChart'), {
+      type: 'line',
+      data: { labels, datasets: yocDS },
+      options: {
+        responsive: true,
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: '#1a1612',
+            titleFont: { family: "'DM Mono', monospace", size: 11 },
+            bodyFont:  { family: "'DM Mono', monospace", size: 10 },
+            callbacks: { label: ctx => ` ${ctx.dataset.label}: ${ctx.parsed.y.toFixed(1)}%` }
+          }
+        },
+        scales: {
+          x: { grid: { color: gridColor }, ticks: { font: tickFont, maxTicksLimit: 11 } },
+          y: { grid: { color: gridColor }, ticks: { font: tickFont, callback: v => `${v.toFixed(0)}%` } }
+        }
+      }
+    });
+  }
+
+  function render() {
+    document.getElementById('display-years').textContent = YEARS;
+    buildCards(YEARS);
+    buildInsight(YEARS);
+    buildCharts(YEARS);
+  }
+
+  document.querySelectorAll('[data-years]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('[data-years]').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      YEARS = parseInt(btn.dataset.years);
+      render();
+    });
+  });
+
+  render();
+</script>
+</body>
+</html>
