@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gold vs AngloGold Ashanti — 1 Year in Review</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-annotation/3.0.1/chartjs-plugin-annotation.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Georgia', serif;
+    background: #faf9f6;
+    color: #1a1a1a;
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  .page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 28px 60px;
+  }
+
+  /* ── masthead ── */
+  .masthead {
+    border-top: 3px solid #1a1a1a;
+    border-bottom: 1px solid #1a1a1a;
+    padding: 16px 0 14px;
+    margin-bottom: 32px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .masthead-left {}
+  .eyebrow {
+    font-family: 'Courier New', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #888;
+    margin-bottom: 6px;
+  }
+  .headline {
+    font-size: 26px;
+    font-weight: 400;
+    line-height: 1.2;
+    letter-spacing: -0.5px;
+  }
+  .headline span { font-style: italic; color: #B87333; }
+  .datestamp {
+    font-family: 'Courier New', monospace;
+    font-size: 11px;
+    color: #888;
+    text-align: right;
+  }
+
+  /* ── deck ── */
+  .deck {
+    font-size: 15px;
+    color: #444;
+    line-height: 1.75;
+    max-width: 680px;
+    margin-bottom: 28px;
+    border-left: 3px solid #B87333;
+    padding-left: 16px;
+  }
+
+  /* ── chart area ── */
+  .chart-wrap {
+    background: #fff;
+    border: 1px solid #e0ddd5;
+    border-radius: 4px;
+    padding: 20px 16px 14px;
+    margin-bottom: 24px;
+  }
+  .chart-legend {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+  }
+  .leg-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: #555;
+    font-family: 'Courier New', monospace;
+  }
+  .leg-swatch {
+    width: 24px;
+    height: 3px;
+    border-radius: 2px;
+  }
+  .chart-canvas-wrap {
+    position: relative;
+    width: 100%;
+    height: 320px;
+  }
+  .chart-note {
+    font-size: 11px;
+    color: #999;
+    font-style: italic;
+    margin-top: 10px;
+    text-align: center;
+    font-family: 'Courier New', monospace;
+  }
+
+  /* ── stat row ── */
+  .stat-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+  .stat-card {
+    background: #fff;
+    border: 1px solid #e0ddd5;
+    border-radius: 4px;
+    padding: 14px 16px;
+  }
+  .stat-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #999;
+    font-family: 'Courier New', monospace;
+    margin-bottom: 4px;
+  }
+  .stat-value {
+    font-size: 26px;
+    font-weight: 400;
+    font-family: 'Courier New', monospace;
+    line-height: 1.1;
+    margin-bottom: 3px;
+  }
+  .stat-sub {
+    font-size: 11px;
+    color: #888;
+    font-style: italic;
+  }
+  .green { color: #2e7d32; }
+  .amber { color: #B87333; }
+  .blue  { color: #1a5494; }
+  .red   { color: #b71c1c; }
+
+  /* ── story panels ── */
+  .story-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 14px;
+    margin-bottom: 32px;
+  }
+  .story-card {
+    border-top: 2px solid transparent;
+    padding: 14px 16px;
+    background: #fff;
+    border-radius: 0 0 4px 4px;
+    border: 1px solid #e0ddd5;
+    border-top-width: 2px;
+  }
+  .story-number {
+    font-family: 'Courier New', monospace;
+    font-size: 10px;
+    color: #aaa;
+    letter-spacing: 2px;
+    margin-bottom: 6px;
+  }
+  .story-title {
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    line-height: 1.3;
+  }
+  .story-body {
+    font-size: 12px;
+    color: #555;
+    line-height: 1.7;
+  }
+
+  /* ── bottom rule ── */
+  .bottom-rule {
+    border-top: 1px solid #1a1a1a;
+    padding-top: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .disclaimer {
+    font-size: 10px;
+    color: #aaa;
+    font-style: italic;
+    font-family: 'Courier New', monospace;
+    max-width: 500px;
+  }
+  .logo-text {
+    font-family: 'Courier New', monospace;
+    font-size: 10px;
+    color: #bbb;
+    letter-spacing: 1px;
+  }
+
+  /* ── understanding box ── */
+  .understanding {
+    background: #1a1a1a;
+    color: #f0ece4;
+    border-radius: 4px;
+    padding: 22px 24px;
+    margin-bottom: 28px;
+  }
+  .understanding h3 {
+    font-size: 13px;
+    font-family: 'Courier New', monospace;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #B87333;
+    margin-bottom: 14px;
+    font-weight: 400;
+  }
+  .understanding-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+  }
+  .understanding p {
+    font-size: 12px;
+    color: #bbb;
+    line-height: 1.75;
+  }
+  .understanding strong { color: #f0ece4; font-weight: 600; }
+
+  @media (max-width: 520px) {
+    .headline { font-size: 20px; }
+    .stat-value { font-size: 20px; }
+    .understanding-grid { grid-template-columns: 1fr; }
+    .masthead { flex-direction: column; }
+    .datestamp { text-align: left; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- masthead -->
+  <div class="masthead">
+    <div class="masthead-left">
+      <div class="eyebrow">Personal investment research · Gold series</div>
+      <h1 class="headline">When gold rises, <span>AngloGold Ashanti rises faster</span></h1>
+    </div>
+    <div class="datestamp">April 1, 2026<br>Data: NYSE · World Gold Council</div>
+  </div>
+
+  <!-- deck -->
+  <p class="deck">
+    This chart shows exactly how gold the commodity and AngloGold Ashanti (AU) — one of the world's largest gold mining companies — performed over the past twelve months. Both lines start at zero, so you can compare them fairly even though gold trades at $4,720 per ounce and AU trades at around $90 per share.
+  </p>
+
+  <!-- chart -->
+  <div class="chart-wrap">
+    <div class="chart-legend">
+      <div class="leg-item">
+        <div class="leg-swatch" style="background:#B87333;"></div>
+        Gold spot price (XAU/USD) — base: $3,100/oz on Apr 1, 2025
+      </div>
+      <div class="leg-item">
+        <div class="leg-swatch" style="background:#1a5494;"></div>
+        AngloGold Ashanti (NYSE: AU) — base: $32/share on Apr 1, 2025
+      </div>
+    </div>
+    <div class="chart-canvas-wrap">
+      <canvas id="chart1"></canvas>
+    </div>
+    <p class="chart-note">Both lines begin at 0% on April 1, 2025. Hover or tap a point to see exact figures.</p>
+  </div>
+
+  <!-- stat row -->
+  <div class="stat-row">
+    <div class="stat-card">
+      <div class="stat-label">Gold — 1 year return</div>
+      <div class="stat-value green">+52%</div>
+      <div class="stat-sub">$3,100 &rarr; $4,720 per oz</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">AU stock — 1 year return</div>
+      <div class="stat-value green">+181%</div>
+      <div class="stat-sub">$32 &rarr; $90 per share</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">AU peak return (Mar 2)</div>
+      <div class="stat-value amber">+303%</div>
+      <div class="stat-sub">$32 &rarr; $129 at all-time high</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Leverage ratio (beta)</div>
+      <div class="stat-value blue">~3.5&times;</div>
+      <div class="stat-sub">AU moves ~3.5× more than gold</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">AU — below peak today</div>
+      <div class="stat-value red">−30%</div>
+      <div class="stat-sub">Still catch-up potential vs gold</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Analyst 12-month target</div>
+      <div class="stat-value green">$125</div>
+      <div class="stat-sub">~38% above current price</div>
+    </div>
+  </div>
+
+  <!-- understanding box -->
+  <div class="understanding">
+    <h3>How to read this chart</h3>
+    <div class="understanding-grid">
+      <p><strong>Why start at zero?</strong> Gold costs $4,720 per ounce while an AU share costs $90. If we plotted the actual prices on one chart, gold would tower over AU and you'd see nothing useful. Starting both at 0% on the same date lets us compare <em>how much each moved</em>, not what they cost.</p>
+      <p><strong>Why does AU move so much more?</strong> AngloGold mines gold at roughly $1,450 per ounce and sells it at the market price. When gold rises by $100, their profit per ounce rises by the full $100 — that's enormous leverage. A 1% move in gold can mean 3–5% in AU's share price.</p>
+      <p><strong>What happened in March 2026?</strong> The US-Iran war began February 28. Paradoxically, rising oil prices (Iran blocked the Strait of Hormuz) raised inflation fears, which made investors worry the US Federal Reserve would keep rates high — bad for gold. AU fell even harder due to its leverage, dropping 38% from peak while gold fell 17%.</p>
+      <p><strong>What does the gap now mean?</strong> Gold has recovered more than AU relative to their war-era lows. That gap represents potential upside for AU if gold stays elevated — and with a new 4.9 million ounce gold reserve announced in Nevada (low cost at $954/oz to mine), AU has company-specific catalysts too.</p>
+    </div>
+  </div>
+
+  <!-- story panels -->
+  <div class="story-grid">
+    <div class="story-card" style="border-top-color: #2e7d32;">
+      <div class="story-number">ACT 01 · APR–OCT 2025</div>
+      <div class="story-title">The great rerating — AU wakes up</div>
+      <div class="story-body">Gold climbed steadily from $3,100 to $4,400, rising 42%. But AU exploded from $32 to $110 — a 244% gain. The market was finally pricing in that AU's earnings had tripled on the same production volume, thanks to margin leverage. Central banks globally bought 863 tonnes of gold in 2025 — historically elevated demand.</div>
+    </div>
+    <div class="story-card" style="border-top-color: #B87333;">
+      <div class="story-number">ACT 02 · NOV 2025–FEB 2026</div>
+      <div class="story-title">Gold hits $5,600 — AU peaks at $129</div>
+      <div class="story-body">Gold reached an all-time high of $5,602 on January 28, 2026, driven by tariff uncertainty, Middle East tensions, and record ETF inflows. AU matched it, reaching its own all-time high of $129.14 on March 2. Gold was up 80% from our April 2025 base; AU was up 303%. The leverage had fully expressed itself.</div>
+    </div>
+    <div class="story-card" style="border-top-color: #b71c1c;">
+      <div class="story-number">ACT 03 · MAR 2026</div>
+      <div class="story-title">War, correction, and the CEO shock</div>
+      <div class="story-body">The US-Iran war began February 28. Rising oil prices from the Hormuz blockade triggered inflation fears and a gold selloff. AU fell harder: CEO departure rumours on March 19 added a company-specific blow. AU bottomed at $80 — down 38% from peak. Gold only fell 17% from its high. The leverage worked against AU here.</div>
+    </div>
+    <div class="story-card" style="border-top-color: #1a5494;">
+      <div class="story-number">ACT 04 · TODAY, APR 1 2026</div>
+      <div class="story-title">Recovery underway — gap remains</div>
+      <div class="story-body">Gold has bounced back to $4,720 (+52% from 1yr ago). AU has recovered to $90 (+181% from 1yr ago). But AU is still 30% below its March 2 peak while gold is only 16% below its January 28 peak. This gap suggests AU still has room to catch up — especially with a newly announced Nevada gold mine and Q1 earnings due May 8.</div>
+    </div>
+  </div>
+
+  <!-- bottom rule -->
+  <div class="bottom-rule">
+    <p class="disclaimer">For informational purposes only. Not financial advice. Prices approximate as of April 1, 2026. Past performance does not guarantee future results. Consult a qualified financial advisor before making investment decisions.</p>
+    <div class="logo-text">PERSONAL RESEARCH · 2026</div>
+  </div>
+
+</div>
+
+<script>
+Chart.register(window['chartjs-plugin-annotation']);
+
+const labels = [
+  "Apr '25", "May", "Jun", "Jul", "Aug", "Sep",
+  "Oct", "Nov", "Dec", "Jan '26", "Feb",
+  "Mar 2\n(AU peak)", "Mar 13\n(ex-div)", "Mar 19\n(CEO news)",
+  "Mar 23\n(gold low)", "Mar 25", "Apr 1\n(today)"
+];
+
+const goldRaw = [3100,3250,3370,3280,4381,4200,4400,4700,4950,5400,5100,5200,4700,4500,4300,4565,4720];
+const auRaw   = [32,  45,  65,  90,  90,  100, 110, 110, 115, 118, 107, 129, 99,  82,  80,  86,  90];
+const goldPct = goldRaw.map(v => parseFloat(((v/goldRaw[0]-1)*100).toFixed(1)));
+const auPct   = auRaw.map(v   => parseFloat(((v/auRaw[0]  -1)*100).toFixed(1)));
+
+const n = labels.length;
+
+new Chart(document.getElementById('chart1'), {
+  type: 'line',
+  data: {
+    labels,
+    datasets: [
+      {
+        label: 'Gold (XAU)',
+        data: goldPct,
+        borderColor: '#B87333',
+        backgroundColor: 'rgba(184,115,51,0.08)',
+        fill: true,
+        tension: 0.35,
+        pointRadius: 5,
+        pointBackgroundColor: '#B87333',
+        pointBorderColor: '#fff',
+        pointBorderWidth: 1.5,
+        pointHoverRadius: 8,
+        borderWidth: 2.5
+      },
+      {
+        label: 'AngloGold AU',
+        data: auPct,
+        borderColor: '#1a5494',
+        backgroundColor: 'rgba(26,84,148,0.07)',
+        fill: true,
+        tension: 0.35,
+        pointRadius: 5,
+        pointBackgroundColor: '#1a5494',
+        pointBorderColor: '#fff',
+        pointBorderWidth: 1.5,
+        pointHoverRadius: 8,
+        borderWidth: 2.5
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    interaction: { mode: 'index', intersect: false },
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: '#1a1a1a',
+        titleColor: '#f0ece4',
+        bodyColor: '#ccc',
+        padding: 12,
+        cornerRadius: 4,
+        callbacks: {
+          label: ctx => {
+            const v = ctx.raw;
+            const raw = ctx.datasetIndex === 0 ? goldRaw[ctx.dataIndex] : auRaw[ctx.dataIndex];
+            const unit = ctx.datasetIndex === 0 ? '/oz' : '/share';
+            const sign = v >= 0 ? '+' : '';
+            const name = ctx.datasetIndex === 0 ? 'Gold' : 'AU stock';
+            return `  ${name}: ${sign}${v}%   ($${raw.toLocaleString()}${unit})`;
+          }
+        }
+      },
+      annotation: {
+        annotations: {
+          warLine: {
+            type: 'line',
+            xMin: 10, xMax: 10,
+            borderColor: 'rgba(183,28,28,0.45)',
+            borderWidth: 1.5,
+            borderDash: [6, 4],
+            label: {
+              display: true,
+              content: 'War begins →',
+              position: 'start',
+              backgroundColor: 'rgba(183,28,28,0.1)',
+              color: '#b71c1c',
+              font: { size: 10, family: "'Courier New', monospace" },
+              padding: { x: 7, y: 4 },
+              yAdjust: 10
+            }
+          },
+          zeroLine: {
+            type: 'line',
+            yMin: 0, yMax: 0,
+            borderColor: 'rgba(0,0,0,0.2)',
+            borderWidth: 1.2,
+            borderDash: [4, 3]
+          },
+          peakLabel: {
+            type: 'label',
+            xValue: 11,
+            yValue: auPct[11],
+            backgroundColor: 'rgba(26,84,148,0.1)',
+            color: '#1a5494',
+            content: ['AU ATH', '+303%'],
+            font: [{ size: 9, family: "'Courier New', monospace" }, { size: 11, weight: 'bold' }],
+            padding: { x: 6, y: 4 },
+            borderRadius: 3,
+            yAdjust: -24
+          }
+        }
+      }
+    },
+    scales: {
+      x: {
+        grid: { color: 'rgba(0,0,0,0.06)' },
+        ticks: {
+          color: '#888',
+          font: { size: 10, family: "'Courier New', monospace" },
+          maxRotation: 30,
+          autoSkip: false,
+          callback: function(val, idx) {
+            return labels[idx].split('\n');
+          }
+        }
+      },
+      y: {
+        grid: { color: 'rgba(0,0,0,0.06)' },
+        ticks: {
+          color: '#888',
+          font: { size: 11, family: "'Courier New', monospace" },
+          callback: v => (v >= 0 ? '+' : '') + v + '%'
+        },
+        title: {
+          display: true,
+          text: 'Return since April 1, 2025 (%)',
+          color: '#aaa',
+          font: { size: 11, family: "'Courier New', monospace" }
+        }
+      }
+    }
+  }
+});
+</script>
+</body>
+</html>
