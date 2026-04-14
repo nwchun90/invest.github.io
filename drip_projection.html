@@ -245,14 +245,63 @@
 
 <header>
   <div class="title-block">
-    <h1>DRIP Growth Projections</h1>
-    <p>JPM · GS · RY · TD &nbsp;—&nbsp; Dividend Reinvestment Analysis</p>
+
+    <!-- Eyebrow -->
+    <div style="
+      font-family:'DM Mono', monospace;
+      font-size:10px;
+      text-transform:uppercase;
+      letter-spacing:2px;
+      color:var(--muted);
+      margin-bottom:6px;
+    ">
+      Personal investment research · DRIP series
+    </div>
+
+    <!-- Title -->
+    <h1 style="margin-bottom:4px;">
+      DRIP Growth Projections — <span style="color:var(--accent); font-style:italic;">$2,000</span>
+    </h1>
+
+    <!-- Author -->
+    <p style="
+      font-family:'DM Mono', monospace;
+      font-size:11px;
+      color:var(--muted);
+      margin-top:2px;
+    ">
+      by nwchun90
+    </p>
+
   </div>
+
+  <!-- Meta block (kept intact for JS compatibility) -->
   <div class="meta">
+    April 5, 2026<br>
+    Data: JPM · GS · RY · TD<br><br>
+
+    <!-- These MUST remain for JS to work -->
     <strong id="display-investment">$2,000</strong>
-    Initial Investment &nbsp;|&nbsp; <span id="display-years">20</span>-Year Horizon
+    Initial Investment &nbsp;|&nbsp;
+    <span id="display-years">20</span>-Year Horizon
   </div>
 </header>
+
+<!-- Deck paragraph -->
+<p style="
+  font-size:13px;
+  color:var(--muted);
+  line-height:1.7;
+  max-width:680px;
+  margin-bottom:28px;
+  border-left:3px solid var(--accent);
+  padding-left:14px;
+  font-family:'DM Mono', monospace;
+">
+  This projection explores how a $2,000 dividend‑reinvested portfolio in four major North American banks
+  compounds over time. All dividends are reinvested, and growth assumptions are applied conservatively to
+  illustrate realistic long‑term outcomes.
+</p>
 
 <div class="controls">
   <label>Horizon:</label>
