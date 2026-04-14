@@ -12,9 +12,9 @@
     --ink: #0d1117;
     --ink-muted: #3a3f4b;
     --ink-faint: #6b7280;
-    --paper: #f5f3ee;
+    --paper: #faf9f6;
     --cream: #ece9e1;
-    --gold: #c8922a;
+    --gold: #B87333;
     --gold-light: #f0c96b;
     --teal: #1a7f6e;
     --teal-light: #2ebfa5;
@@ -32,85 +32,105 @@
   body {
     background: var(--paper);
     color: var(--ink);
-    font-family: var(--sans);
+    font-family: 'Georgia', serif;
     font-weight: 400;
     line-height: 1.6;
     min-height: 100vh;
   }
 
-  /* ── HEADER ── */
-  header {
-    background: var(--ink);
-    color: var(--paper);
-    padding: 3.5rem 4rem 3rem;
-    position: relative;
-    overflow: hidden;
+  /* ── PAGE WRAPPER ── */
+  .page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 28px 60px;
   }
-  header::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: repeating-linear-gradient(
-      45deg,
-      transparent,
-      transparent 40px,
-      rgba(255,255,255,0.012) 40px,
-      rgba(255,255,255,0.012) 41px
-    );
-  }
-  .header-inner { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; }
-  .header-eyebrow {
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 0.16em;
-    color: var(--gold-light);
-    text-transform: uppercase;
-    margin-bottom: 1rem;
+
+  /* ── MASTHEAD (gold theme) ── */
+  .masthead {
+    border-top: 3px solid #1a1a1a;
+    border-bottom: 1px solid #1a1a1a;
+    padding: 16px 0 14px;
+    margin-bottom: 32px;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
     gap: 10px;
   }
-  .header-eyebrow::before {
-    content: '';
-    display: inline-block;
-    width: 24px;
-    height: 1px;
-    background: var(--gold-light);
+  .masthead-left {}
+  .eyebrow {
+    font-family: 'Courier New', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #888;
+    margin-bottom: 6px;
   }
-  h1 {
-    font-family: var(--serif);
-    font-size: clamp(2.4rem, 4vw, 3.4rem);
+  .headline {
+    font-size: 26px;
     font-weight: 400;
-    line-height: 1.1;
-    margin-bottom: 0.5rem;
+    line-height: 1.2;
+    letter-spacing: -0.5px;
+    font-family: 'Georgia', serif;
   }
-  h1 em { font-style: italic; color: var(--gold-light); }
-  .header-sub {
+  .headline span { font-style: italic; color: var(--gold); }
+  .author-line {
+    font-family: 'Courier New', monospace;
+    font-size: 11px;
+    color: #888;
+    margin-top: 6px;
+  }
+  .datestamp {
+    font-family: 'Courier New', monospace;
+    font-size: 11px;
+    color: #888;
+    text-align: right;
+    line-height: 1.6;
+  }
+
+  /* ── DECK ── */
+  .deck {
     font-size: 15px;
-    color: rgba(245,243,238,0.65);
-    margin-top: 0.75rem;
-    font-weight: 300;
-    max-width: 560px;
+    color: #444;
+    line-height: 1.75;
+    max-width: 680px;
+    margin-bottom: 28px;
+    border-left: 3px solid var(--gold);
+    padding-left: 16px;
   }
-  .header-meta {
-    display: flex;
-    gap: 2.5rem;
-    margin-top: 2.5rem;
-    padding-top: 2rem;
-    border-top: 1px solid rgba(255,255,255,0.1);
-    flex-wrap: wrap;
+
+  /* ── HEADER STAT ROW ── */
+  .hdr-stat-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 10px;
+    margin-bottom: 32px;
   }
-  .meta-item { display: flex; flex-direction: column; gap: 3px; }
-  .meta-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; color: rgba(245,243,238,0.4); text-transform: uppercase; }
-  .meta-value { font-family: var(--mono); font-size: 18px; font-weight: 500; color: var(--paper); }
-  .meta-value.up { color: var(--teal-light); }
-  .meta-value.accent { color: var(--gold-light); }
+  .hdr-stat-card {
+    background: #fff;
+    border: 1px solid #e0ddd5;
+    border-radius: 4px;
+    padding: 12px 14px;
+  }
+  .hdr-stat-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #999;
+    margin-bottom: 3px;
+  }
+  .hdr-stat-val {
+    font-family: var(--mono);
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--ink);
+    line-height: 1.1;
+  }
+  .hdr-stat-val.up { color: var(--teal); }
+  .hdr-stat-val.accent { color: var(--gold); }
 
-  /* ── MAIN ── */
-  main { max-width: 1100px; margin: 0 auto; padding: 3rem 4rem 5rem; }
-
-  section { margin-bottom: 3.5rem; }
-
+  /* ── SECTION LABELS ── */
   .section-label {
     font-family: var(--mono);
     font-size: 10px;
@@ -129,20 +149,22 @@
     background: var(--line);
   }
 
+  section { margin-bottom: 3rem; }
+
   /* ── STAT GRID ── */
   .stat-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
     gap: 1px;
     background: var(--line);
     border: 1px solid var(--line);
-    border-radius: 6px;
+    border-radius: 4px;
     overflow: hidden;
-    margin-bottom: 3rem;
+    margin-bottom: 2rem;
   }
   .stat-cell {
     background: var(--paper);
-    padding: 1.4rem 1.5rem;
+    padding: 1.25rem 1.4rem;
     display: flex;
     flex-direction: column;
     gap: 5px;
@@ -158,21 +180,21 @@
   /* ── CHART ── */
   .chart-container {
     background: var(--ink);
-    border-radius: 8px;
-    padding: 2rem 2rem 1.5rem;
+    border-radius: 6px;
+    padding: 1.75rem 1.75rem 1.25rem;
     position: relative;
   }
   .chart-header {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.25rem;
     flex-wrap: wrap;
     gap: 1rem;
   }
   .chart-title {
     font-family: var(--serif);
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     color: var(--paper);
     font-weight: 400;
   }
@@ -180,7 +202,7 @@
   .legend {
     display: flex;
     flex-wrap: wrap;
-    gap: 16px;
+    gap: 14px;
   }
   .legend-item {
     display: flex;
@@ -200,7 +222,7 @@
     background: repeating-linear-gradient(90deg, currentColor 0,currentColor 4px,transparent 4px,transparent 8px);
   }
   canvas { width: 100% !important; }
-  .chart-wrap { position: relative; height: 400px; }
+  .chart-wrap { position: relative; height: 380px; }
 
   /* ── AXIS LABELS ── */
   .axis-labels {
@@ -218,13 +240,13 @@
     border-radius: 3px;
   }
   .axis-tag.left { background: rgba(46,191,165,0.15); color: var(--teal-light); }
-  .axis-tag.right { background: rgba(200,146,42,0.15); color: var(--gold-light); }
+  .axis-tag.right { background: rgba(184,115,51,0.15); color: var(--gold); }
 
   /* ── DRIP TABLE ── */
   .drip-table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 13px;
+    font-size: 12.5px;
   }
   .drip-table thead tr {
     background: var(--ink);
@@ -235,17 +257,17 @@
     font-size: 9.5px;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    padding: 10px 16px;
+    padding: 10px 14px;
     text-align: right;
     font-weight: 500;
   }
   .drip-table th:first-child { text-align: left; }
   .drip-table td {
-    padding: 9px 16px;
+    padding: 9px 14px;
     text-align: right;
     border-bottom: 1px solid var(--line);
     font-family: var(--mono);
-    font-size: 12.5px;
+    font-size: 12px;
     color: var(--ink-muted);
   }
   .drip-table td:first-child { text-align: left; color: var(--ink); font-weight: 500; }
@@ -257,20 +279,20 @@
   .drip-table td.highlight { color: var(--teal); font-weight: 500; }
 
   /* ── PROJECTION CARDS ── */
-  .proj-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
-  .proj-card { background: var(--paper); padding: 1.5rem 1.6rem; }
+  .proj-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 4px; overflow: hidden; }
+  .proj-card { background: var(--paper); padding: 1.4rem 1.5rem; }
   .proj-card:nth-child(2) { background: var(--ink); }
   .proj-tag { font-family: var(--mono); font-size: 9px; letter-spacing: 0.13em; text-transform: uppercase; margin-bottom: 0.5rem; }
   .proj-card:nth-child(1) .proj-tag { color: var(--ink-faint); }
   .proj-card:nth-child(2) .proj-tag { color: var(--gold-light); }
   .proj-card:nth-child(3) .proj-tag { color: var(--teal); }
-  .proj-return { font-family: var(--serif); font-size: 2.6rem; line-height: 1; margin: 0.4rem 0; }
+  .proj-return { font-family: var(--serif); font-size: 2.4rem; line-height: 1; margin: 0.4rem 0; }
   .proj-card:nth-child(1) .proj-return { color: var(--ink-faint); }
   .proj-card:nth-child(2) .proj-return { color: var(--gold-light); }
   .proj-card:nth-child(3) .proj-return { color: var(--teal-light); }
-  .proj-portfolio { font-family: var(--mono); font-size: 14px; margin-bottom: 0.75rem; }
+  .proj-portfolio { font-family: var(--mono); font-size: 13px; margin-bottom: 0.75rem; }
   .proj-card:nth-child(2) .proj-portfolio { color: var(--paper); }
-  .proj-desc { font-size: 12px; line-height: 1.55; }
+  .proj-desc { font-size: 11.5px; line-height: 1.55; }
   .proj-card:nth-child(1) .proj-desc { color: var(--ink-faint); }
   .proj-card:nth-child(2) .proj-desc { color: rgba(245,243,238,0.6); }
   .proj-card:nth-child(3) .proj-desc { color: var(--ink-muted); }
@@ -282,25 +304,24 @@
     gap: 1px;
     background: var(--line);
     border: 1px solid var(--line);
-    border-radius: 6px;
+    border-radius: 4px;
     overflow: hidden;
-    margin-bottom: 3rem;
+    margin-bottom: 2rem;
   }
   .insight-cell {
     background: var(--paper);
-    padding: 1.5rem 1.75rem;
-    position: relative;
+    padding: 1.4rem 1.6rem;
   }
   .insight-cell:nth-child(2) { background: var(--ink); color: var(--paper); }
   .insight-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 0.5rem; }
   .insight-cell:nth-child(2) .insight-label { color: rgba(245,243,238,0.4); }
-  .insight-val { font-family: var(--serif); font-size: 2.2rem; color: var(--teal); line-height: 1; margin-bottom: 4px; }
+  .insight-val { font-family: var(--serif); font-size: 2rem; color: var(--teal); line-height: 1; margin-bottom: 4px; }
   .insight-cell:nth-child(2) .insight-val { color: var(--gold-light); }
-  .insight-body { font-size: 12.5px; color: var(--ink-muted); line-height: 1.55; }
+  .insight-body { font-size: 12px; color: var(--ink-muted); line-height: 1.55; }
   .insight-cell:nth-child(2) .insight-body { color: rgba(245,243,238,0.6); }
 
   /* ── HOLDINGS ── */
-  .holdings { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 8px; }
+  .holdings { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 8px; }
   .holding-pill {
     background: var(--cream);
     border: 1px solid var(--line);
@@ -316,65 +337,90 @@
   .holding-bar-wrap { width: 100%; height: 3px; background: var(--line); border-radius: 2px; margin-top: 5px; }
   .holding-bar { height: 100%; background: var(--teal); border-radius: 2px; }
 
-  /* ── FOOTER ── */
-  footer {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 0 4rem 3rem;
-    font-size: 11px;
-    color: var(--ink-faint);
+  /* ── BOTTOM RULE (gold theme) ── */
+  .bottom-rule {
+    border-top: 1px solid #1a1a1a;
+    padding-top: 12px;
+    margin-top: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .disclaimer {
+    font-size: 10px;
+    color: #aaa;
+    font-style: italic;
+    font-family: 'Courier New', monospace;
+    max-width: 560px;
     line-height: 1.6;
-    border-top: 1px solid var(--line);
-    padding-top: 1.5rem;
+  }
+  .logo-text {
+    font-family: 'Courier New', monospace;
+    font-size: 10px;
+    color: #bbb;
+    letter-spacing: 1px;
   }
 
   @media (max-width: 700px) {
-    header { padding: 2.5rem 1.5rem 2rem; }
-    main { padding: 2rem 1.5rem 3rem; }
-    footer { padding: 1.5rem 1.5rem 2rem; }
     .proj-grid { grid-template-columns: 1fr; }
     .insight { grid-template-columns: 1fr; }
-    .header-meta { gap: 1.5rem; }
+    .masthead { flex-direction: column; }
+    .datestamp { text-align: left; }
+    .hdr-stat-row { grid-template-columns: repeat(2, 1fr); }
   }
 </style>
 </head>
 <body>
 
-<header>
-  <div class="header-inner">
-    <div class="header-eyebrow">Vanguard Canada &nbsp;·&nbsp; TSX: VDY</div>
-    <h1>FTSE Canadian<br><em>High Dividend Yield</em><br>Index ETF</h1>
-    <p class="header-sub">Five-year DRIP simulation — C$7,000 initial investment with automatic monthly dividend reinvestment. April 2021 → March 2026, plus 12-month forward projection.</p>
-    <div class="header-meta">
-      <div class="meta-item">
-        <span class="meta-label">Initial Investment</span>
-        <span class="meta-value accent">C$7,000</span>
-      </div>
-      <div class="meta-item">
-        <span class="meta-label">Current NAV (Mar 2026)</span>
-        <span class="meta-value">C$67.45</span>
-      </div>
-      <div class="meta-item">
-        <span class="meta-label">5-Yr Total Return</span>
-        <span class="meta-value up" id="hdr-return">—</span>
-      </div>
-      <div class="meta-item">
-        <span class="meta-label">Portfolio Value (DRIP)</span>
-        <span class="meta-value up" id="hdr-value">—</span>
-      </div>
-      <div class="meta-item">
-        <span class="meta-label">MER</span>
-        <span class="meta-value">0.22%</span>
-      </div>
-      <div class="meta-item">
-        <span class="meta-label">Fwd Div Yield</span>
-        <span class="meta-value accent">3.16%</span>
-      </div>
+<div class="page">
+
+  <!-- ── MASTHEAD ── -->
+  <div class="masthead">
+    <div class="masthead-left">
+      <div class="eyebrow">Personal Investment Research &nbsp;·&nbsp; Income &amp; DRIP</div>
+      <div class="headline">VDY · Five-Year <span>DRIP Study</span></div>
+      <div class="author-line">by nwchun90</div>
+    </div>
+    <div class="datestamp">
+      March 2026<br>
+      Data: Vanguard Canada, public market data
     </div>
   </div>
-</header>
 
-<main>
+  <!-- ── DECK ── -->
+  <div class="deck">
+    Five-year DRIP simulation — C$7,000 initial investment with automatic monthly dividend reinvestment. April 2021 → March 2026, plus 12-month forward projection.
+  </div>
+
+  <!-- ── KEY HEADER STATS ── -->
+  <div class="hdr-stat-row">
+    <div class="hdr-stat-card">
+      <div class="hdr-stat-label">Initial Investment</div>
+      <div class="hdr-stat-val accent">C$7,000</div>
+    </div>
+    <div class="hdr-stat-card">
+      <div class="hdr-stat-label">Current NAV (Mar 2026)</div>
+      <div class="hdr-stat-val">C$67.45</div>
+    </div>
+    <div class="hdr-stat-card">
+      <div class="hdr-stat-label">5-Yr Total Return (DRIP)</div>
+      <div class="hdr-stat-val up" id="hdr-return">—</div>
+    </div>
+    <div class="hdr-stat-card">
+      <div class="hdr-stat-label">Portfolio Value (DRIP)</div>
+      <div class="hdr-stat-val up" id="hdr-value">—</div>
+    </div>
+    <div class="hdr-stat-card">
+      <div class="hdr-stat-label">MER</div>
+      <div class="hdr-stat-val">0.22%</div>
+    </div>
+    <div class="hdr-stat-card">
+      <div class="hdr-stat-label">Fwd Div Yield</div>
+      <div class="hdr-stat-val accent">3.16%</div>
+    </div>
+  </div>
 
   <!-- KEY STATS -->
   <section>
@@ -428,7 +474,7 @@
             DRIP portfolio
           </div>
           <div class="legend-item">
-            <div class="legend-line" style="background:rgba(200,146,42,0.7);height:2px;"></div>
+            <div class="legend-line" style="background:rgba(184,115,51,0.7);height:2px;"></div>
             Price only (no DRIP)
           </div>
           <div class="legend-item">
@@ -521,16 +567,17 @@
     <div class="holdings" id="holdings-wrap"></div>
   </section>
 
-</main>
+  <!-- ── BOTTOM RULE ── -->
+  <div class="bottom-rule">
+    <p class="disclaimer">This simulation uses historical total return data sourced from Vanguard Canada and public market data. Monthly price paths are interpolated from annual and quarterly anchor points. DRIP calculations assume fractional reinvestment at month-end prices, net of the 0.22% MER. Projected scenarios are illustrative estimates — not guarantees of future performance. Not financial advice. Data as of March 31, 2026.</p>
+    <div class="logo-text">PERSONAL RESEARCH · 2026 · TSX: VDY</div>
+  </div>
 
-<footer>
-  <strong>Disclaimer:</strong> This simulation uses historical total return data sourced from Vanguard Canada and public market data. Monthly price paths are interpolated from annual and quarterly anchor points. DRIP calculations assume fractional reinvestment at month-end prices, net of the 0.22% MER. Projected scenarios are illustrative estimates based on analyst consensus, historical CAGR, and macro scenario modelling — they are not guarantees of future performance. This is not financial advice. Past performance is not indicative of future results. Data as of March 31, 2026.
-</footer>
+</div><!-- /page -->
 
 <script>
 // ─── DATA ──────────────────────────────────────────────────────────────────
 
-// Monthly price path (Apr 2021 → Mar 2026, interpolated from annual anchors)
 const monthlyPrices = [
   // Apr-Dec 2021
   31.50, 32.10, 33.20, 34.50, 35.40, 36.00, 36.90, 37.70, 38.50,
@@ -540,13 +587,12 @@ const monthlyPrices = [
   38.60, 38.90, 39.40, 39.80, 40.20, 40.50, 40.80, 40.90, 40.60, 40.80, 41.20, 41.65,
   // Jan-Dec 2024
   42.20, 43.00, 43.80, 44.50, 45.10, 45.80, 46.90, 47.60, 48.30, 49.20, 50.10, 50.61,
-  // Jan-Mar 2026 (2025 price run)
+  // Jan-Dec 2025
   52.00, 53.50, 54.80, 56.20, 57.80, 59.50, 61.20, 62.80, 63.90, 65.10, 65.80, 66.20,
   // Jan-Mar 2026
   66.80, 67.20, 67.45
 ];
 
-// Monthly dividend per unit
 const monthlyDivs = [
   // Apr-Dec 2021
   0.107,0.107,0.108,0.108,0.109,0.109,0.110,0.110,0.111,
@@ -562,7 +608,6 @@ const monthlyDivs = [
   0.193,0.196,0.200
 ];
 
-// Month labels
 const months = [
   'Apr 21','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec',
   'Jan 22','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec',
@@ -606,11 +651,9 @@ const finalPct = pctReturns[pctReturns.length - 1];
 const finalShares = Math.round(shares * 100) / 100;
 const finalDiv = Math.round(cumDiv * 100) / 100;
 
-// CAGR (approx 5 years)
 const cagr = (Math.pow(finalValue / initialInvestment, 1 / 5) - 1) * 100;
 
 // ─── PROJECTIONS ──────────────────────────────────────────────────────────
-// 12 months of projected data (Apr 2026 → Mar 2027)
 const projMonths = ['Apr 26','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan 27','Feb','Mar 27'];
 
 function projectPath(annualReturn, annualDiv) {
@@ -645,7 +688,6 @@ document.getElementById('shares-end').textContent = finalShares.toFixed(2);
 document.getElementById('no-drip-val').textContent = 'C$' + Math.round(finalNoDrip).toLocaleString();
 document.getElementById('total-div').textContent = 'C$' + finalDiv.toLocaleString();
 
-// Projection cards
 function fmt(n) { return 'C$' + Math.round(n).toLocaleString(); }
 document.getElementById('bear-return').textContent = '+' + bearProj.finalPct + '%';
 document.getElementById('bear-val').textContent = fmt(bearProj.finalVal) + ' projected';
@@ -655,40 +697,15 @@ document.getElementById('bull-return').textContent = '+' + bullProj.finalPct + '
 document.getElementById('bull-val').textContent = fmt(bullProj.finalVal) + ' projected';
 
 // Annual table
-const years = [
-  { label: 'Start (Apr 2021)', priceIdx: 0, startIdx: 0, endIdx: 8, ret: null },
-  { label: '2022', priceIdx: 21, startIdx: 9, endIdx: 20, ret: -0.22 },
-  { label: '2023', priceIdx: 33, startIdx: 21, endIdx: 32, ret: 8.40 },
-  { label: '2024', priceIdx: 45, startIdx: 33, endIdx: 44, ret: 21.42 },
-  { label: '2025', priceIdx: 57, startIdx: 45, endIdx: 56, ret: 30.93 },
-  { label: 'Mar 2026 (YTD)', priceIdx: 59, startIdx: 57, endIdx: 59, ret: null }
-];
-
-const tbody = document.getElementById('drip-tbody');
-// Recalculate snapshots
-let snapshotShares = initialShares;
-let snapshotDiv = 0;
-const snapshots = [];
-
-// Apr 2021 snapshot
-snapshots.push({
-  label: 'Start (Apr 2021)',
-  price: monthlyPrices[0],
-  shares: snapshotShares,
-  divYear: 0,
-  ret: null,
-  val: Math.round(snapshotShares * monthlyPrices[0])
-});
-
-// Recalculate year-end snapshots
-const periodEnds = [8, 20, 32, 44, 56, 59]; // index positions
+const periodEnds = [8, 20, 32, 44, 56, 59];
 const periodLabels = ['Dec 2021 (9mo)', 'Dec 2022', 'Dec 2023', 'Dec 2024', 'Dec 2025', 'Mar 2026'];
 const periodRets = ['+27.4%', '−0.22%', '+8.40%', '+21.42%', '+30.93%', '+~2%'];
 const retClasses = ['up', 'down', 'up', 'up', 'up', 'up'];
 
 let runShares = initialShares;
-let prevSnapVal = initialInvestment;
 let yearDiv = 0;
+
+const tbody = document.getElementById('drip-tbody');
 
 for (let p = 0; p < periodEnds.length; p++) {
   const startIdx = p === 0 ? 0 : periodEnds[p - 1];
@@ -747,14 +764,11 @@ holdings.forEach(h => {
 
 // ─── CHART ────────────────────────────────────────────────────────────────
 const allLabels = [...months, ...projMonths.slice(1)];
-
-// Pad historical data with nulls for projection period
 const padLen = projMonths.length - 1;
 const histDRIP = [...portfolioValues, ...Array(padLen).fill(null)];
 const histNoDRIP = [...noDripValues, ...Array(padLen).fill(null)];
 const histPct = [...pctReturns, ...Array(padLen).fill(null)];
 
-// Projection data (starts at last historical point)
 const projOffset = portfolioValues.length - 1;
 const bearVals = [...Array(projOffset).fill(null), ...bearProj.values];
 const baseVals = [...Array(projOffset).fill(null), ...baseProj.values];
@@ -786,7 +800,7 @@ new Chart(ctx, {
         type: 'line',
         label: 'No DRIP (C$)',
         data: histNoDRIP,
-        borderColor: 'rgba(200,146,42,0.65)',
+        borderColor: 'rgba(184,115,51,0.65)',
         backgroundColor: 'transparent',
         tension: 0.4,
         pointRadius: 0,
@@ -875,8 +889,7 @@ new Chart(ctx, {
             }
           }
         }
-      },
-      annotation: {}
+      }
     },
     scales: {
       x: {
@@ -902,14 +915,13 @@ new Chart(ctx, {
           font: { family: 'DM Mono', size: 9 },
           callback: v => v + '%'
         },
-        border: { color: 'rgba(255,255,255,0.05)', dash: [3, 4] },
-        title: { display: false }
+        border: { color: 'rgba(255,255,255,0.05)', dash: [3, 4] }
       },
       yRight: {
         position: 'right',
         grid: { drawOnChartArea: false },
         ticks: {
-          color: 'rgba(200,146,42,0.65)',
+          color: 'rgba(184,115,51,0.75)',
           font: { family: 'DM Mono', size: 9 },
           callback: v => 'C$' + (v >= 1000 ? (v/1000).toFixed(0) + 'k' : v)
         },
