@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Personal Investment Research · Index</title>
+
   <style>
     body {
       font-family: "Segoe UI", Arial, sans-serif;
@@ -12,72 +13,142 @@
       padding: 40px 20px;
       color: #333;
     }
+
     h1 {
       text-align: center;
       color: #b8860b;
       margin-bottom: 5px;
+      font-size: 2.2em;
+      letter-spacing: 0.5px;
     }
+
     .author {
       text-align: center;
-      color: #888;
+      color: #777;
       font-size: 0.95em;
-      margin-bottom: 25px;
+      margin-bottom: 30px;
     }
-    p {
+
+    .subtitle {
       text-align: center;
       color: #666;
-      margin-bottom: 40px;
+      margin-bottom: 45px;
+      font-size: 1.05em;
     }
-    ul {
-      max-width: 700px;
+
+    .content-list {
+      max-width: 800px;
       margin: 0 auto;
       padding: 0;
       list-style: none;
     }
-    li {
+
+    .item {
       background: #fff;
-      margin: 12px 0;
-      padding: 18px 20px;
+      margin: 14px 0;
+      padding: 18px 22px;
       border-radius: 8px;
       border: 1px solid #e0e0e0;
-      transition: background 0.2s;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: background 0.2s, transform 0.15s;
     }
-    li:hover {
+
+    .item:hover {
       background: #fff7e0;
+      transform: translateY(-2px);
     }
-    a {
+
+    .item a {
       text-decoration: none;
       color: #333;
-      font-size: 1.1em;
+      font-size: 1.12em;
       font-weight: 600;
     }
+
+    .date {
+      color: #999;
+      font-size: 0.9em;
+      margin-left: 20px;
+      white-space: nowrap;
+    }
+
     .disclaimer {
-      max-width: 700px;
-      margin: 50px auto 0;
+      max-width: 800px;
+      margin: 60px auto 0;
       font-size: 0.85em;
       color: #777;
       line-height: 1.5;
       text-align: center;
     }
+
+    footer {
+      margin-top: 40px;
+      text-align: center;
+      color: #aaa;
+      font-size: 0.85em;
+    }
   </style>
 </head>
+
 <body>
 
   <h1>Personal Investment Research</h1>
   <div class="author">by nwchun90</div>
-  <p>Index of topics and visualizations</p>
+  <div class="subtitle">Index of topics and visualizations</div>
 
-  <ul>
-    <li><a href="stock_insights_cls_pltr_atz.html">Valuation Regime Shapes the Chart</a></li>
-    <li><a href="vdy_drip_study.html">VDY: A Safe Canadian Saving Plan</a></li>
-    <li><a href="gddy_dashboard.html">GoDaddy Fundamental: Who's Your Daddy?</a></li>
-    <li><a href="drip_projection.html">Dividend Reinvestment Plan (DRIP): JPM, GS, RY, TD</a></li>
-    <li><a href="gold_vs_AU_1year.html">Gold vs AngloGold Ashanti (AU): 1-Year Performance</a></li>
+  <ul class="content-list">
+
+    <li class="item" data-date="2026-04-12">
+      <a href="stock_insights_cls_pltr_atz.html">Valuation Regime Shapes the Chart</a>
+      <span class="date">Apr 11, 2026</span>
+    </li>
+
+    <li class="item" data-date="2026-04-10">
+      <a href="vdy_drip_study.html">VDY: A Safe Canadian Saving Plan</a>
+      <span class="date">Apr 3, 2026</span>
+    </li>
+
+    <li class="item" data-date="2026-04-08">
+      <a href="gddy_dashboard.html">GoDaddy Fundamental: Who's Your Daddy?</a>
+      <span class="date">Apr 6, 2026</span>
+    </li>
+
+    <li class="item" data-date="2026-04-05">
+      <a href="drip_projection.html">Dividend Reinvestment Plan (DRIP): JPM, GS, RY, TD</a>
+      <span class="date">Mar 7, 2026</span>
+    </li>
+
+    <li class="item" data-date="2026-04-01">
+      <a href="gold_vs_AU_1year.html">Gold vs AngloGold Ashanti (AU): 1-Year Performance</a>
+      <span class="date">Apr 2, 2026</span>
+    </li>
+
   </ul>
 
   <div class="disclaimer">
-    <strong>Disclaimer:</strong> This site contains personal investment research and visualization projects for educational and exploratory purposes only. Nothing here should be interpreted as financial advice, recommendations, or guidance. All data and calculations are based on publicly available sources and may contain errors or omissions. Please conduct your own due diligence before making any investment decisions.
+    <strong>Disclaimer:</strong> This site contains personal investment research and visualization projects for educational and exploratory purposes only. Nothing here should be interpreted as financial advice. All data and calculations are based on publicly available sources and may contain errors or omissions. Please conduct your own due diligence before making any investment decisions.
   </div>
+
+  <footer>
+    © 2026 · Personal Investment Research
+  </footer>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const list = document.querySelector(".content-list");
+      const items = Array.from(list.querySelectorAll(".item"));
+
+      items.sort((a, b) => {
+        const dateA = new Date(a.dataset.date);
+        const dateB = new Date(b.dataset.date);
+        return dateB - dateA; // newest first
+      });
+
+      items.forEach(item => list.appendChild(item));
+    });
+  </script>
 
 </body>
 </html>
