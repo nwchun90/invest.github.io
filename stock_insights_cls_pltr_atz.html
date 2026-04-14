@@ -9,7 +9,7 @@
 <style>
   :root {
     --ink: #1a1a18;
-    --paper: #f7f4ef;
+    --paper: #faf9f6;
     --muted: #7a7870;
     --border: #d8d4cb;
     --cls-blue: #1a4d8f;
@@ -18,66 +18,84 @@
     --pltr-light: #fdf0ee;
     --atz-green: #1a7a52;
     --atz-light: #e8f5ee;
-    --gold: #b8932a;
+    --gold: #B87333;
     --gold-light: #fdf7e8;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Georgia', serif;
     background: var(--paper);
     color: var(--ink);
-    font-size: 16px;
+    font-size: 15px;
     line-height: 1.7;
   }
 
-  /* ── MASTHEAD ── */
-  .masthead {
-    border-bottom: 2px solid var(--ink);
-    padding: 2.5rem 0 1.5rem;
-    text-align: center;
-    max-width: 860px;
+  /* ── PAGE WRAPPER ── */
+  .page {
+    max-width: 900px;
     margin: 0 auto;
-    padding-left: 2rem;
-    padding-right: 2rem;
+    padding: 40px 28px 60px;
   }
-  .masthead-kicker {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: .18em;
+
+  /* ── MASTHEAD (gold theme) ── */
+  .masthead {
+    border-top: 3px solid #1a1a1a;
+    border-bottom: 1px solid #1a1a1a;
+    padding: 16px 0 14px;
+    margin-bottom: 32px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .masthead-left {}
+  .eyebrow {
+    font-family: 'Courier New', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
     text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: .75rem;
+    color: #888;
+    margin-bottom: 6px;
   }
-  .masthead-title {
-    font-family: 'Playfair Display', serif;
-    font-size: clamp(2.2rem, 5vw, 3.8rem);
-    font-weight: 900;
-    line-height: 1.1;
-    margin-bottom: .75rem;
-    letter-spacing: -.02em;
+  .headline {
+    font-size: 26px;
+    font-weight: 400;
+    line-height: 1.2;
+    letter-spacing: -0.5px;
+    font-family: 'Georgia', serif;
   }
-  .masthead-sub {
+  .headline span { font-style: italic; color: var(--gold); }
+  .author-line {
+    font-family: 'Courier New', monospace;
+    font-size: 11px;
+    color: #888;
+    margin-top: 6px;
+  }
+  .datestamp {
+    font-family: 'Courier New', monospace;
+    font-size: 11px;
+    color: #888;
+    text-align: right;
+    line-height: 1.6;
+  }
+
+  /* ── DECK / SUMMARY ── */
+  .deck {
     font-size: 15px;
-    color: var(--muted);
-    font-weight: 300;
-    max-width: 560px;
-    margin: 0 auto .75rem;
-  }
-  .masthead-date {
-    font-size: 11px;
-    color: var(--muted);
-    letter-spacing: .08em;
-    text-transform: uppercase;
+    color: #444;
+    line-height: 1.75;
+    max-width: 720px;
+    margin-bottom: 28px;
+    border-left: 3px solid var(--gold);
+    padding-left: 16px;
   }
 
-  /* ── LAYOUT ── */
-  .page { max-width: 860px; margin: 0 auto; padding: 0 2rem 4rem; }
-
-  /* ── SECTION DIVIDERS ── */
+  /* ── SECTION LABELS ── */
   .section-label {
+    font-family: 'Courier New', monospace;
     font-size: 10px;
     font-weight: 500;
     letter-spacing: .2em;
@@ -95,14 +113,14 @@
     background: var(--border);
   }
 
-  /* ── LEAD PARAGRAPH ── */
+  /* ── LEAD / KEY THESIS PARAGRAPH ── */
   .lead {
     font-family: 'Playfair Display', serif;
-    font-size: 1.25rem;
+    font-size: 1.1rem;
     font-weight: 400;
     line-height: 1.6;
     color: var(--ink);
-    border-left: 3px solid var(--ink);
+    border-left: 3px solid var(--gold);
     padding-left: 1.25rem;
     margin: 2rem 0;
   }
@@ -196,6 +214,7 @@
   .principle-dark::before { background: var(--ink); }
 
   .p-kicker {
+    font-family: 'Courier New', monospace;
     font-size: 10px;
     font-weight: 500;
     letter-spacing: .15em;
@@ -211,7 +230,7 @@
     line-height: 1.3;
   }
   .p-body {
-    font-size: 14px;
+    font-size: 13.5px;
     color: #3a3a36;
     line-height: 1.7;
   }
@@ -220,11 +239,12 @@
   .factor-table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 13.5px;
+    font-size: 13px;
     margin: 1rem 0;
   }
   .factor-table th {
-    font-size: 11px;
+    font-family: 'Courier New', monospace;
+    font-size: 10px;
     font-weight: 500;
     letter-spacing: .1em;
     text-transform: uppercase;
@@ -283,7 +303,7 @@
     gap: 8px;
     padding: 6px 0;
     border-bottom: 1px solid var(--border);
-    font-size: 13.5px;
+    font-size: 13px;
   }
   .tc-item:last-child { border-bottom: none; }
   .tc-icon { flex-shrink: 0; font-size: 13px; margin-top: 2px; }
@@ -305,8 +325,6 @@
   .vm-bar-bg { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
   .vm-bar-fill { height: 100%; border-radius: 4px; }
   .vm-value { text-align: right; font-size: 12px; color: var(--muted); }
-  .vm-marker-wrap { position: absolute; top: -3px; }
-  .vm-marker { width: 2px; height: 14px; background: var(--ink); border-radius: 1px; }
 
   /* ── PULLQUOTE ── */
   .pullquote {
@@ -318,7 +336,7 @@
   }
   .pullquote p {
     font-family: 'Playfair Display', serif;
-    font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+    font-size: clamp(1.1rem, 2.5vw, 1.4rem);
     font-weight: 700;
     line-height: 1.4;
     max-width: 640px;
@@ -333,7 +351,7 @@
     gap: 1rem;
     padding: 10px 0;
     border-bottom: 1px solid var(--border);
-    font-size: 13.5px;
+    font-size: 13px;
   }
   .cal-row:last-child { border-bottom: none; }
   .cal-date {
@@ -357,19 +375,30 @@
   .cal-note { color: #3a3a36; flex: 1; }
   .cal-signal { font-size: 12px; font-weight: 500; }
 
-  /* ── FOOTER ── */
-  footer {
-    border-top: 2px solid var(--ink);
-    max-width: 860px;
-    margin: 0 auto;
-    padding: 1.5rem 2rem;
+  /* ── BOTTOM RULE (gold theme) ── */
+  .bottom-rule {
+    border-top: 1px solid #1a1a1a;
+    padding-top: 12px;
+    margin-top: 2.5rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 11px;
-    color: var(--muted);
-    gap: 1rem;
     flex-wrap: wrap;
+    gap: 8px;
+  }
+  .disclaimer {
+    font-size: 10px;
+    color: #aaa;
+    font-style: italic;
+    font-family: 'Courier New', monospace;
+    max-width: 560px;
+    line-height: 1.6;
+  }
+  .logo-text {
+    font-family: 'Courier New', monospace;
+    font-size: 10px;
+    color: #bbb;
+    letter-spacing: 1px;
   }
 
   /* ── RESPONSIVE ── */
@@ -379,32 +408,32 @@
     .stock-card:last-child { border-bottom: none; }
     .timing-grid { grid-template-columns: 1fr; }
     .factor-table th:nth-child(2), .factor-table td:nth-child(2) { display: none; }
-    footer { flex-direction: column; align-items: flex-start; }
+    .masthead { flex-direction: column; }
+    .datestamp { text-align: left; }
   }
-
-  /* ── ANIMATIONS ── */
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(18px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  .masthead, .page > * {
-    animation: fadeUp .5s ease both;
-  }
-  .stock-card:nth-child(1) { animation-delay: .05s; }
-  .stock-card:nth-child(2) { animation-delay: .12s; }
-  .stock-card:nth-child(3) { animation-delay: .19s; }
 </style>
 </head>
 <body>
 
-<div class="masthead">
-  <div class="masthead-kicker">Personal Investment Research Note</div>
-  <h1 class="masthead-title">Three Stocks,<br>Three Stories</h1>
-  <p class="masthead-sub">A plain-English breakdown of what's driving CLS, PLTR, and ATZ — and whether the moment to act has passed.</p>
-  <div class="masthead-date">April 2026 &nbsp;·&nbsp; Prepared by nwchun90</div>
-</div>
-
 <div class="page">
+
+  <!-- ── MASTHEAD ── -->
+  <div class="masthead">
+    <div class="masthead-left">
+      <div class="eyebrow">Personal Investment Research &nbsp;·&nbsp; Multi-Equity</div>
+      <div class="headline">Three Stocks, <span>Three Stories</span></div>
+      <div class="author-line">by nwchun90</div>
+    </div>
+    <div class="datestamp">
+      April 2026<br>
+      Data: Public filings, analyst reports
+    </div>
+  </div>
+
+  <!-- ── DECK ── -->
+  <div class="deck">
+    A plain-English breakdown of what's driving CLS, PLTR, and ATZ — and whether the moment to act has passed.
+  </div>
 
   <!-- THE CORE IDEA -->
   <div class="lead">
@@ -420,7 +449,7 @@
         <span class="stock-ticker">CLS · NYSE</span>
       </div>
       <span class="pattern-tag tag-cls">▲ Healthy consolidation</span>
-      <div class="stock-stat"><span class="stat-label">Business</span><span class="stat-val">Builds AI servers & hardware</span></div>
+      <div class="stock-stat"><span class="stat-label">Business</span><span class="stat-val">Builds AI servers &amp; hardware</span></div>
       <div class="stock-stat"><span class="stat-label">Price (Apr 7)</span><span class="stat-val">US$297</span></div>
       <div class="stock-stat"><span class="stat-label">From peak</span><span class="stat-val val-nt">−17% below ATH</span></div>
       <div class="stock-stat"><span class="stat-label">Revenue growth</span><span class="stat-val val-up">+28% in 2025 · +37% guided 2026</span></div>
@@ -463,7 +492,7 @@
   <!-- PART 1: WHY PATTERNS DIVERGED -->
   <div class="section-label">Part 1 — Why the charts went in opposite directions</div>
 
-  <p style="font-size:14px;color:#3a3a36;line-height:1.7;margin-bottom:1rem">The most important thing to understand is that stock charts don't generate their own direction — they are a consequence of the relationship between <strong>what the business is worth</strong> and <strong>what people are paying for it</strong>. All three patterns below are logical outcomes of that relationship.</p>
+  <p style="font-size:13.5px;color:#3a3a36;line-height:1.7;margin-bottom:1rem">The most important thing to understand is that stock charts don't generate their own direction — they are a consequence of the relationship between <strong>what the business is worth</strong> and <strong>what people are paying for it</strong>. All three patterns below are logical outcomes of that relationship.</p>
 
   <div class="principle principle-pltr">
     <div class="p-kicker">Palantir · Triple top + descending breakdown</div>
@@ -617,7 +646,7 @@
   <div class="section-label">Valuation at a glance — how "cheap" is each stock today?</div>
 
   <div class="principle principle-dark" style="padding: 1.25rem 1.5rem">
-    <div style="font-size:11px;color:var(--muted);margin-bottom:1rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase">Forward P/E ratio — how many dollars you pay per $1 of annual profit (lower = cheaper)</div>
+    <div style="font-family:'Courier New',monospace;font-size:10px;color:#aaa;margin-bottom:1rem;letter-spacing:.1em;text-transform:uppercase">Forward P/E ratio — how many dollars you pay per $1 of annual profit (lower = cheaper)</div>
     <div class="val-meter-row">
       <div class="vm-label" style="color:var(--cls-blue)">Celestica</div>
       <div class="vm-bar-wrap">
@@ -633,7 +662,7 @@
       <div class="vm-value">~40–45×</div>
     </div>
     <div class="val-meter-row">
-      <div class="vm-label">S&P 500 avg</div>
+      <div class="vm-label">S&amp;P 500 avg</div>
       <div class="vm-bar-wrap">
         <div class="vm-bar-bg"><div class="vm-bar-fill" style="width:11%;background:var(--muted)"></div></div>
       </div>
@@ -646,7 +675,7 @@
       </div>
       <div class="vm-value">&gt;100×</div>
     </div>
-    <div style="font-size:12px;color:var(--muted);margin-top:.75rem;line-height:1.5">CLS and ATZ are both priced at a premium to the average stock — because they're growing much faster than the average stock. But neither is priced at Palantir's extreme, where even exceptional growth may not justify the cost. The question is whether their growth justifies the premium — and recent earnings suggest it does.</div>
+    <div style="font-size:12px;color:#aaa;margin-top:.75rem;line-height:1.5">CLS and ATZ are both priced at a premium to the average stock — because they're growing much faster than the average stock. But neither is priced at Palantir's extreme, where even exceptional growth may not justify the cost. The question is whether their growth justifies the premium — and recent earnings suggest it does.</div>
   </div>
 
   <!-- EARNINGS CALENDAR -->
@@ -655,7 +684,7 @@
     <div class="cal-row">
       <div class="cal-date">Apr 27</div>
       <span class="cal-ticker-badge ctb-cls">CLS</span>
-      <div class="cal-note">Celestica Q1 2026 results (after market). Key focus: tariff guidance update, ATS segment A&D commentary, hyperscaler demand signals for H2 2026. Conference call April 28 at 8am ET.</div>
+      <div class="cal-note">Celestica Q1 2026 results (after market). Key focus: tariff guidance update, ATS segment A&amp;D commentary, hyperscaler demand signals for H2 2026. Conference call April 28 at 8am ET.</div>
       <div class="cal-signal" style="color:var(--atz-green)">High impact ↑</div>
     </div>
     <div class="cal-row">
@@ -677,19 +706,19 @@
     <p>Buying "high" is only chasing if the price has run past the fundamentals. Buying a stock that's gone up but whose earnings have gone up more is not chasing — it's recognising value that took time to become obvious.</p>
   </div>
 
-  <!-- DISCLAIMER -->
+  <!-- DISCLAIMER NOTE -->
   <div class="principle principle-dark" style="margin-top:1.5rem">
     <div class="p-kicker">A note on this document</div>
-    <div class="p-body" style="font-size:13px">This is a personal research summary prepared for family sharing. It reflects the author's analysis of publicly available financial data as of April 2026. It is not professional investment advice, and all investment decisions carry risk of loss. Past earnings growth does not guarantee future results. Always do your own research before making any investment decisions.</div>
+    <div class="p-body" style="font-size:13px">This is a personal research summary reflecting the author's analysis of publicly available financial data as of April 2026. It is not professional investment advice, and all investment decisions carry risk of loss. Past earnings growth does not guarantee future results. Always do your own research before making any investment decisions.</div>
+  </div>
+
+  <!-- ── BOTTOM RULE ── -->
+  <div class="bottom-rule">
+    <p class="disclaimer">For informational purposes only. Not financial advice. Data approximate as of April 9–11, 2026. Past performance does not guarantee future results. Consult a qualified financial advisor before making investment decisions.</p>
+    <div class="logo-text">PERSONAL RESEARCH · 2026 · CLS · PLTR · ATZ</div>
   </div>
 
 </div><!-- /page -->
-
-<footer>
-  <span>Three Stocks, Three Stories &nbsp;·&nbsp; Personal Research Note</span>
-  <span>Data as of April 9–11, 2026</span>
-  <span>CLS · PLTR · ATZ</span>
-</footer>
 
 </body>
 </html>
