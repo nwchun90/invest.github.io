@@ -32,8 +32,19 @@
     .subtitle {
       text-align: center;
       color: #666;
-      margin-bottom: 45px;
+      margin-bottom: 30px;
       font-size: 1.05em;
+    }
+
+    #searchBox {
+      display: block;
+      margin: 0 auto 30px;
+      padding: 10px 14px;
+      width: 80%;
+      max-width: 500px;
+      font-size: 1em;
+      border: 1px solid #ccc;
+      border-radius: 6px;
     }
 
     .content-list {
@@ -96,33 +107,35 @@
 
   <h1>Personal Investment Research</h1>
   <div class="author">by nwchun90</div>
-  <div class="subtitle">Index of topics and visualizations</div>
+  <div class="subtitle">Index of topics, visualizations, and thematic studies</div>
+
+  <input type="text" id="searchBox" placeholder="Search topics...">
 
   <ul class="content-list">
 
-    <li class="item" data-date="2026-04-12">
+    <li class="item" data-date="2026-04-11">
       <a href="stock_insights_cls_pltr_atz.html">Valuation Regime Shapes the Chart</a>
-      <span class="date">Apr 11, 2026</span>
+      <span class="date"></span>
     </li>
 
-    <li class="item" data-date="2026-04-10">
+    <li class="item" data-date="2026-04-03">
       <a href="vdy_drip_study.html">VDY: A Safe Canadian Saving Plan</a>
-      <span class="date">Apr 3, 2026</span>
+      <span class="date"></span>
     </li>
 
-    <li class="item" data-date="2026-04-08">
-      <a href="gddy_dashboard.html">GoDaddy Fundamental: Who's Your Daddy?</a>
-      <span class="date">Apr 6, 2026</span>
+    <li class="item" data-date="2026-04-06">
+      <a href="gddy_dashboard.html">GoDaddy (GDDY) Fundamental: Who's Your Daddy?</a>
+      <span class="date"></span>
     </li>
 
-    <li class="item" data-date="2026-04-05">
+    <li class="item" data-date="2026-03-07">
       <a href="drip_projection.html">Dividend Reinvestment Plan (DRIP): JPM, GS, RY, TD</a>
-      <span class="date">Mar 7, 2026</span>
+      <span class="date"></span>
     </li>
 
-    <li class="item" data-date="2026-04-01">
+    <li class="item" data-date="2026-04-02">
       <a href="gold_vs_AU_1year.html">Gold vs AngloGold Ashanti (AU): 1-Year Performance</a>
-      <span class="date">Apr 2, 2026</span>
+      <span class="date"></span>
     </li>
 
   </ul>
@@ -140,13 +153,25 @@
       const list = document.querySelector(".content-list");
       const items = Array.from(list.querySelectorAll(".item"));
 
-      items.sort((a, b) => {
-        const dateA = new Date(a.dataset.date);
-        const dateB = new Date(b.dataset.date);
-        return dateB - dateA; // newest first
+      items.forEach(item => {
+        const raw = item.dataset.date;
+        const d = new Date(raw);
+        const options = { year: "numeric", month: "short", day: "numeric" };
+        const formatted = d.toLocaleDateString("en-US", options);
+        item.querySelector(".date").textContent = formatted;
       });
 
+      items.sort((a, b) => new Date(b.dataset.date) - new Date(a.dataset.date));
       items.forEach(item => list.appendChild(item));
+    });
+
+    document.getElementById("searchBox").addEventListener("input", function () {
+      const query = this.value.toLowerCase();
+      const items = document.querySelectorAll(".item");
+      items.forEach(item => {
+        const text = item.innerText.toLowerCase();
+        item.style.display = text.includes(query) ? "" : "none";
+      });
     });
   </script>
 
