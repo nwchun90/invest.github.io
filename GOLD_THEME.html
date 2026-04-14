@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!--
+  ╔══════════════════════════════════════════════════════════════╗
+  ║  PERSONAL INVESTMENT RESEARCH — GOLD THEME TEMPLATE         ║
+  ║  Author: nwchun90                                            ║
+  ║  Version: 1.0                                                ║
+  ║                                                              ║
+  ║  HOW TO USE:                                                 ║
+  ║  1. Duplicate this file and rename it.                       ║
+  ║  2. Update the <title> tag.                                  ║
+  ║  3. Fill in the MASTHEAD fields (series, headline, date,     ║
+  ║     data sources).                                           ║
+  ║  4. Write the DECK (summary sentence).                       ║
+  ║  5. Add your content sections using the blocks below.        ║
+  ║  6. Update the BOTTOM-RULE disclaimer and ticker tag.        ║
+  ║                                                              ║
+  ║  SERIES CLASSIFICATIONS (use in .eyebrow):                   ║
+  ║  · Personal Investment Research · Company Series             ║
+  ║  · Personal Investment Research · Multi-Equity               ║
+  ║  · Personal Investment Research · Income & DRIP              ║
+  ║  · Personal Investment Research · Macro & Sector             ║
+  ║  · Personal Investment Research · Portfolio Review           ║
+  ╚══════════════════════════════════════════════════════════════╝
+-->
+<title>Document Title — nwchun90 Research</title>
+
+<!-- Chart.js — include only if you have charts in this document -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+
+<style>
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   § 0 · RESET & BASE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  /* Core palette — do not change; defines the gold theme */
+  --gold:        #B87333;   /* copper-gold accent — borders, highlights */
+  --ink:         #1a1a1a;   /* near-black for rules and primary text */
+  --paper:       #faf9f6;   /* warm off-white background */
+  --muted:       #888;      /* labels, secondary text */
+  --border:      #e0ddd5;   /* card borders, dividers */
+  --cream:       #f5f3ec;   /* alternate row / card fill */
+
+  /* Semantic colours — use for data states */
+  --green:       #2e7d32;   /* positive / up */
+  --amber:       #B87333;   /* same as gold — caution / neutral */
+  --red:         #b71c1c;   /* negative / down / alert */
+  --blue:        #1a5494;   /* informational */
+  --teal:        #1a7f6e;   /* income / DRIP context */
+
+  /* Typography */
+  --font-serif:  'Georgia', serif;
+  --font-mono:   'Courier New', monospace;
+}
+
+body {
+  font-family: var(--font-serif);
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   § 1 · PAGE WRAPPER
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+/* Wrap every page in .page to constrain width and add padding. */
+.page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 40px 28px 60px;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   § 2 · MASTHEAD  ← the signature gold header block
+   ─────────────────────────────────────────────────
+   Structure:
+     <div class="masthead">
+       <div class="masthead-left">
+         <div class="eyebrow">SERIES LABEL</div>
+         <div class="headline">Title <span>Italic accent</span></div>
+         <div class="author-line">by nwchun90</div>
+       </div>
+       <div class="datestamp">
+         Month Year<br>
+         Data: source names
+       </div>
+     </div>
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.masthead {
+  border-top: 3px solid var(--ink);
+  border-bottom: 1px solid var(--ink);
+  padding: 16px 0 14px;
+  margin-bottom: 32px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* EYEBROW — series classification + document type */
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+
+/* HEADLINE — main title. Use <span> inside for italic gold accent word */
+.headline {
+  font-size: 26px;
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: -0.5px;
+  font-family: var(--font-serif);
+}
+.headline span { font-style: italic; color: var(--gold); }
+
+/* AUTHOR LINE — always "by nwchun90" */
+.author-line {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 6px;
+}
+
+/* DATESTAMP — top-right. First line: date. Second line: data source(s). */
+.datestamp {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted);
+  text-align: right;
+  line-height: 1.7;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   § 3 · DECK (summary / standfirst)
+   ─────────────────────────────────────────────────
+   One or two sentences that state the core thesis.
+   Always appears immediately below the masthead.
+   Uses the gold left-border as a visual anchor.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.deck {
+  font-size: 15px;
+  color: #444;
+  line-height: 1.75;
+  max-width: 680px;
+  margin-bottom: 28px;
+  border-left: 3px solid var(--gold);
+  padding-left: 16px;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   § 4 · SECTION LABELS
+   ─────────────────────────────────────────────────
+   Thin horizontal rule with monospaced label.
+   Use between every major content block.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.sl {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 26px 0 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.sl::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   § 5 · STAT CARDS (metric tiles)
+   ─────────────────────────────────────────────────
+   Use .stat-row as a grid wrapper.
+   Each tile is .stat-card > .stat-label + .stat-value + .stat-sub
+   
+   Colour helpers: .green .amber .red .blue .teal
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.stat-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+  margin-bottom: 28px;
+}
+.stat-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 14px 16px;
+}
+.stat-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #999;
+  font-family: var(--font-mono);
+  margin-bottom: 4px;
+}
+.stat-value {
+  font-size: 26px;
+  font-weight: 400;
+  font-family: var(--font-mono);
+  line-height: 1.1;
+  margin-bottom: 3px;
+}
+.stat-sub {
+  font-size: 11px;
+  color: var(--muted);
+  font-style: italic;
+}
+
+/* Colour helpers */
+.green { color: var(--green); }
+.amber { color: var(--amber); }
+.red   { color: var(--red); }
+.blue  { color: var(--blue); }
+.teal  { color: var(--teal); }
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   § 6 · CARDS (content containers)
+   ─────────────────────────────────────────────────
+   .card — general white container with border
+   .card.alert — red left-border variant for warnings
+   .card.dark  — inverted dark background for callouts
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.card {
+  background: #fff;
+  border: 1px solid var(--border);
+  padding: 16px 18px;
+  margin-bottom: 14px;
+}
+.card.alert {
+  border-left: 3px solid var(--red);
+  padding-left: 14px;
+}
+.card.dark {
+  background: var(--ink);
+  color: #f0ece4;
+  border: none;
+}
+.card.dark .stat-label { color: #888; }
+.card.dark .stat-sub   { color: #888; }
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   § 7 · STORY PANELS (narrative cards)
+   ─────────────────────────────────────────────────
+   For act-by-act narrative. Colour the top border
+   by act: style="border-top-color: var(--green);" etc.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.story-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 14px;
+  margin-bottom: 32px;
+}
+.story-card {
+  border-top: 2px solid var(--border);
+  padding: 14px 16px;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-top-width: 2px;
+}
+.story-number {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: #aaa;
+  letter-spacing: 2px;
+  margin-bottom: 6px;
+}
+.story-title {
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  line-height: 1.3;
+}
+.story-body {
+  font-size: 12px;
+  color: #555;
+  line-height: 1.7;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   § 8 · CHART WRAPPER
+   ─────────────────────────────────────────────────
+   Wraps a Chart.js canvas. Fixed height 320px default.
+   Adjust .chart-canvas-wrap height as needed.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.chart-wrap {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 20px 16px 14px;
+  margin-bottom: 24px;
+}
+.chart-legend {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+.leg-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: #555;
+  font-family: var(--font-mono);
+}
+.leg-swatch {
+  width: 24px;
+  height: 3px;
+  border-radius: 2px;
+}
+.chart-canvas-wrap {
+  position: relative;
+  width: 100%;
+  height: 320px;
+}
+.chart-note {
+  font-size: 11px;
+  color: #999;
+  font-style: italic;
+  margin-top: 10px;
+  text-align: center;
+  font-family: var(--font-mono);
+}
+
+/* Dark chart container (for dual-axis charts) */
+.chart-container-dark {
+  background: var(--ink);
+  border-radius: 4px;
+  padding: 20px 18px 14px;
+  margin-bottom: 24px;
+}
+.chart-title-dark {
+  font-size: 13px;
+  color: #f0ece4;
+  font-family: var(--font-mono);
+  letter-spacing: 0.05em;
+  margin-bottom: 14px;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   § 9 · TABLE ROWS (key-value data pairs)
+   ─────────────────────────────────────────────────
+   .row — horizontal key / value pair with bottom border
+   .rl  — row label (monospaced, muted)
+   .rv  — row value (normal weight)
+   .up / .dn / .am — value colour helpers
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+}
+.row:last-child { border-bottom: none; }
+.rl {
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.rv { font-weight: 500; }
+.up { color: var(--green); }
+.dn { color: var(--red); }
+.am { color: var(--amber); }
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   § 10 · METRIC TILES (compact .met grid)
+   ─────────────────────────────────────────────────
+   Smaller tiles for dense data rows.
+   Use .g2 / .g3 / .g4 grid wrappers.
+   Each tile: .met > .ml + .mv + .ms
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.g4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 14px; }
+.g3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 14px; }
+.g2 { display: grid; grid-template-columns: 1fr 1fr;        gap: 14px; margin-bottom: 14px; }
+
+.met {
+  background: var(--cream);
+  border: 1px solid var(--border);
+  padding: 12px 14px;
+}
+.ml {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--muted);
+  margin-bottom: 3px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.mv {
+  font-size: 17px;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+.ms {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   § 11 · EVIDENCE / BULLET POINTS
+   ─────────────────────────────────────────────────
+   .ev — bulleted evidence row (inside a .card)
+   .dot — coloured dot prefix
+   Use colour inline: style="background: var(--green);"
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.ev {
+  display: flex;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+  line-height: 1.6;
+}
+.ev:last-child { border-bottom: none; }
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-top: 5px;
+  flex-shrink: 0;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   § 12 · BAR CHART (horizontal, CSS-only)
+   ─────────────────────────────────────────────────
+   .bar-row > .bar-lbl + .bar-track > .bar-fill + value
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.bar-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.bar-lbl {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted);
+  width: 130px;
+  flex-shrink: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.bar-track {
+  flex: 1;
+  background: var(--cream);
+  border-radius: 4px;
+  height: 8px;
+  overflow: hidden;
+}
+.bar-fill {
+  height: 100%;
+  border-radius: 4px;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   § 13 · BADGES
+   ─────────────────────────────────────────────────
+   Small pill tags: .badge + colour modifier
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.badge {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-weight: 600;
+  display: inline-block;
+  font-family: var(--font-mono);
+}
+.b-up { background: #e1f5ee; color: #085041; }  /* green / buy */
+.b-dn { background: #fcebeb; color: #791f1f; }  /* red / sell */
+.b-am { background: #faeeda; color: #633806; }  /* amber / hold */
+.b-bl { background: #e6f1fb; color: #0c447c; }  /* blue / info */
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   § 14 · UNDERSTANDING / DARK CALLOUT BOX
+   ─────────────────────────────────────────────────
+   Dark-background explanatory box with optional grid.
+   Use for "How to read this" or educational context.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.understanding {
+  background: var(--ink);
+  color: #f0ece4;
+  border-radius: 4px;
+  padding: 22px 24px;
+  margin-bottom: 28px;
+}
+.understanding h3 {
+  font-size: 13px;
+  font-family: var(--font-mono);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 14px;
+  font-weight: 400;
+}
+.understanding-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+.understanding p {
+  font-size: 12px;
+  color: #bbb;
+  line-height: 1.75;
+}
+.understanding strong { color: #f0ece4; font-weight: 600; }
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   § 15 · BOTTOM RULE  ← the signature gold footer block
+   ─────────────────────────────────────────────────
+   Always the last element inside .page.
+   Left side: .disclaimer (italic legal text)
+   Right side: .logo-text (e.g. "PERSONAL RESEARCH · 2026")
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.bottom-rule {
+  border-top: 1px solid var(--ink);
+  padding-top: 12px;
+  margin-top: 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.disclaimer {
+  font-size: 10px;
+  color: #aaa;
+  font-style: italic;
+  font-family: var(--font-mono);
+  max-width: 560px;
+  line-height: 1.6;
+}
+.logo-text {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: #bbb;
+  letter-spacing: 1px;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   § 16 · RESPONSIVE BREAKPOINTS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+@media (max-width: 700px) {
+  .masthead        { flex-direction: column; }
+  .datestamp       { text-align: left; }
+  .headline        { font-size: 20px; }
+  .stat-value      { font-size: 20px; }
+  .g4              { grid-template-columns: repeat(2, 1fr); }
+  .g3              { grid-template-columns: repeat(2, 1fr); }
+  .g2              { grid-template-columns: 1fr; }
+  .understanding-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- ══════════════════════════════════════════════════════
+     MASTHEAD  (required — appears on every document)
+     ══════════════════════════════════════════════════════
+     • eyebrow: series classification (see header comment)
+     • headline: main title — wrap accent word in <span>
+     • author-line: always "by nwchun90"
+     • datestamp: month year / data source(s)
+     ══════════════════════════════════════════════════════ -->
+<div class="masthead">
+  <div class="masthead-left">
+    <div class="eyebrow">Personal Investment Research &nbsp;·&nbsp; ← Series Here</div>
+    <div class="headline">Document <span>Headline Here</span></div>
+    <div class="author-line">by nwchun90</div>
+  </div>
+  <div class="datestamp">
+    Month Year<br>
+    Data: Source names here
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     DECK  (required — one to two sentences, gold left border)
+     ══════════════════════════════════════════════════════ -->
+<div class="deck">
+  Replace this with one or two sentences stating the core thesis or purpose of this research note.
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     EXAMPLE: STAT ROW  (key metrics at a glance)
+     ══════════════════════════════════════════════════════ -->
+<div class="sl">key metrics at a glance</div>
+<div class="stat-row">
+  <div class="stat-card">
+    <div class="stat-label">Metric Label</div>
+    <div class="stat-value green">+00%</div>
+    <div class="stat-sub">Context here</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Metric Label</div>
+    <div class="stat-value amber">$0.00</div>
+    <div class="stat-sub">Context here</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Metric Label</div>
+    <div class="stat-value red">−00%</div>
+    <div class="stat-sub">Context here</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Metric Label</div>
+    <div class="stat-value blue">0.0×</div>
+    <div class="stat-sub">Context here</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     EXAMPLE: CHART WRAPPER  (Chart.js canvas)
+     ══════════════════════════════════════════════════════ -->
+<div class="sl">chart title here</div>
+<div class="chart-wrap">
+  <div class="chart-legend">
+    <div class="leg-item">
+      <div class="leg-swatch" style="background: var(--gold);"></div>
+      Series A label
+    </div>
+    <div class="leg-item">
+      <div class="leg-swatch" style="background: var(--blue);"></div>
+      Series B label
+    </div>
+  </div>
+  <div class="chart-canvas-wrap">
+    <canvas id="chartExample"></canvas>
+  </div>
+  <p class="chart-note">Annotation or data source note goes here.</p>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     EXAMPLE: COMPACT METRIC TILES
+     ══════════════════════════════════════════════════════ -->
+<div class="sl">fundamental scorecard</div>
+<div class="g4">
+  <div class="met"><div class="ml">Label</div><div class="mv up">$0.0B</div><div class="ms">+0% YoY</div></div>
+  <div class="met"><div class="ml">Label</div><div class="mv">0.0×</div><div class="ms">vs sector</div></div>
+  <div class="met"><div class="ml">Label</div><div class="mv up">~0%</div><div class="ms">at current price</div></div>
+  <div class="met"><div class="ml">Label</div><div class="mv dn">0%</div><div class="ms">below ATH</div></div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     EXAMPLE: EVIDENCE BULLETS (inside a card)
+     ══════════════════════════════════════════════════════ -->
+<div class="sl">key considerations</div>
+<div class="card">
+  <div class="ev">
+    <div class="dot" style="background: var(--green);"></div>
+    <div><strong>Bull point:</strong> Describe a supporting thesis point here with specific data.</div>
+  </div>
+  <div class="ev">
+    <div class="dot" style="background: var(--amber);"></div>
+    <div><strong>Neutral observation:</strong> Something ambiguous or worth monitoring.</div>
+  </div>
+  <div class="ev">
+    <div class="dot" style="background: var(--red);"></div>
+    <div><strong>Risk:</strong> Describe the key risk or bear case argument here.</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     EXAMPLE: KEY-VALUE DATA ROWS
+     ══════════════════════════════════════════════════════ -->
+<div class="sl">valuation summary</div>
+<div class="card">
+  <div class="row"><span class="rl">Metric one</span><span class="rv up">$0.00 (+0%)</span></div>
+  <div class="row"><span class="rl">Metric two</span><span class="rv am">0.0× P/E</span></div>
+  <div class="row"><span class="rl">Metric three</span><span class="rv dn">−0% from ATH</span></div>
+  <div class="row"><span class="rl">Next catalyst</span><span class="rv">Date or event</span></div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     EXAMPLE: HORIZONTAL BAR CHART (CSS-only)
+     ══════════════════════════════════════════════════════ -->
+<div class="sl">market share / composition breakdown</div>
+<div class="card">
+  <div class="bar-row">
+    <span class="bar-lbl">Segment A</span>
+    <div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--blue);"></div></div>
+    <span style="font-size:12px;font-weight:600;width:80px;text-align:right;">$0.0B — #1</span>
+  </div>
+  <div class="bar-row">
+    <span class="bar-lbl">Segment B</span>
+    <div class="bar-track"><div class="bar-fill" style="width:60%;background:var(--muted);"></div></div>
+    <span style="font-size:12px;font-weight:600;width:80px;text-align:right;">$0.0B</span>
+  </div>
+  <div class="bar-row" style="margin-bottom:0;">
+    <span class="bar-lbl">Segment C</span>
+    <div class="bar-track"><div class="bar-fill" style="width:30%;background:var(--muted);"></div></div>
+    <span style="font-size:12px;font-weight:600;width:80px;text-align:right;">$0.0B</span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     EXAMPLE: STORY PANELS (act-by-act narrative)
+     ══════════════════════════════════════════════════════ -->
+<div class="sl">narrative arc</div>
+<div class="story-grid">
+  <div class="story-card" style="border-top-color: var(--green);">
+    <div class="story-number">ACT 01 · DATE RANGE</div>
+    <div class="story-title">Act title here</div>
+    <div class="story-body">Two to three sentences describing what happened in this period and why it mattered.</div>
+  </div>
+  <div class="story-card" style="border-top-color: var(--amber);">
+    <div class="story-number">ACT 02 · DATE RANGE</div>
+    <div class="story-title">Act title here</div>
+    <div class="story-body">Two to three sentences describing what happened in this period and why it mattered.</div>
+  </div>
+  <div class="story-card" style="border-top-color: var(--red);">
+    <div class="story-number">ACT 03 · DATE RANGE</div>
+    <div class="story-title">Act title here</div>
+    <div class="story-body">Two to three sentences describing what happened in this period and why it mattered.</div>
+  </div>
+  <div class="story-card" style="border-top-color: var(--blue);">
+    <div class="story-number">ACT 04 · TODAY</div>
+    <div class="story-title">Current situation</div>
+    <div class="story-body">Where things stand now and what to watch going forward.</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     EXAMPLE: UNDERSTANDING BOX (dark, educational)
+     ══════════════════════════════════════════════════════ -->
+<div class="understanding">
+  <h3>How to read this</h3>
+  <div class="understanding-grid">
+    <p><strong>Why this matters:</strong> Explanation one — use plain English. Two to three sentences describing the concept being shown.</p>
+    <p><strong>What to look for:</strong> Explanation two — describe the signal or pattern the reader should interpret from the data.</p>
+    <p><strong>Key caveat:</strong> What this analysis cannot tell you or where it may be misleading.</p>
+    <p><strong>What to watch next:</strong> The specific trigger or date that will update the thesis.</p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     EXAMPLE: VERDICT / SUMMARY CARD
+     ══════════════════════════════════════════════════════ -->
+<div class="sl">verdict summary</div>
+<div class="card" style="background: var(--cream);">
+  <div style="font-size:13px;line-height:1.85;">
+    Write the summary verdict here. State the overall assessment plainly — is this a buy, hold, or avoid situation and why? Reference the two or three key numbers that support the conclusion. Keep to three or four sentences.<br><br>
+    <span class="am"><strong>Current positioning:</strong></span> One sentence on entry level or next action step.
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     BOTTOM RULE  (required — appears on every document)
+     ══════════════════════════════════════════════════════
+     • disclaimer: boilerplate legal text
+     • logo-text: "PERSONAL RESEARCH · YEAR · TICKER(S)"
+     ══════════════════════════════════════════════════════ -->
+<div class="bottom-rule">
+  <p class="disclaimer">For informational purposes only. Not financial advice. Prices approximate as of [DATE]. Past performance does not guarantee future results. Consult a qualified financial advisor before making investment decisions.</p>
+  <div class="logo-text">PERSONAL RESEARCH · YYYY · TICKER</div>
+</div>
+
+</div><!-- /page -->
+
+<!-- ══════════════════════════════════════════════════════
+     CHART.JS STUB  (delete if no charts in this document)
+     ══════════════════════════════════════════════════════ -->
+<script>
+// Example Chart.js setup — replace data and labels.
+// Standard tooltip and scale styling to match gold theme:
+const CHART_DEFAULTS = {
+  tooltip: {
+    backgroundColor: '#1a1a1a',
+    titleColor: '#f0ece4',
+    bodyColor: '#ccc',
+    padding: 12,
+    cornerRadius: 4,
+  },
+  gridColor: 'rgba(0,0,0,0.06)',
+  tickColor: '#888',
+  tickFont: { size: 11, family: "'Courier New', monospace" },
+};
+
+// ── Example line chart ──────────────────────────────
+new Chart(document.getElementById('chartExample'), {
+  type: 'line',
+  data: {
+    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+    datasets: [
+      {
+        label: 'Series A',
+        data: [0, 5, 12, 8, 20, 28],
+        borderColor: '#B87333',       /* var(--gold) */
+        backgroundColor: 'rgba(184,115,51,0.08)',
+        fill: true,
+        tension: 0.35,
+        pointRadius: 5,
+        pointBackgroundColor: '#B87333',
+        pointBorderColor: '#fff',
+        pointBorderWidth: 1.5,
+        pointHoverRadius: 8,
+        borderWidth: 2.5,
+      },
+      {
+        label: 'Series B',
+        data: [0, 3, 7, 14, 11, 18],
+        borderColor: '#1a5494',       /* var(--blue) */
+        backgroundColor: 'rgba(26,84,148,0.07)',
+        fill: true,
+        tension: 0.35,
+        pointRadius: 5,
+        pointBackgroundColor: '#1a5494',
+        pointBorderColor: '#fff',
+        pointBorderWidth: 1.5,
+        pointHoverRadius: 8,
+        borderWidth: 2.5,
+      },
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    interaction: { mode: 'index', intersect: false },
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        ...CHART_DEFAULTS.tooltip,
+        callbacks: {
+          label: ctx => {
+            const v = ctx.raw;
+            const sign = v >= 0 ? '+' : '';
+            return `  ${ctx.dataset.label}: ${sign}${v}%`;
+          }
+        }
+      },
+    },
+    scales: {
+      x: {
+        grid: { color: CHART_DEFAULTS.gridColor },
+        ticks: { color: CHART_DEFAULTS.tickColor, font: CHART_DEFAULTS.tickFont },
+      },
+      y: {
+        grid: { color: CHART_DEFAULTS.gridColor },
+        ticks: {
+          color: CHART_DEFAULTS.tickColor,
+          font: CHART_DEFAULTS.tickFont,
+          callback: v => (v >= 0 ? '+' : '') + v + '%',
+        },
+      },
+    },
+  },
+});
+</script>
+</body>
+</html>
