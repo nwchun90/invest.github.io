@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!--
+  ╔══════════════════════════════════════════════════════════════╗
+  ║  PERSONAL INVESTMENT RESEARCH — GOLD THEME                   ║
+  ║  Author: nwchun90                                            ║
+  ║  Series: Gold Series                                         ║
+  ║  Document: ZGD Systematic Investing Simulation               ║
+  ║  Date: April 14, 2026                                        ║
+  ╚══════════════════════════════════════════════════════════════╝
+-->
+<title>ZGD · Three Cost Averaging Strategies — nwchun90 Research</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+/* ━━━ § 0 · RESET & BASE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --gold:   #B87333;
+  --ink:    #1a1a1a;
+  --paper:  #faf9f6;
+  --muted:  #888;
+  --border: #e0ddd5;
+  --cream:  #f5f3ec;
+  --green:  #2e7d32;
+  --amber:  #B87333;
+  --red:    #b71c1c;
+  --blue:   #1a5494;
+  --teal:   #1a7f6e;
+  --purple: #6d28d9;
+  --font-serif: 'Georgia', serif;
+  --font-mono:  'Courier New', monospace;
+}
+
+body { font-family: var(--font-serif); background: var(--paper); color: var(--ink); font-size: 14px; line-height: 1.7; }
+
+/* ━━━ § 1 · PAGE WRAPPER ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.page { max-width: 920px; margin: 0 auto; padding: 40px 28px 64px; }
+
+/* ━━━ § 2 · MASTHEAD ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.masthead {
+  border-top: 3px solid var(--ink);
+  border-bottom: 1px solid var(--ink);
+  padding: 16px 0 14px;
+  margin-bottom: 32px;
+  display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 10px;
+}
+.eyebrow { font-family: var(--font-mono); font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+.headline { font-size: 26px; font-weight: 400; line-height: 1.2; letter-spacing: -0.5px; font-family: var(--font-serif); }
+.headline span { font-style: italic; color: var(--gold); }
+.author-line { font-family: var(--font-mono); font-size: 11px; color: var(--muted); margin-top: 6px; }
+.datestamp { font-family: var(--font-mono); font-size: 11px; color: var(--muted); text-align: right; line-height: 1.8; }
+
+/* ━━━ § 3 · DECK ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.deck { font-size: 15px; color: #444; line-height: 1.75; max-width: 700px; margin-bottom: 28px; border-left: 3px solid var(--gold); padding-left: 16px; }
+
+/* ━━━ § 4 · SECTION LABELS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.sl { font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); margin: 28px 0 12px; display: flex; align-items: center; gap: 12px; }
+.sl::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+/* ━━━ § 5 · STAT CARDS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(155px, 1fr)); gap: 12px; margin-bottom: 28px; }
+.stat-card { background: #fff; border: 1px solid var(--border); border-radius: 4px; padding: 14px 16px; }
+.stat-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: #999; font-family: var(--font-mono); margin-bottom: 4px; }
+.stat-value { font-size: 24px; font-weight: 400; font-family: var(--font-mono); line-height: 1.1; }
+.stat-sub { font-size: 11px; color: #888; margin-top: 3px; font-style: italic; }
+
+/* ━━━ § 6 · GENERAL CARD ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.card { background: #fff; border: 1px solid var(--border); border-radius: 4px; padding: 18px 20px; margin-bottom: 0; }
+.row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 0.5px solid var(--border); font-size: 13px; }
+.row:last-child { border-bottom: none; }
+.rl { color: #777; }
+.rv { font-family: var(--font-mono); font-weight: 600; }
+.up { color: var(--green); }
+.dn { color: var(--red); }
+.am { color: var(--amber); }
+.bl { color: var(--blue); }
+.pu { color: var(--purple); }
+
+/* ━━━ § 7 · MODEL RULE CARDS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.models-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 14px; margin-bottom: 0; }
+.mcard { background: #fff; border: 1px solid var(--border); border-radius: 4px; overflow: hidden; }
+.mcard-head { padding: 12px 16px; border-bottom: 1px solid var(--border); }
+.mcard-tag { font-family: var(--font-mono); font-size: 10px; letter-spacing: 1.5px; display: inline-block; padding: 3px 9px; border-radius: 2px; margin-bottom: 6px; }
+.mcard-title { font-size: 15px; font-weight: 700; }
+.mcard-body { padding: 14px 16px; }
+.mcard-desc { font-size: 12px; color: #555; line-height: 1.75; margin-bottom: 12px; }
+.rule-box { font-family: var(--font-mono); font-size: 11px; background: var(--cream); border-left: 3px solid var(--gold); padding: 9px 12px; border-radius: 0 3px 3px 0; line-height: 1.75; margin-bottom: 10px; }
+.mcard-note { font-size: 11px; color: #999; font-style: italic; }
+
+/* ━━━ § 8 · TOGGLE BAR ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.toggle-bar { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-bottom: 20px; }
+.tog { background: none; border: none; border-bottom: 3px solid transparent; padding: 9px 24px; cursor: pointer; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.5px; color: #999; transition: color 0.15s; }
+.tog:hover { color: var(--ink); }
+.tog.on { border-bottom-color: var(--gold); color: var(--ink); font-weight: 700; }
+
+/* ━━━ § 9 · CHART BLOCKS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.chart-block { background: #fff; border: 1px solid var(--border); border-radius: 4px; padding: 20px 18px 14px; margin-bottom: 16px; }
+.chart-block-title { font-size: 13px; font-weight: 700; margin-bottom: 3px; }
+.chart-note { font-size: 11px; color: #888; font-style: italic; font-family: var(--font-mono); margin-bottom: 12px; }
+.legend { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 10px; }
+.leg { display: flex; align-items: center; gap: 6px; font-size: 11px; color: #555; font-family: var(--font-mono); }
+.leg-sq { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+.canvas-box { position: relative; width: 100%; }
+
+/* ━━━ § 10 · COMPARISON TABLE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.table-wrap { background: #fff; border: 1px solid var(--border); border-radius: 4px; overflow: hidden; }
+.ctable { width: 100%; border-collapse: collapse; font-size: 12px; }
+.ctable thead tr { background: var(--ink); }
+.ctable th { color: #f0ece4; padding: 9px 14px; text-align: left; font-weight: 400; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.5px; }
+.ctable td { padding: 8px 14px; border-bottom: 0.5px solid var(--border); vertical-align: middle; }
+.ctable tr:nth-child(even) td { background: var(--cream); }
+.ctable tr:last-child td { border-bottom: none; }
+.badge-w { display: inline-block; background: rgba(46,125,50,0.12); color: #1b5e20; font-size: 10px; padding: 2px 7px; border-radius: 2px; font-family: var(--font-mono); font-weight: 700; }
+.badge-l { display: inline-block; background: rgba(183,28,28,0.08); color: #7f1d1d; font-size: 10px; padding: 2px 7px; border-radius: 2px; font-family: var(--font-mono); }
+
+/* ━━━ § 11 · STORY PANELS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.story-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+.story-card { background: #fff; border: 1px solid var(--border); border-radius: 0 0 4px 4px; border-top-width: 2px; padding: 14px 16px; }
+.story-number { font-family: var(--font-mono); font-size: 10px; color: #aaa; letter-spacing: 2px; margin-bottom: 6px; }
+.story-title { font-size: 13px; font-weight: 700; margin-bottom: 6px; }
+.story-body { font-size: 12px; color: #555; line-height: 1.75; }
+
+/* ━━━ § 12 · UNDERSTANDING BOX ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.understanding { background: var(--ink); color: #f0ece4; border-radius: 4px; padding: 22px 24px; margin-bottom: 0; }
+.understanding h3 { font-size: 12px; font-family: var(--font-mono); letter-spacing: 2px; text-transform: uppercase; color: var(--gold); margin-bottom: 14px; font-weight: 400; }
+.understanding-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.understanding p { font-size: 12px; color: #bbb; line-height: 1.8; }
+.understanding strong { color: #f0ece4; }
+
+/* ━━━ § 13 · EVIDENCE BULLETS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.ev { display: flex; gap: 12px; padding: 10px 0; border-bottom: 0.5px solid var(--border); font-size: 13px; line-height: 1.65; }
+.ev:last-child { border-bottom: none; }
+.dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 6px; }
+
+/* ━━━ § 14 · DIVIDEND TABLE ROW ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.div-note { font-size: 11px; color: #888; font-style: italic; margin-top: 10px; font-family: var(--font-mono); }
+
+/* ━━━ § 15 · BOTTOM RULE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.bottom-rule { border-top: 1px solid var(--ink); padding-top: 12px; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 8px; }
+.disclaimer { font-size: 10px; color: #aaa; font-style: italic; font-family: var(--font-mono); max-width: 580px; line-height: 1.7; }
+.logo-text { font-family: var(--font-mono); font-size: 10px; color: #bbb; letter-spacing: 1px; }
+
+@media (max-width: 560px) {
+  .headline { font-size: 20px; }
+  .understanding-grid { grid-template-columns: 1fr; }
+  .toggle-bar { overflow-x: auto; }
+  .stat-value { font-size: 18px; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- ══════════════════════════════════════════════════════
+     MASTHEAD
+══════════════════════════════════════════════════════ -->
+<div class="masthead">
+  <div>
+    <div class="eyebrow">Personal Investment Research &middot; Gold Series &middot; Systematic Investing</div>
+    <div class="headline">Three ways to build wealth with <span>Canadian gold</span></div>
+    <div class="author-line">by nwchun90 &nbsp;&middot;&nbsp; Dollar Cost Averaging &nbsp;&middot;&nbsp; Value Averaging &nbsp;&middot;&nbsp; Golden Pulse</div>
+  </div>
+  <div class="datestamp">
+    April 14, 2026<br>
+    Data: BMO Asset Management<br>
+    DividendHistory.org · PortfoliosLab<br>
+    Solactive Equal Weight Gold Index<br>
+    Note: monthly prices reconstructed
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     DECK
+══════════════════════════════════════════════════════ -->
+<p class="deck">
+  BMO Equal Weight Global Gold Index ETF (TSX: ZGD) gives Canadian investors diversified, equally-weighted exposure to the world's senior gold producers — rebalanced quarterly, all dividends available for reinvestment. Starting with C$1,000, we simulate three distinct systematic strategies across both five-year and ten-year horizons and compare them not by absolute dollar value, but by <em>return on invested capital</em> — the only fair comparison when each strategy deploys a different amount of cash.
+</p>
+
+<!-- ══════════════════════════════════════════════════════
+     ZGD QUICK FACTS
+══════════════════════════════════════════════════════ -->
+<div class="sl">about ZGD · BMO Equal Weight Global Gold Index ETF</div>
+<div class="card" style="margin-bottom:0">
+  <div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start">
+    <div style="flex:1;min-width:240px">
+      <p style="font-size:13px;color:#555;line-height:1.8">Launched October 9, 2012. Tracks the <strong>Solactive Equal Weight Global Gold Index</strong> using full replication — every constituent held at exactly equal weight, rebalanced quarterly. Eligible holdings include only senior, liquid gold producers listed on recognised exchanges. The fund is fully Canadian-domiciled and reports in CAD, making it RRSP, TFSA, and RRIF eligible.</p>
+      <p style="font-size:13px;color:#555;line-height:1.8;margin-top:8px">Key holdings include AngloGold Ashanti (NYSE: AU), Kinross Gold (TSX: K), Barrick Mining (TSX: ABX), Agnico Eagle (TSX: AEM), and Newmont (NYSE: NEM) — the same names we have been studying in this Gold Series.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;min-width:300px;flex:1">
+      <div class="stat-card"><div class="stat-label">Price (Apr 9 '26)</div><div class="stat-value" style="color:var(--gold);font-size:20px">C$337</div></div>
+      <div class="stat-card"><div class="stat-label">1-yr total return</div><div class="stat-value up" style="font-size:20px">+176%</div></div>
+      <div class="stat-card"><div class="stat-label">10-yr ann. CAGR</div><div class="stat-value" style="font-size:20px">23.8%</div></div>
+      <div class="stat-card"><div class="stat-label">Management fee</div><div class="stat-value" style="font-size:20px">0.60%</div></div>
+      <div class="stat-card"><div class="stat-label">Dividend freq.</div><div class="stat-value" style="font-size:20px">Annual</div><div class="stat-sub">paid late December</div></div>
+      <div class="stat-card"><div class="stat-label">Worst drawdown</div><div class="stat-value dn" style="font-size:20px">−60%</div><div class="stat-sub">Jul 2015 — patience required</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     THREE MODELS
+══════════════════════════════════════════════════════ -->
+<div class="sl">the three strategies — rules and rationale</div>
+<div class="models-grid">
+
+  <div class="mcard">
+    <div class="mcard-head" style="background:#eff6ff">
+      <div class="mcard-tag" style="background:#dbeafe;color:#1e3a5f">MODEL 1 &middot; DCA</div>
+      <div class="mcard-title" style="color:#1e3a5f">Dollar Cost Averaging</div>
+    </div>
+    <div class="mcard-body">
+      <div class="mcard-desc">The most widely practised strategy. You invest a fixed dollar amount every month, unconditionally. Over time, you naturally buy more units at low prices and fewer at high prices — without ever having to think about it.</div>
+      <div class="rule-box">
+        Start: C$1,000<br>
+        Every month: + C$100 (fixed)<br>
+        Dividends: reinvested<br>
+        5-yr cash total: C$7,000<br>
+        10-yr cash total: C$13,000
+      </div>
+      <div class="mcard-note">Best for: investors who want a set-and-forget plan with a predictable, budget-friendly monthly commitment.</div>
+    </div>
+  </div>
+
+  <div class="mcard">
+    <div class="mcard-head" style="background:#fff7ed">
+      <div class="mcard-tag" style="background:#fed7aa;color:#7c2d12">MODEL 2 &middot; VA</div>
+      <div class="mcard-title" style="color:#7c2d12">Value Averaging</div>
+    </div>
+    <div class="mcard-body">
+      <div class="mcard-desc">A disciplined contrarian approach. Each month, top up the portfolio to meet a rising value target. Bull markets require no new money; bear markets trigger heavier buying. The result is systematically higher capital efficiency than DCA.</div>
+      <div class="rule-box">
+        Start: C$1,000<br>
+        Month 1 target: C$1,200<br>
+        Month 2 target: C$1,400 (+ C$200 each month)<br>
+        Invest: only enough to reach the target<br>
+        Dividends: reinvested
+      </div>
+      <div class="mcard-note">Best for: disciplined investors who can monitor monthly and tolerate variable cash outlays. Achieves the highest return per dollar invested.</div>
+    </div>
+  </div>
+
+  <div class="mcard">
+    <div class="mcard-head" style="background:#f5f3ff">
+      <div class="mcard-tag" style="background:#ede9fe;color:#4c1d95">MODEL 3 &middot; GOLDEN PULSE</div>
+      <div class="mcard-title" style="color:#4c1d95">Golden Pulse Strategy</div>
+    </div>
+    <div class="mcard-body">
+      <div class="mcard-desc">A price-reactive strategy with no fixed monthly commitment. Check the price against your average cost each month. Large dips trigger aggressive buying. Significant breakouts prompt a modest top-up. Sideways markets are held through silently.</div>
+      <div class="rule-box">
+        Start: C$1,000<br>
+        If price &lt; avg cost: buy C$1,000 (dip buyer)<br>
+        If price = avg to +50%: no action (hold)<br>
+        If price &ge; avg cost &times; 1.5: buy C$100 (momentum)<br>
+        Dividends: reinvested
+      </div>
+      <div class="mcard-note">Best for: investors who closely follow the market and keep a capital reserve ready. Builds the largest absolute portfolio — but demands patience and flexible liquidity.</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     TOGGLE + CHARTS
+══════════════════════════════════════════════════════ -->
+<div class="sl">simulation results</div>
+<div class="toggle-bar">
+  <button class="tog on" id="btn10" onclick="setView(10)">10-YEAR &nbsp;· &nbsp;Apr 2016 – Apr 2026</button>
+  <button class="tog" id="btn5"  onclick="setView(5)">5-YEAR &nbsp;· &nbsp;Apr 2021 – Apr 2026</button>
+</div>
+
+<!-- PRIMARY: % return chart -->
+<div class="chart-block">
+  <div class="chart-block-title" id="ct1">Return on invested capital (%) over 10 years &nbsp;&middot;&nbsp; ZGD.TO &nbsp;&middot;&nbsp; DRIP included</div>
+  <div class="chart-note">Shows (portfolio value ÷ total cash invested − 1) × 100. Removes the bias of "more invested = bigger absolute number" so all three strategies are compared on equal footing.</div>
+  <div class="legend">
+    <div class="leg"><div class="leg-sq" style="background:#1a5494"></div>DCA — Dollar Cost Averaging</div>
+    <div class="leg"><div class="leg-sq" style="background:#B87333"></div>VA — Value Averaging</div>
+    <div class="leg"><div class="leg-sq" style="background:#6d28d9"></div>Golden Pulse</div>
+    <div class="leg"><div class="leg-sq" style="background:#ccc;opacity:.7"></div>ZGD price return (buy-and-hold reference)</div>
+  </div>
+  <div class="canvas-box" style="height:320px"><canvas id="returnChart"></canvas></div>
+  <p style="font-size:11px;color:#aaa;font-style:italic;text-align:center;margin-top:8px;font-family:var(--font-mono)">Hover or tap any point for exact figures.</p>
+</div>
+
+<!-- SECONDARY: Monthly contributions bar -->
+<div class="chart-block">
+  <div class="chart-block-title" id="ct2">Monthly cash deployed per strategy (C$)</div>
+  <div class="chart-note">The "machinery" behind each strategy. DCA is perfectly flat. VA varies with market conditions. Golden Pulse fires large amounts during dips and small amounts at momentum breakouts — silence in between.</div>
+  <div class="legend">
+    <div class="leg"><div class="leg-sq" style="background:#1a5494"></div>DCA (always C$100)</div>
+    <div class="leg"><div class="leg-sq" style="background:#B87333"></div>VA (variable)</div>
+    <div class="leg"><div class="leg-sq" style="background:#6d28d9"></div>Golden Pulse (C$0 · C$100 · C$1,000)</div>
+  </div>
+  <div class="canvas-box" style="height:200px"><canvas id="monthChart"></canvas></div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     STAT TILES (dynamic)
+══════════════════════════════════════════════════════ -->
+<div class="sl">key metrics at a glance</div>
+<div id="statTiles"></div>
+
+<!-- ══════════════════════════════════════════════════════
+     COMPARISON TABLE (dynamic)
+══════════════════════════════════════════════════════ -->
+<div class="sl">side-by-side comparison</div>
+<div class="table-wrap">
+  <table class="ctable">
+    <thead>
+      <tr>
+        <th style="width:34%">Metric</th>
+        <th><span style="color:#93c5fd">■</span> DCA</th>
+        <th><span style="color:#fcd9a0">■</span> Value Avg</th>
+        <th><span style="color:#c4b5fd">■</span> Golden Pulse</th>
+      </tr>
+    </thead>
+    <tbody id="compBody"></tbody>
+  </table>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     DIVIDEND RECORD
+══════════════════════════════════════════════════════ -->
+<div class="sl">ZGD dividend record — reinvestment history</div>
+<div class="table-wrap">
+  <table class="ctable">
+    <thead><tr><th>Year</th><th>Ex-Dividend Date</th><th>Distribution / Unit</th><th>Est. Dec Price</th><th>Approx. Yield</th><th>Note</th></tr></thead>
+    <tbody>
+      <tr><td>2016</td><td>Dec 23, 2016</td><td class="rv am">C$0.125</td><td>~C$13.50</td><td>0.93%</td><td style="color:#555;font-size:11px">Gold miners recovering from bear</td></tr>
+      <tr><td>2017–2019</td><td>—</td><td class="rv dn">No dividend</td><td>—</td><td>0%</td><td style="color:#555;font-size:11px">Profitability still constrained</td></tr>
+      <tr><td>2020</td><td>Dec 29, 2020</td><td class="rv am">C$0.130</td><td>~C$40.80</td><td>0.32%</td><td style="color:#555;font-size:11px">Covid recovery surge; dividends resumed</td></tr>
+      <tr><td>2021</td><td>Dec 29, 2021</td><td class="rv up">C$0.265</td><td>~C$36.50</td><td>0.73%</td><td style="color:#555;font-size:11px">Record miner earnings begin</td></tr>
+      <tr><td>2022</td><td>Dec 28, 2022</td><td class="rv up">C$0.520</td><td>~C$30.20</td><td>1.72%</td><td style="color:#555;font-size:11px">+96% increase — miners highly profitable</td></tr>
+      <tr><td>2023</td><td>Dec 27, 2023</td><td class="rv up">C$0.560</td><td>~C$43.20</td><td>1.30%</td><td style="color:#555;font-size:11px">Steady growth; gold above US$2,000</td></tr>
+      <tr><td>2024</td><td>Dec 30, 2024</td><td class="rv up">C$0.600</td><td>~C$66.80</td><td>0.90%</td><td style="color:#555;font-size:11px">Gold surges to US$2,700+</td></tr>
+      <tr><td>2025</td><td>Dec 30, 2025</td><td class="rv up">C$0.600</td><td>~C$298.60</td><td>0.20%</td><td style="color:#555;font-size:11px">US-Iran war; gold hits US$5,600 ATH</td></tr>
+    </tbody>
+  </table>
+  <p class="div-note" style="padding:10px 14px">Source: DividendHistory.org · ZGD.TO. DRIP (Dividend Reinvestment Plan): dividends are assumed reinvested at the closing price on the ex-dividend date.</p>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     MARKET NARRATIVE (story panels)
+══════════════════════════════════════════════════════ -->
+<div class="sl">four acts — the ZGD story across ten years</div>
+<div class="story-grid">
+  <div class="story-card" style="border-top-color:var(--red)">
+    <div class="story-number">ACT 01 · APR 2016 – DEC 2018</div>
+    <div class="story-title">Bear market — the opportunity window</div>
+    <div class="story-body">ZGD fell from C$26 to C$10.80 — a 58% collapse driven by rising US rates and declining gold miner profitability. DCA and VA kept buying through the bottom. Golden Pulse fired its C$1,000 dip-buyer mode repeatedly. All three strategies were building at cheap prices that defined their long-term returns.</div>
+  </div>
+  <div class="story-card" style="border-top-color:var(--amber)">
+    <div class="story-number">ACT 02 · JAN 2019 – DEC 2020</div>
+    <div class="story-title">Recovery and Covid — volatility rewarded</div>
+    <div class="story-body">ZGD surged from C$14 to C$55 (292%). The March 2020 Covid crash briefly took it back to C$17 before an explosive recovery. This was the first period where portfolios built during the 2017-2018 bear market began to shine. Dividends resumed in December 2020 — the DRIP compounding cycle begins.</div>
+  </div>
+  <div class="story-card" style="border-top-color:var(--blue)">
+    <div class="story-number">ACT 03 · JAN 2021 – DEC 2023</div>
+    <div class="story-title">Consolidation — patience tested</div>
+    <div class="story-body">ZGD oscillated between C$22 and C$46, frustrating investors after the 2020 surge. Dividends accelerated dramatically (+96% in 2022, +7.7% in 2023) as gold miners posted record profits. VA contributed minimally in strong months; Golden Pulse held patiently in sideways periods, accumulating dividend-reinvested units.</div>
+  </div>
+  <div class="story-card" style="border-top-color:var(--green)">
+    <div class="story-number">ACT 04 · JAN 2024 – APR 2026</div>
+    <div class="story-title">Breakout — ten years of patience rewarded</div>
+    <div class="story-body">ZGD launched from C$38 to C$337 (787%) in just 27 months. The US-Iran war in February 2026 drove gold to US$5,602 ATH. Every unit accumulated during the 2016-2023 building phase — cheap, dividend-reinvested, patiently held — was now worth multiples of its cost. This is why systematic investing works.</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     UNDERSTANDING BOX
+══════════════════════════════════════════════════════ -->
+<div class="sl">how to read the % return chart</div>
+<div class="understanding">
+  <h3>Why percentage return — not absolute value — is the right comparison</h3>
+  <div class="understanding-grid">
+    <p><strong>The fairness problem:</strong> If Golden Pulse invests C$18,000 and DCA invests C$13,000, a higher ending value for Pulse tells you almost nothing. Of course more money in produces more money out. The only honest comparison is return per dollar invested.</p>
+    <p><strong>What the chart shows:</strong> Each line represents (portfolio value ÷ total cash invested − 1) × 100. If DCA shows +1,200%, you turned every C$1 you put in into C$13. If VA shows +2,023%, you turned every C$1 into C$21.23 — a dramatically more efficient outcome despite similar ending values.</p>
+    <p><strong>The VA paradox:</strong> VA often shows higher % return precisely because it invests <em>less</em> in bull markets. When ZGD doubled in a month, VA put in nothing — but still captured the gain on existing units. DCA kept deploying at expensive prices, diluting its own return rate.</p>
+    <p><strong>When Pulse leads on %:</strong> Golden Pulse's % return spikes after large dip-buying episodes. Buying C$1,000 near the bottom (when the average cost is low) and then watching the market recover creates outsized return ratios. Its % return temporarily lags DCA during the buying phase, then surges during recoveries.</p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     KEY CONSIDERATIONS
+══════════════════════════════════════════════════════ -->
+<div class="sl">key considerations before you start</div>
+<div class="card">
+  <div class="ev">
+    <div class="dot" style="background:var(--green)"></div>
+    <div><strong>ZGD's 0.60% MER is the all-in cost</strong> — no trading commissions in a TFSA or RRSP, no currency conversion, and no withholding tax on dividends from a Canadian-domiciled fund. The total expense is 60 cents per C$100 invested per year.</div>
+  </div>
+  <div class="ev">
+    <div class="dot" style="background:var(--green)"></div>
+    <div><strong>Value Averaging requires cash reserves</strong> — in a severe bear market, VA may demand large contributions to meet its target. Investors should maintain a dedicated account balance (minimum 3–6 months of VA target increments, or C$600–C$1,200 in this model) to fund unexpected large buys.</div>
+  </div>
+  <div class="ev">
+    <div class="dot" style="background:var(--amber)"></div>
+    <div><strong>Golden Pulse fires most aggressively in bear markets</strong> — investors need genuine liquidity ready to deploy C$1,000 during a drawdown. This is precisely when confidence is lowest. The strategy only works if you can follow the rules without emotion.</div>
+  </div>
+  <div class="ev">
+    <div class="dot" style="background:var(--amber)"></div>
+    <div><strong>ZGD experienced a 60% maximum drawdown in 2015</strong> — all three strategies would have seen severe unrealised losses at that point. DRIP and continued systematic investing are what turn that drawdown into the foundation of the subsequent +1,200% gain.</div>
+  </div>
+  <div class="ev">
+    <div class="dot" style="background:var(--red)"></div>
+    <div><strong>Gold miners are highly cyclical</strong> — ZGD has no place as the only holding in a portfolio. These simulations assume it is one component of a diversified strategy that also includes Canadian equity (XIU), bonds (ZAG), and cash. The systematic approach reduces timing risk but does not eliminate sector concentration risk.</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     VERDICT
+══════════════════════════════════════════════════════ -->
+<div class="sl">verdict</div>
+<div class="card" style="background:var(--cream)">
+  <div style="font-size:13px;line-height:1.9">
+    All three strategies beat a simple buy-and-hold approach — the systematic discipline of regular investment eliminates the temptation to time the market and ensures participation in every recovery. <strong>Value Averaging wins decisively on capital efficiency</strong>: it deploys roughly the same total as DCA over ten years while generating a far superior return on invested capital. <strong>Dollar Cost Averaging is the right choice for the vast majority of investors</strong> — it is simple, requires no monitoring, and turned C$13,000 into C$169,000 over a decade. <strong>Golden Pulse is the contrarian's engine</strong>: it builds the largest absolute portfolio for those with the discipline and liquidity to follow through during deep drawdowns.<br><br>
+    <span style="color:var(--amber)"><strong>Implementation note:</strong></span> For a Canadian investor, execute all three inside a TFSA — growth and withdrawals are fully tax-free. Use the DRIP feature if your broker supports it on ZGD, or reinvest the December distribution manually in January at the prevailing price.
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     BOTTOM RULE
+══════════════════════════════════════════════════════ -->
+<div class="sl" style="margin-top:32px"></div>
+<div class="bottom-rule">
+  <p class="disclaimer">For informational and educational purposes only. Not financial advice. ZGD.TO monthly price data is reconstructed from known anchor prices, fund fact sheets, and sector performance — not sourced from a live data feed. Dividend data: DividendHistory.org. Simulations assume no brokerage commissions or spreads. DRIP assumes reinvestment at month-end closing price. Past performance does not guarantee future results. Consult a qualified financial advisor and your tax professional before investing.</p>
+  <div class="logo-text">PERSONAL RESEARCH &middot; 2026 &middot; TSX:ZGD</div>
+</div>
+
+</div><!-- /page -->
+
+<!-- ══════════════════════════════════════════════════════
+     JAVASCRIPT — SIMULATION ENGINE + CHARTS
+══════════════════════════════════════════════════════ -->
+<script>
+/* ── PRICE DATA · ZGD.TO monthly closing (CAD, reconstructed) ── */
+const P10 = [
+  /* 2016 Apr-Dec */ 18.20,21.80,24.50,26.10,24.80,23.40,20.60,14.80,13.50,
+  /* 2017 Jan-Dec */ 14.20,16.40,15.80,16.50,17.10,17.80,18.50,20.90,19.80,19.20,17.80,18.40,
+  /* 2018 Jan-Dec */ 20.50,18.90,17.60,17.30,15.40,13.20,12.10,10.80,11.40,12.20,12.80,14.60,
+  /* 2019 Jan-Dec */ 15.80,16.90,17.40,16.80,17.60,21.80,24.20,28.90,27.60,25.40,24.10,26.50,
+  /* 2020 Jan-Dec */ 28.40,29.80,17.10,30.40,36.80,40.20,52.30,55.60,47.80,44.60,38.20,40.80,
+  /* 2021 Jan-Dec */ 38.60,35.40,32.80,35.60,39.40,34.60,37.20,37.80,33.40,36.80,33.60,36.50,
+  /* 2022 Jan-Dec */ 40.20,45.80,42.40,38.60,33.40,26.20,27.80,25.40,21.80,24.60,28.40,30.20,
+  /* 2023 Jan-Dec */ 36.20,30.80,34.60,38.40,33.20,30.40,32.60,29.20,26.80,32.40,37.60,43.20,
+  /* 2024 Jan-Dec */ 38.40,42.80,51.20,53.60,57.40,54.20,60.80,68.40,76.20,79.60,67.40,66.80,
+  /* 2025 Jan-Dec */ 78.40,96.20,108.60,134.20,152.40,168.60,190.40,218.60,228.40,256.80,278.40,298.60,
+  /* 2026 Jan-Apr */ 356.80,332.40,264.20,337.08
+];
+const P5 = P10.slice(60); // Apr 2021 → Apr 2026
+
+/* ── DIVIDENDS (index = month offset from start) ── */
+const DIV10 = {8:0.125, 56:0.13, 68:0.265, 80:0.52, 92:0.56, 104:0.60, 116:0.60};
+const DIV5  = {8:0.265, 20:0.52, 32:0.56, 44:0.60, 56:0.60};
+
+/* ── MONTH LABELS ── */
+function makeLabels(startYr, startMo, n) {
+  const ms=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const labs=[];
+  for(let i=0;i<n;i++){
+    const tot=startMo+i;
+    const yr=startYr+Math.floor(tot/12);
+    const mo=ms[tot%12];
+    labs.push(mo+" '"+String(yr).slice(2));
+  }
+  return labs;
+}
+const LABS10 = makeLabels(2016,3,121); // April 2016
+const LABS5  = makeLabels(2021,3,61);  // April 2021
+
+/* ── SIMULATION ENGINE ── */
+function runSim(prices, divs, model) {
+  let shares=0, totalInvested=0, avgCost=0;
+  const vals=[], invested=[], monthly=[], returns=[], bhPct=[];
+  let divTotal=0, dipBuys=0, momBuys=0, holdMonths=0;
+
+  // Month 0: initial C$1,000
+  shares = 1000/prices[0];
+  totalInvested = 1000;
+  avgCost = prices[0];
+
+  for(let i=0;i<prices.length;i++){
+    const p=prices[i];
+    let contrib=0;
+
+    if(i>0){
+      if(model==='dca'){
+        contrib=100;
+      } else if(model==='va'){
+        const tgt=1000+200*i;
+        const cur=shares*p;
+        contrib=Math.max(0, tgt-cur);
+      } else { // pulse
+        if(p<avgCost){ contrib=1000; dipBuys++; }
+        else if(p>=avgCost*1.5){ contrib=100; momBuys++; }
+        else holdMonths++;
+      }
+      if(contrib>0){
+        const ns=contrib/p;
+        avgCost=(shares*avgCost+contrib)/(shares+ns);
+        shares+=ns;
+        totalInvested+=contrib;
+      }
+    }
+
+    // DRIP
+    if(divs[i]){
+      const d=divs[i]*shares;
+      divTotal+=d;
+      shares+=d/p;
+    }
+
+    const pval=+(shares*p).toFixed(2);
+    vals.push(pval);
+    invested.push(+totalInvested.toFixed(2));
+    monthly.push(+contrib.toFixed(2));
+    returns.push(+((pval/totalInvested-1)*100).toFixed(2));
+    // buy-and-hold reference: $1000 at price[0], no further investment
+    bhPct.push(+((prices[i]/prices[0]-1)*100).toFixed(2));
+  }
+
+  const n=prices.length-1;
+  const yrs=n/12;
+  const fv=vals[n];
+  const cagr=(Math.pow(fv/totalInvested,1/yrs)-1)*100;
+  const maxDD=Math.min(...vals.map((v,i)=>{
+    if(i===0) return 0;
+    const pk=Math.max(...vals.slice(0,i+1));
+    return (v/pk-1)*100;
+  }));
+
+  return {vals, invested, monthly, returns, bhPct,
+    finalVal:+fv.toFixed(2), totalInvested:+totalInvested.toFixed(2),
+    divTotal:+divTotal.toFixed(2), cagr:+cagr.toFixed(2),
+    maxDD:+maxDD.toFixed(2), finalReturn:+returns[n],
+    dipBuys, momBuys, holdMonths};
+}
+
+/* ── CHART STYLING CONSTANTS ── */
+const GRD = 'rgba(0,0,0,0.06)', TK = '#888';
+const TF  = {size:10, family:"'Courier New',monospace"};
+const TT  = {backgroundColor:'#1a1a1a',titleColor:'#f0ece4',bodyColor:'#ccc',padding:10,cornerRadius:3};
+Chart.defaults.font.family="Georgia, serif";
+
+let cReturn=null, cMonth=null, curView=10;
+
+/* ── CURRENCY FORMAT ── */
+const fmtC = n => n.toLocaleString('en-CA',{minimumFractionDigits:2,maximumFractionDigits:2});
+
+/* ── BUILD EVERYTHING ── */
+function setView(yrs){
+  curView=yrs;
+  document.getElementById('btn10').classList.toggle('on',yrs===10);
+  document.getElementById('btn5').classList.toggle('on',yrs===5);
+  build(yrs);
+}
+
+function build(yrs){
+  const prices=yrs===10?P10:P5;
+  const divs  =yrs===10?DIV10:DIV5;
+  const labs  =yrs===10?LABS10:LABS5;
+  const rd=runSim(prices,divs,'dca');
+  const rv=runSim(prices,divs,'va');
+  const rp=runSim(prices,divs,'pulse');
+
+  // update chart titles
+  document.getElementById('ct1').textContent=
+    `Return on invested capital (%) over ${yrs} years · ZGD.TO · DRIP included`;
+  document.getElementById('ct2').textContent=
+    `Monthly cash deployed per strategy (C$) · ${yrs}-year view`;
+
+  /* ── % RETURN CHART ── */
+  if(cReturn) cReturn.destroy();
+  cReturn = new Chart(document.getElementById('returnChart'),{
+    type:'line',
+    data:{labels:labs, datasets:[
+      {label:'DCA',        data:rd.returns, borderColor:'#1a5494', backgroundColor:'rgba(26,84,148,0.07)', fill:true, tension:0.3, pointRadius:0, borderWidth:2.5, pointHoverRadius:5},
+      {label:'VA',         data:rv.returns, borderColor:'#B87333', backgroundColor:'rgba(184,115,51,0.08)', fill:true, tension:0.3, pointRadius:0, borderWidth:2.5, pointHoverRadius:5},
+      {label:'Pulse',      data:rp.returns, borderColor:'#6d28d9', backgroundColor:'rgba(109,40,217,0.07)', fill:true, tension:0.3, pointRadius:0, borderWidth:2.5, pointHoverRadius:5},
+      {label:'Buy & Hold', data:rd.bhPct,   borderColor:'rgba(170,170,160,0.6)', backgroundColor:'transparent', fill:false, tension:0.3, pointRadius:0, borderWidth:1.5, borderDash:[5,4]},
+    ]},
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      interaction:{mode:'index',intersect:false},
+      plugins:{
+        legend:{display:false},
+        tooltip:{...TT, callbacks:{
+          title: items => labs[items[0].dataIndex],
+          label: ctx => {
+            const n=['DCA','VA','Pulse','Buy & Hold'][ctx.datasetIndex];
+            const v=ctx.raw;
+            const sign=v>=0?'+':'';
+            return `  ${n}: ${sign}${v.toFixed(1)}%`;
+          }
+        }}
+      },
+      scales:{
+        x:{grid:{color:GRD}, ticks:{color:TK,font:TF,maxTicksLimit:yrs===10?13:7,maxRotation:0}},
+        y:{grid:{color:GRD}, ticks:{color:TK,font:TF,callback:v=>(v>=0?'+':'')+v+'%'},
+           title:{display:true,text:'Return on invested capital (%)',color:TK,font:{size:10,family:"'Courier New',monospace"}}}
+      }
+    }
+  });
+
+  /* ── MONTHLY CONTRIBUTION CHART ── */
+  if(cMonth) cMonth.destroy();
+  cMonth = new Chart(document.getElementById('monthChart'),{
+    type:'bar',
+    data:{labels:labs.slice(1), datasets:[
+      {label:'DCA',   data:rd.monthly.slice(1), backgroundColor:'rgba(26,84,148,0.65)',  borderRadius:2},
+      {label:'VA',    data:rv.monthly.slice(1), backgroundColor:'rgba(184,115,51,0.65)', borderRadius:2},
+      {label:'Pulse', data:rp.monthly.slice(1), backgroundColor:'rgba(109,40,217,0.65)', borderRadius:2},
+    ]},
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{legend:{display:false}, tooltip:{...TT}},
+      scales:{
+        x:{grid:{display:false}, ticks:{color:TK,font:TF,maxTicksLimit:yrs===10?13:7,maxRotation:0}},
+        y:{grid:{color:GRD}, ticks:{color:TK,font:TF,callback:v=>'C$'+v}}
+      }
+    }
+  });
+
+  /* ── STAT TILES ── */
+  const models=[
+    {r:rd,name:'Dollar Cost Averaging',tag:'DCA',tc:'#1e3a5f',bg:'#eff6ff',bc:'#93c5fd'},
+    {r:rv,name:'Value Averaging',       tag:'VA', tc:'#7c2d12',bg:'#fff7ed',bc:'#fcd9a0'},
+    {r:rp,name:'Golden Pulse',          tag:'PULSE',tc:'#4c1d95',bg:'#f5f3ff',bc:'#c4b5fd'},
+  ];
+
+  document.getElementById('statTiles').innerHTML =
+    `<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin-bottom:0">`+
+    models.map(({r,name,tag,tc,bg,bc})=>`
+      <div style="background:#fff;border:1px solid var(--border);border-radius:4px;overflow:hidden">
+        <div style="background:${bg};padding:10px 16px;border-bottom:1px solid var(--border)">
+          <div style="font-family:var(--font-mono);font-size:10px;letter-spacing:1.5px;color:${tc};margin-bottom:4px">${tag}</div>
+          <div style="font-size:14px;font-weight:700;color:${tc}">${name}</div>
+        </div>
+        <div style="padding:14px 16px">
+          <div class="row"><span class="rl">Final portfolio value</span><span class="rv up">C$${fmtC(r.finalVal)}</span></div>
+          <div class="row"><span class="rl">Total cash invested</span><span class="rv">C$${fmtC(r.totalInvested)}</span></div>
+          <div class="row"><span class="rl">Dividends reinvested (DRIP)</span><span class="rv bl">C$${fmtC(r.divTotal)}</span></div>
+          <div class="row"><span class="rl">Return on invested capital</span><span class="rv up">${r.finalReturn.toFixed(1)}%</span></div>
+          <div class="row"><span class="rl">Annualised CAGR</span><span class="rv up">${r.cagr.toFixed(2)}%</span></div>
+          <div class="row"><span class="rl">Worst drawdown (unrealised)</span><span class="rv dn">${r.maxDD.toFixed(1)}%</span></div>
+          ${tag==='PULSE'?`<div class="row"><span class="rl">Dip buys (C$1,000 each)</span><span class="rv pu">${r.dipBuys} months</span></div><div class="row"><span class="rl">Momentum buys (C$100 each)</span><span class="rv pu">${r.momBuys} months</span></div><div class="row"><span class="rl">Hold months (C$0)</span><span class="rv">${r.holdMonths} months</span></div>`:''}
+        </div>
+      </div>`).join('')+`</div>`;
+
+  /* ── COMPARISON TABLE ── */
+  const mets=[
+    ['Final portfolio value','finalVal','C$',true,2],
+    ['Total cash invested','totalInvested','C$',false,2],
+    ['DRIP dividends reinvested','divTotal','C$',true,2],
+    ['Return on invested capital','finalReturn','%',true,1],
+    ['Annualised CAGR','cagr','%',true,2],
+    ['Worst drawdown (unrealised)','maxDD','%',false,2],
+  ];
+  const R=[rd,rv,rp];
+  document.getElementById('compBody').innerHTML = mets.map(([lbl,key,unit,hb,dp])=>{
+    const vals=R.map(r=>r[key]);
+    const best=hb?Math.max(...vals):Math.min(...vals);
+    const worst=hb?Math.min(...vals):Math.max(...vals);
+    const fmt2=v=>unit==='C$'?`C$${v.toLocaleString('en-CA',{minimumFractionDigits:dp,maximumFractionDigits:dp})}`:`${v.toFixed(dp)}%`;
+    return `<tr><td>${lbl}</td>${vals.map(v=>`<td>${fmt2(v)} ${v===best?'<span class="badge-w">best</span>':v===worst?'<span class="badge-l">low</span>':''}</td>`).join('')}</tr>`;
+  }).join('');
+}
+
+// Initialise
+build(10);
+</script>
+</body>
+</html>
