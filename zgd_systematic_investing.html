@@ -626,8 +626,8 @@ function build(yrs){
 
   /* ── STAT TILES ── */
   const models=[
-<!--    {r:rd,name:'Dollar Cost Averaging',tag:'DCA',tc:'#1e3a5f',bg:'#eff6ff',bc:'#93c5fd'},
-    {r:rv,name:'Value Averaging',       tag:'VA', tc:'#7c2d12',bg:'#fff7ed',bc:'#fcd9a0'},           -->
+    {r:rd,name:'Dollar Cost Averaging',tag:'DCA',tc:'#1e3a5f',bg:'#eff6ff',bc:'#93c5fd'},
+    {r:rv,name:'Value Averaging',       tag:'VA', tc:'#7c2d12',bg:'#fff7ed',bc:'#fcd9a0'},
     {r:rp,name:'Golden Pulse',          tag:'PULSE',tc:'#4c1d95',bg:'#f5f3ff',bc:'#c4b5fd'},
   ];
 
@@ -640,12 +640,12 @@ function build(yrs){
           <div style="font-size:14px;font-weight:700;color:${tc}">${name}</div>
         </div>
         <div style="padding:14px 16px">
-<!--          <div class="row"><span class="rl">Final portfolio value</span><span class="rv up">C$${fmtC(r.finalVal)}</span></div>
+          <div class="row"><span class="rl">Final portfolio value</span><span class="rv up">C$${fmtC(r.finalVal)}</span></div>
           <div class="row"><span class="rl">Total cash invested</span><span class="rv">C$${fmtC(r.totalInvested)}</span></div>
           <div class="row"><span class="rl">Dividends reinvested (DRIP)</span><span class="rv bl">C$${fmtC(r.divTotal)}</span></div>
           <div class="row"><span class="rl">Return on invested capital</span><span class="rv up">${r.finalReturn.toFixed(1)}%</span></div>
           <div class="row"><span class="rl">Annualised CAGR</span><span class="rv up">${r.cagr.toFixed(2)}%</span></div>
-          <div class="row"><span class="rl">Worst drawdown (unrealised)</span><span class="rv dn">${r.maxDD.toFixed(1)}%</span></div>                               -->
+          <div class="row"><span class="rl">Worst drawdown (unrealised)</span><span class="rv dn">${r.maxDD.toFixed(1)}%</span></div>                              
           ${tag==='PULSE'?`<div class="row"><span class="rl">Dip buys (C$1,000 each)</span><span class="rv pu">${r.dipBuys} months</span></div><div class="row"><span class="rl">Momentum buys (C$100 each)</span><span class="rv pu">${r.momBuys} months</span></div><div class="row"><span class="rl">Hold months (C$0)</span><span class="rv">${r.holdMonths} months</span></div>`:''}
         </div>
       </div>`).join('')+`</div>`;
