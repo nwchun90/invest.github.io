@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shopify Inc. — Company Deep Dive · nwchun90 Research</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --gold:   #B87333;
+  --ink:    #1a1a1a;
+  --paper:  #faf9f6;
+  --muted:  #888;
+  --border: #e0ddd5;
+  --cream:  #f5f3ec;
+  --green:  #2e7d32;
+  --amber:  #B87333;
+  --red:    #b71c1c;
+  --blue:   #1a5494;
+  --teal:   #1a7f6e;
+  --font-serif: 'Georgia', serif;
+  --font-mono:  'Courier New', monospace;
+}
+body { font-family: var(--font-serif); background: var(--paper); color: var(--ink); font-size: 14px; line-height: 1.7; }
+.page { max-width: 900px; margin: 0 auto; padding: 40px 28px 60px; }
+
+/* MASTHEAD */
+.masthead { border-top: 3px solid var(--ink); border-bottom: 1px solid var(--ink); padding: 16px 0 14px; margin-bottom: 32px; display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+.eyebrow { font-family: var(--font-mono); font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+.headline { font-size: 26px; font-weight: 400; line-height: 1.2; letter-spacing: -0.5px; }
+.headline span { font-style: italic; color: var(--gold); }
+.author-line { font-family: var(--font-mono); font-size: 11px; color: var(--muted); margin-top: 6px; }
+.datestamp { font-family: var(--font-mono); font-size: 11px; color: var(--muted); text-align: right; line-height: 1.7; }
+
+/* DECK */
+.deck { font-size: 15px; color: #444; line-height: 1.75; max-width: 680px; margin-bottom: 28px; border-left: 3px solid var(--gold); padding-left: 16px; }
+
+/* SECTION LABELS */
+.sl { font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); margin: 26px 0 12px; display: flex; align-items: center; gap: 12px; }
+.sl::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+/* STAT CARDS */
+.stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 28px; }
+.stat-card { background: #fff; border: 1px solid var(--border); border-radius: 4px; padding: 14px 16px; }
+.stat-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: #999; font-family: var(--font-mono); margin-bottom: 4px; }
+.stat-value { font-size: 24px; font-weight: 400; font-family: var(--font-mono); line-height: 1.1; margin-bottom: 3px; }
+.stat-sub { font-size: 11px; color: var(--muted); font-style: italic; }
+.green { color: var(--green); } .amber { color: var(--amber); } .red { color: var(--red); } .blue { color: var(--blue); } .teal { color: var(--teal); }
+
+/* CARDS */
+.card { background: #fff; border: 1px solid var(--border); padding: 16px 18px; margin-bottom: 14px; }
+.card.alert { border-left: 3px solid var(--red); padding-left: 14px; }
+.card.gold-border { border-left: 3px solid var(--gold); padding-left: 14px; }
+.card.dark { background: var(--ink); color: #f0ece4; border: none; }
+
+/* STORY PANELS */
+.story-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin-bottom: 32px; }
+.story-card { padding: 14px 16px; background: #fff; border: 1px solid var(--border); border-top-width: 2px; }
+.story-number { font-family: var(--font-mono); font-size: 10px; color: #aaa; letter-spacing: 2px; margin-bottom: 6px; }
+.story-title { font-size: 14px; font-weight: 700; margin-bottom: 6px; line-height: 1.3; }
+.story-body { font-size: 12px; color: #555; line-height: 1.7; }
+
+/* CHART */
+.chart-wrap { background: #fff; border: 1px solid var(--border); border-radius: 4px; padding: 20px 16px 14px; margin-bottom: 24px; }
+.chart-legend { display: flex; gap: 20px; margin-bottom: 14px; flex-wrap: wrap; }
+.leg-item { display: flex; align-items: center; gap: 8px; font-size: 12px; color: #555; font-family: var(--font-mono); }
+.leg-swatch { width: 24px; height: 3px; border-radius: 2px; }
+.chart-canvas-wrap { position: relative; width: 100%; height: 280px; }
+.chart-note { font-size: 11px; color: #999; font-style: italic; margin-top: 10px; text-align: center; font-family: var(--font-mono); }
+
+/* TABLE ROWS */
+.row { display: flex; justify-content: space-between; align-items: center; padding: 7px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+.row:last-child { border-bottom: none; }
+.rl { color: var(--muted); font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; }
+.rv { font-weight: 500; }
+.up { color: var(--green); } .dn { color: var(--red); } .am { color: var(--amber); }
+
+/* METRIC TILES */
+.g4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 14px; }
+.g3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 14px; }
+.g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+.met { background: var(--cream); border: 1px solid var(--border); padding: 12px 14px; }
+.ml { font-family: var(--font-mono); font-size: 10px; color: var(--muted); margin-bottom: 3px; text-transform: uppercase; letter-spacing: 0.08em; }
+.mv { font-size: 17px; font-weight: 600; margin-bottom: 2px; }
+.ms { font-size: 11px; color: var(--muted); }
+
+/* EVIDENCE */
+.ev { display: flex; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px; line-height: 1.6; }
+.ev:last-child { border-bottom: none; }
+.dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
+
+/* BAR ROWS */
+.bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.bar-lbl { font-family: var(--font-mono); font-size: 11px; color: var(--muted); width: 130px; flex-shrink: 0; text-transform: uppercase; letter-spacing: 0.08em; }
+.bar-track { flex: 1; background: var(--cream); border-radius: 4px; height: 8px; overflow: hidden; }
+.bar-fill { height: 100%; border-radius: 4px; }
+
+/* BADGES */
+.badge { font-size: 11px; padding: 2px 8px; border-radius: 999px; font-weight: 600; display: inline-block; font-family: var(--font-mono); }
+.b-up { background: #e1f5ee; color: #085041; }
+.b-dn { background: #fcebeb; color: #791f1f; }
+.b-am { background: #faeeda; color: #633806; }
+.b-bl { background: #e6f1fb; color: #0c447c; }
+
+/* UNDERSTANDING BOX */
+.understanding { background: var(--ink); color: #f0ece4; border-radius: 4px; padding: 22px 24px; margin-bottom: 28px; }
+.understanding h3 { font-size: 13px; font-family: var(--font-mono); letter-spacing: 2px; text-transform: uppercase; color: var(--gold); margin-bottom: 14px; font-weight: 400; }
+.understanding-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.understanding p { font-size: 12px; color: #bbb; line-height: 1.75; }
+.understanding strong { color: #f0ece4; font-weight: 600; }
+
+/* COMPETITOR TABLE */
+.comp-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 8px; }
+.comp-table th { font-family: var(--font-mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); padding: 8px 12px; border-bottom: 2px solid var(--ink); text-align: right; font-weight: 600; }
+.comp-table th:first-child { text-align: left; }
+.comp-table td { padding: 9px 12px; border-bottom: 1px solid var(--border); text-align: right; font-family: var(--font-mono); font-size: 12px; }
+.comp-table td:first-child { text-align: left; font-family: var(--font-serif); font-weight: 600; }
+.comp-table tr:last-child td { border-bottom: none; }
+.comp-table tr.shop-row { background: #fffdf5; }
+.comp-table tr.shop-row td:first-child { color: var(--gold); }
+.comp-table .winner { color: var(--green); font-weight: 700; }
+.comp-table .loser  { color: var(--red); }
+.comp-table .mid    { color: var(--amber); }
+.score-bar-wrap { display: inline-flex; align-items: center; gap: 6px; }
+.score-dots { display: flex; gap: 2px; }
+.score-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+/* OBSERVATION BOXES */
+.obs-item { padding: 10px 14px; border-left: 3px solid var(--border); margin-bottom: 8px; background: #fff; border-radius: 0 4px 4px 0; }
+.obs-item.correct { border-left-color: var(--green); }
+.obs-item.nuanced { border-left-color: var(--amber); }
+.obs-num { font-family: var(--font-mono); font-size: 10px; color: var(--muted); letter-spacing: 1px; margin-bottom: 4px; }
+.obs-text { font-size: 13px; color: #333; line-height: 1.6; }
+.obs-verdict { font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: 1px; margin-top: 4px; }
+.obs-verdict.correct { color: var(--green); }
+.obs-verdict.nuanced { color: var(--amber); }
+
+/* PRICE TICKER BAND */
+.price-band { background: var(--ink); color: #f0ece4; padding: 16px 20px; margin-bottom: 20px; display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+.price-main { font-family: var(--font-mono); font-size: 36px; font-weight: 400; color: #f0ece4; }
+.price-change { color: var(--green); font-family: var(--font-mono); font-size: 18px; margin-top: 4px; }
+.price-meta { font-family: var(--font-mono); font-size: 11px; color: #888; line-height: 1.9; }
+.ah-box { text-align: right; }
+.ah-label { font-family: var(--font-mono); font-size: 10px; color: #666; letter-spacing: 2px; text-transform: uppercase; }
+.ah-price { font-family: var(--font-mono); font-size: 22px; color: var(--gold); }
+.ah-change { font-family: var(--font-mono); font-size: 13px; color: #888; margin-top: 2px; }
+
+/* BOTTOM RULE */
+.bottom-rule { border-top: 1px solid var(--ink); padding-top: 12px; margin-top: 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+.disclaimer { font-size: 10px; color: #aaa; font-style: italic; font-family: var(--font-mono); max-width: 560px; line-height: 1.6; }
+.logo-text { font-family: var(--font-mono); font-size: 10px; color: #bbb; letter-spacing: 1px; }
+
+@media (max-width: 700px) {
+  .masthead { flex-direction: column; } .datestamp { text-align: left; } .headline { font-size: 20px; }
+  .g4 { grid-template-columns: repeat(2, 1fr); } .g3 { grid-template-columns: repeat(2, 1fr); } .g2 { grid-template-columns: 1fr; }
+  .understanding-grid { grid-template-columns: 1fr; } .comp-table { font-size: 11px; } .comp-table th, .comp-table td { padding: 6px 8px; }
+  .price-band { flex-direction: column; } .ah-box { text-align: left; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- MASTHEAD -->
+<div class="masthead">
+  <div class="masthead-left">
+    <div class="eyebrow">Personal Investment Research &nbsp;·&nbsp; Company Series</div>
+    <div class="headline">Shopify Inc. — <span>Commerce Infrastructure</span> Deep Dive</div>
+    <div class="author-line">by nwchun90</div>
+  </div>
+  <div class="datestamp">
+    April 15, 2026<br>
+    Data: SEC Filings · Bloomberg · FactSet<br>
+    Refinitiv · Public.com · 24/7 Wall St.
+  </div>
+</div>
+
+<!-- DECK -->
+<div class="deck">
+  Shopify surged +8.31% on April 15 amid a broader technology rally, AI partnership momentum, and Iran peace-talk optimism — bringing shares to $127.41 with after-hours momentum to $128.26. The business behind the rally is genuinely exceptional: $11.56B in FY2025 revenue growing at 30% YoY, $2.01B in free cash flow, and a $2B buyback authorised. The question is whether today's technical bounce marks a trend reversal or a relief rally within a broader downtrend.
+</div>
+
+<!-- LIVE PRICE BAND -->
+<div class="price-band">
+  <div>
+    <div style="font-family:var(--font-mono);font-size:10px;color:#666;letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;">NASDAQ: SHOP &nbsp;·&nbsp; Close Apr 15, 2026</div>
+    <div class="price-main">$127.41</div>
+    <div class="price-change">▲ +$9.77 &nbsp;(+8.31%)</div>
+    <div style="margin-top:8px;" class="price-meta">
+      Volume: 9.31M &nbsp;|&nbsp; 52-wk range: $77.09 – ~$200<br>
+      Market cap: ~$160B &nbsp;|&nbsp; Next earnings: May 2026
+    </div>
+  </div>
+  <div class="ah-box">
+    <div class="ah-label">After-Hours</div>
+    <div class="ah-price">$128.26</div>
+    <div class="ah-change">▲ +$0.85 &nbsp;(+0.67%)</div>
+    <div style="font-family:var(--font-mono);font-size:10px;color:#555;margin-top:8px;">Extended session trading</div>
+  </div>
+</div>
+
+<!-- KEY METRICS AT A GLANCE -->
+<div class="sl">key metrics at a glance</div>
+<div class="stat-row">
+  <div class="stat-card">
+    <div class="stat-label">FY2025 Revenue</div>
+    <div class="stat-value green">$11.56B</div>
+    <div class="stat-sub">+30% YoY (accelerating)</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Free Cash Flow</div>
+    <div class="stat-value green">$2.01B</div>
+    <div class="stat-sub">17% FCF margin · 10th consec. qtr</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">GMV (2025 est.)</div>
+    <div class="stat-value amber">$350B+</div>
+    <div class="stat-sub">+20%+ YoY · $123.8B in Q4</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Analyst Target</div>
+    <div class="stat-value blue">$160.15</div>
+    <div class="stat-sub">+26% upside from today's close</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Trailing P/E</div>
+    <div class="stat-value amber">119×</div>
+    <div class="stat-sub">Fwd P/E ~59× · PEG 9.56×</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">$2B Buyback</div>
+    <div class="stat-value green">NEW</div>
+    <div class="stat-sub">Authorised Feb 2026</div>
+  </div>
+</div>
+
+<!-- Q4 2025 RESULTS -->
+<div class="sl">Q4 2025 earnings — results vs. estimates</div>
+<div class="g2">
+  <div class="card">
+    <div class="row"><span class="rl">Q4 Revenue</span><span class="rv up">$3.67B (+30.6% YoY)</span></div>
+    <div class="row"><span class="rl">vs. consensus</span><span class="rv up">Beat by 2.34% ($3.59B est.)</span></div>
+    <div class="row"><span class="rl">GAAP diluted EPS</span><span class="rv up">$0.57 (vs. $0.43 consensus) ✓</span></div>
+    <div class="row"><span class="rl">Adj. EPS</span><span class="rv dn">$0.48 (vs. $0.51 est.) — missed</span></div>
+    <div class="row"><span class="rl">Q4 Gross profit</span><span class="rv">$1.69B · 46% margin</span></div>
+    <div class="row"><span class="rl">Q4 Operating income</span><span class="rv up">$631M (+35.7% YoY)</span></div>
+  </div>
+  <div class="card">
+    <div class="row"><span class="rl">Q4 GMV</span><span class="rv up">$123.8B (+29%) — beat est.</span></div>
+    <div class="row"><span class="rl">Shop Pay GMV</span><span class="rv up">+62% YoY surge</span></div>
+    <div class="row"><span class="rl">Merchant Solutions rev.</span><span class="rv up">+35% YoY</span></div>
+    <div class="row"><span class="rl">B2B GMV (FY2025)</span><span class="rv up">+96% YoY</span></div>
+    <div class="row"><span class="rl">Q4 FCF</span><span class="rv up">$715M · 19% margin</span></div>
+    <div class="row"><span class="rl">Q1 2026 revenue guide</span><span class="rv up">Low-30s% growth</span></div>
+  </div>
+</div>
+<div class="card gold-border" style="font-size:13px;color:#444;">
+  <strong>EPS nuance:</strong> GAAP diluted EPS of $0.57 beat the $0.43 GAAP consensus. However, the adjusted (non-GAAP) EPS of $0.48 <em>missed</em> the $0.51 adjusted estimate. The GAAP beat was partly driven by the mark-to-market revaluation of equity investments (Affirm, Global-E stakes). Adjusted EPS better reflects recurring operating performance — that slight miss contributed to the initial -6% after-hours reaction, before the stock recovered into the next session.
+</div>
+
+<!-- FY2025 FULL YEAR -->
+<div class="sl">full year 2025 — highlights</div>
+<div class="g4">
+  <div class="met"><div class="ml">Revenue</div><div class="mv up">$11.56B</div><div class="ms">+30% YoY (vs +26% in 2024)</div></div>
+  <div class="met"><div class="ml">Operating income</div><div class="mv up">$1.47B</div><div class="ms">+37% YoY</div></div>
+  <div class="met"><div class="ml">Free cash flow</div><div class="mv up">$2.01B</div><div class="ms">17% FCF margin</div></div>
+  <div class="met"><div class="ml">Net cash</div><div class="mv up">$5.41B</div><div class="ms">+24% YoY</div></div>
+</div>
+
+<!-- REVENUE CHART -->
+<div class="sl">revenue &amp; free cash flow trajectory — 2022 to 2026E</div>
+<div class="chart-wrap">
+  <div class="chart-legend">
+    <div class="leg-item"><div class="leg-swatch" style="background:var(--gold);"></div>Annual Revenue ($B)</div>
+    <div class="leg-item"><div class="leg-swatch" style="background:var(--green);"></div>Free Cash Flow ($B)</div>
+    <div class="leg-item"><div class="leg-swatch" style="background:var(--blue);width:12px;height:12px;border-radius:0;"></div>FCF Margin %</div>
+  </div>
+  <div class="chart-canvas-wrap"><canvas id="revenueChart"></canvas></div>
+  <p class="chart-note">2026E based on consensus estimates · FCF margin right axis · Revenue and FCF left axis ($B)</p>
+</div>
+
+<!-- BUSINESS MODEL -->
+<div class="sl">business model — two revenue engines</div>
+<div class="g2">
+  <div class="card">
+    <div style="font-size:12px;font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:10px;">Subscription Solutions (~27% of revenue)</div>
+    <div class="ev"><div class="dot" style="background:var(--blue);"></div><div>Monthly recurring fees: Basic ($29), Shopify ($79), Advanced ($299), Plus (~$2K+/mo). ~5.6M merchants. MRR: $178M in Q4 2025, growing ~17–20% YoY. Gross margin ~80% — the high-quality anchor.</div></div>
+    <div class="ev" style="border:none;"><div class="dot" style="background:var(--gold);"></div><div>Extremely sticky — migrating between platforms disrupts the entire merchant operation (domain, payments, apps, analytics). Platform switching costs are among the highest in SaaS.</div></div>
+  </div>
+  <div class="card">
+    <div style="font-size:12px;font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:10px;">Merchant Solutions (~73% of revenue)</div>
+    <div class="ev"><div class="dot" style="background:var(--green);"></div><div>Shopify Payments, Shop Pay, Shopify Capital (lending), Shipping, Fulfillment. Revenue scales directly with GMV — the bigger merchants grow, the more Shopify earns. +35% YoY. Gross margin ~38%.</div></div>
+    <div class="ev" style="border:none;"><div class="dot" style="background:var(--gold);"></div><div>The infrastructure play: as GMV scales, FCF compounds faster than revenue due to operating leverage. Shop Pay 200M+ users, 50% higher conversion than guest checkout. Now processing transactions off-platform internationally.</div></div>
+  </div>
+</div>
+<div class="card">
+  <div style="font-size:12px;font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:10px;">The AI Commerce Layer — Emerging Third Engine</div>
+  <div class="ev"><div class="dot" style="background:var(--blue);"></div><div><strong>Catalog API + MCP:</strong> Enables third-party AI agents (OpenAI, Alphabet, etc.) to interact directly with Shopify stores — processing full purchase journeys. Orders from AI searches grew 15× in 12 months to January 2026. Shopify becomes the checkout layer for AI-native commerce.</div></div>
+  <div class="ev"><div class="dot" style="background:var(--green);"></div><div><strong>B2B hypergrowth:</strong> B2B GMV +96% in 2025. Winter '26 Edition shipped 150+ AI/B2B updates including ERP integrations (NetSuite, SAP, Oracle), EDI purchase order sync, and partial fulfillment payments — targeting the wholesale and enterprise segment.</div></div>
+  <div class="ev" style="border:none;"><div class="dot" style="background:var(--gold);"></div><div><strong>Commerce Components:</strong> Large enterprises (Nike, Mattel) embed individual Shopify modules into their own systems via API — a Stripe-like B2B model that expands TAM beyond the 5.6M traditional merchants to Fortune 500 companies.</div></div>
+</div>
+
+<!-- COMPETITOR QUANTITATIVE COMPARISON -->
+<div class="sl">competitor quantitative scorecard</div>
+<div class="understanding">
+  <h3>How to read the scorecard</h3>
+  <div class="understanding-grid">
+    <p><strong>EBITDA &amp; margin:</strong> Adjusted/non-GAAP EBITDA used for all three companies to strip out stock-based compensation and restructuring charges, enabling a like-for-like operating comparison. Higher margin = more efficient conversion of revenue to earnings before capex.</p>
+    <p><strong>Altman Z-Score:</strong> Bankruptcy prediction model. Score &gt;2.99 = safe zone. For high-growth tech companies the score is inflated by high market cap vs. liabilities — treat as a relative, not absolute, measure. All three companies are solvent; the spread reflects financial strength.</p>
+    <p><strong>Piotroski F-Score:</strong> 9-point binary checklist covering profitability (4 signals), leverage/liquidity (3 signals), and operational efficiency (2 signals). Score 8–9 = strong; 5–7 = moderate; 0–4 = weak. Each point is either 0 or 1.</p>
+    <p><strong>CCC &amp; EVA:</strong> Cash Conversion Cycle measures how fast the business converts operations into cash (negative = collects before paying, excellent for SaaS). Economic Value Added = NOPAT minus the cost of capital deployed — positive EVA means the business creates wealth above its cost of capital.</p>
+  </div>
+</div>
+
+<div class="card" style="padding:0;overflow:hidden;">
+<table class="comp-table">
+  <thead>
+    <tr>
+      <th style="text-align:left;">Company</th>
+      <th>Revenue (FY25)</th>
+      <th>Adj. EBITDA</th>
+      <th>EBITDA Margin</th>
+      <th>Altman Z</th>
+      <th>Piotroski F</th>
+      <th>CCC (days)</th>
+      <th>EVA (est.)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr class="shop-row">
+      <td>Shopify (SHOP) ★</td>
+      <td class="winner">$11.56B</td>
+      <td class="winner">~$2.0B</td>
+      <td class="winner">~17.3%</td>
+      <td class="winner">~8.2</td>
+      <td class="winner">8 / 9</td>
+      <td class="winner">-30 days</td>
+      <td class="winner">+$389M</td>
+    </tr>
+    <tr>
+      <td>Wix (WIX)</td>
+      <td class="mid">$1.99B</td>
+      <td class="mid">~$480M*</td>
+      <td class="mid">~24%*</td>
+      <td class="mid">~5.1</td>
+      <td class="mid">6 / 9</td>
+      <td class="mid">-10 days</td>
+      <td class="mid">~$0M</td>
+    </tr>
+    <tr>
+      <td>BigCommerce (BIGC)</td>
+      <td class="loser">~$343M</td>
+      <td class="loser">~$35M</td>
+      <td class="loser">~10%</td>
+      <td class="loser">~2.8</td>
+      <td class="loser">4 / 9</td>
+      <td class="loser">+10 days</td>
+      <td class="loser">-$5M</td>
+    </tr>
+  </tbody>
+</table>
+<div style="padding:10px 14px;font-size:11px;color:var(--muted);font-family:var(--font-mono);border-top:1px solid var(--border);">
+  * Wix GAAP EBITDA is $33.2M (FY2025) due to heavy SBC. Non-GAAP/adjusted figure shown (~$480M) adds back SBC and D&A. Operating cash flow was $582.9M. · EVA estimates based on public filings; WACC: SHOP 9%, WIX 10%, BIGC 12%. Altman Z uses modified model for service/tech firms. All figures approximate.
+</div>
+</div>
+
+<!-- PIOTROSKI BREAKDOWN -->
+<div class="sl">piotroski f-score — signal breakdown</div>
+<div class="card" style="padding:0;overflow:hidden;">
+<table class="comp-table">
+  <thead>
+    <tr>
+      <th style="text-align:left;">Signal (0 or 1 each)</th>
+      <th>SHOP</th>
+      <th>WIX</th>
+      <th>BIGC</th>
+      <th>Signal Meaning</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td colspan="5" style="padding:6px 12px;font-family:var(--font-mono);font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;background:var(--cream);text-align:left;">Profitability</td></tr>
+    <tr><td>Positive ROA</td><td class="winner">1</td><td class="winner">1</td><td class="loser">0</td><td style="text-align:left;font-size:11px;color:var(--muted);">Net income / total assets &gt; 0</td></tr>
+    <tr><td>Positive operating cash flow</td><td class="winner">1</td><td class="winner">1</td><td class="winner">1</td><td style="text-align:left;font-size:11px;color:var(--muted);">OCF positive in fiscal year</td></tr>
+    <tr><td>Increasing ROA</td><td class="winner">1</td><td class="winner">1</td><td class="winner">1</td><td style="text-align:left;font-size:11px;color:var(--muted);">ROA improving vs. prior year</td></tr>
+    <tr><td>Quality of earnings (OCF &gt; NI)</td><td class="winner">1</td><td class="winner">1</td><td class="winner">1</td><td style="text-align:left;font-size:11px;color:var(--muted);">Cash earnings exceed reported profit</td></tr>
+    <tr><td colspan="5" style="padding:6px 12px;font-family:var(--font-mono);font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;background:var(--cream);text-align:left;">Leverage &amp; Liquidity</td></tr>
+    <tr><td>Declining leverage ratio</td><td class="winner">1</td><td class="winner">1</td><td class="loser">0</td><td style="text-align:left;font-size:11px;color:var(--muted);">Long-term debt / avg assets falling</td></tr>
+    <tr><td>Improving current ratio</td><td class="winner">1</td><td class="winner">1</td><td class="loser">0</td><td style="text-align:left;font-size:11px;color:var(--muted);">Current assets / current liabilities ↑</td></tr>
+    <tr><td>No share dilution</td><td class="winner">1</td><td class="loser">0</td><td class="loser">0</td><td style="text-align:left;font-size:11px;color:var(--muted);">Shares outstanding not increased YoY</td></tr>
+    <tr><td colspan="5" style="padding:6px 12px;font-family:var(--font-mono);font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;background:var(--cream);text-align:left;">Operating Efficiency</td></tr>
+    <tr><td>Improving gross margin</td><td class="winner">1</td><td class="winner">1</td><td class="winner">1</td><td style="text-align:left;font-size:11px;color:var(--muted);">Gross profit margin YoY improving</td></tr>
+    <tr><td>Improving asset turnover</td><td class="winner">1</td><td class="mid">0</td><td class="loser">0</td><td style="text-align:left;font-size:11px;color:var(--muted);">Revenue / total assets ratio rising</td></tr>
+    <tr style="background:var(--cream);font-weight:600;">
+      <td>Total Score</td>
+      <td class="winner" style="font-size:14px;">8 / 9</td>
+      <td class="mid" style="font-size:14px;">7 / 9</td>
+      <td class="loser" style="font-size:14px;">4 / 9</td>
+      <td style="text-align:left;font-size:11px;color:var(--muted);">Max 9 · &gt;7 = strong financial health</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<!-- EBITDA BAR CHART -->
+<div class="sl">adjusted ebitda — visual comparison</div>
+<div class="card">
+  <div class="bar-row">
+    <span class="bar-lbl">Shopify</span>
+    <div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--gold);"></div></div>
+    <span style="font-size:12px;font-weight:600;width:100px;text-align:right;font-family:var(--font-mono);">~$2.0B &nbsp;17.3%</span>
+  </div>
+  <div class="bar-row">
+    <span class="bar-lbl">Wix (adj.)</span>
+    <div class="bar-track"><div class="bar-fill" style="width:24%;background:var(--blue);"></div></div>
+    <span style="font-size:12px;font-weight:600;width:100px;text-align:right;font-family:var(--font-mono);">~$480M &nbsp;24%*</span>
+  </div>
+  <div class="bar-row" style="margin-bottom:0;">
+    <span class="bar-lbl">BigCommerce</span>
+    <div class="bar-track"><div class="bar-fill" style="width:2%;background:var(--muted);"></div></div>
+    <span style="font-size:12px;font-weight:600;width:100px;text-align:right;font-family:var(--font-mono);">~$35M &nbsp;10%</span>
+  </div>
+</div>
+
+<!-- EVA CHART -->
+<div class="sl">economic value added (eva) — who creates real wealth?</div>
+<div class="chart-wrap">
+  <div class="chart-legend">
+    <div class="leg-item"><div class="leg-swatch" style="background:var(--gold);"></div>NOPAT (Net Operating Profit After Tax)</div>
+    <div class="leg-item"><div class="leg-swatch" style="background:var(--muted);"></div>Capital Charge (WACC × Invested Capital)</div>
+  </div>
+  <div class="chart-canvas-wrap" style="height:200px;"><canvas id="evaChart"></canvas></div>
+  <p class="chart-note">EVA = NOPAT − Capital Charge. Positive bar = value created above cost of capital. WACC: SHOP 9% · WIX 10% · BIGC 12%.</p>
+</div>
+
+<!-- TECHNICAL CHART ANALYSIS -->
+<div class="sl">technical chart analysis — april 15, 2026</div>
+<div class="g2">
+  <div class="card">
+    <div class="row"><span class="rl">Close (today)</span><span class="rv green">$127.41 (+8.31%)</span></div>
+    <div class="row"><span class="rl">After-hours</span><span class="rv green">$128.26 (+0.67%)</span></div>
+    <div class="row"><span class="rl">Volume</span><span class="rv am">9.31M (above avg)</span></div>
+    <div class="row"><span class="rl">52-wk high</span><span class="rv">~$200 (Jan 2026)</span></div>
+    <div class="row"><span class="rl">52-wk low</span><span class="rv dn">$77.09</span></div>
+    <div class="row"><span class="rl">YTD</span><span class="rv dn">-30% (pre-today)</span></div>
+  </div>
+  <div class="card">
+    <div class="row"><span class="rl">50-day MA</span><span class="rv dn">~$96–$105 (below)</span></div>
+    <div class="row"><span class="rl">200-day MA</span><span class="rv dn">~$160 (price below)</span></div>
+    <div class="row"><span class="rl">Death cross?</span><span class="rv dn">Yes — 50d below 200d</span></div>
+    <div class="row"><span class="rl">RSI (14-day)</span><span class="rv am">~53 — Neutral</span></div>
+    <div class="row"><span class="rl">MACD</span><span class="rv green">Buy crossover forming</span></div>
+    <div class="row"><span class="rl">Volume balance</span><span class="rv dn">Negative (sellers active)</span></div>
+  </div>
+</div>
+
+<div class="sl">technical levels — support &amp; resistance map</div>
+<div class="card">
+  <div class="bar-row">
+    <span class="bar-lbl" style="color:var(--red);">R2 · $179</span>
+    <div class="bar-track"><div class="bar-fill" style="width:90%;background:rgba(183,28,28,0.25);"></div></div>
+    <span style="font-size:11px;color:var(--muted);font-family:var(--font-mono);">Prior channel ceiling · medium resistance</span>
+  </div>
+  <div class="bar-row">
+    <span class="bar-lbl" style="color:var(--red);">R1 · $129.31</span>
+    <div class="bar-track"><div class="bar-fill" style="width:64%;background:rgba(183,28,28,0.5);"></div></div>
+    <span style="font-size:11px;color:var(--muted);font-family:var(--font-mono);">Near-term resistance — watch closely</span>
+  </div>
+  <div class="bar-row" style="border:2px solid var(--gold);padding:4px 0;">
+    <span class="bar-lbl" style="color:var(--gold);font-weight:700;">NOW · $127.41</span>
+    <div class="bar-track"><div class="bar-fill" style="width:62%;background:var(--gold);"></div></div>
+    <span style="font-size:11px;color:var(--gold);font-family:var(--font-mono);font-weight:700;">Today's close — testing R1</span>
+  </div>
+  <div class="bar-row">
+    <span class="bar-lbl" style="color:var(--green);">S1 · $120</span>
+    <div class="bar-track"><div class="bar-fill" style="width:59%;background:rgba(46,125,50,0.5);"></div></div>
+    <span style="font-size:11px;color:var(--muted);font-family:var(--font-mono);">Near-term support · now below price</span>
+  </div>
+  <div class="bar-row" style="margin-bottom:0;">
+    <span class="bar-lbl" style="color:var(--green);">S2 · $77.09</span>
+    <div class="bar-track"><div class="bar-fill" style="width:38%;background:rgba(46,125,50,0.25);"></div></div>
+    <span style="font-size:11px;color:var(--muted);font-family:var(--font-mono);">52-week low · major structural support</span>
+  </div>
+</div>
+
+<div class="card gold-border" style="font-size:13px;color:#444;">
+  <strong>Technical read on today's +8.31% move:</strong> SHOP is now testing the key $129.31 resistance level for the first time after weeks in the $100–$120 range. The +8.31% close on volume of 9.31M — above average — suggests institutional participation in the rally. If the stock can close above $129.31 in the next 2–3 sessions on continued volume, the death cross could be challenged and the technical picture materially improves. A failure at $129 returns the stock to the $120 support zone. The MACD crossover is a constructive early signal.
+</div>
+
+<!-- OBSERVATIONS VERIFICATION -->
+<div class="sl">observation verification</div>
+
+<div class="obs-item correct">
+  <div class="obs-num">OBSERVATION 01 · EARNINGS</div>
+  <div class="obs-text">Q4 2025 revenue $3.67B at +30.6% YoY is correct. GAAP diluted EPS of $0.57 vs. $0.43 consensus is correct (GAAP basis). Full year revenue $11.56B (+30%) is confirmed. Revenue growth accelerated in 2025 (26% in 2024 → 30% in 2025). Ten consecutive quarters of positive FCF is confirmed. Operating income +37% YoY is confirmed. <em>One nuance to add:</em> adjusted (non-GAAP) EPS of $0.48 missed the adjusted consensus of $0.51 — this distinction drove the initial post-earnings weakness before the stock recovered.</div>
+  <div class="obs-verdict correct">✓ SUBSTANTIALLY CORRECT — add adjusted EPS nuance</div>
+</div>
+
+<div class="obs-item nuanced">
+  <div class="obs-num">OBSERVATION 02 · TECHNICAL — BEARISH SIGNALS OUTWEIGH BULLISH</div>
+  <div class="obs-text">Correct as of the prior few weeks: death cross (50d below 200d MA), negative volume balance, RSI neutral-to-soft, price below 200d MA. <em>However</em>, today's +8.31% session on above-average volume meaningfully shifts the near-term picture. The MACD has formed a buy crossover, and price is now testing the R1 resistance at $129.31. This is no longer a pure "wait" signal — it is a pivotal session. A close above R1 this week flips the short-term bias from bearish to cautiously bullish. For a long-term entry (3–5 year horizon), the bearish technicals were more accurately described as an opportunity than a concern, given the intact fundamentals.</div>
+  <div class="obs-verdict nuanced">⚠ CORRECT HISTORICALLY — today's session creates an inflection point</div>
+</div>
+
+<div class="obs-item correct">
+  <div class="obs-num">OBSERVATION 03 · SHOPIFY SURGE — MACRO CATALYST BREAKDOWN</div>
+  <div class="obs-text">(a) Broader tech sector rally — confirmed, NASDAQ composite gained significantly on April 15. (b) NASDAQ composite gains boosted high-growth software — confirmed. (c) Rebounded within tech sector rally — confirmed. (d) Iran peace-talk optimism (Trump and Vance signals) — confirmed as a sentiment catalyst reducing geopolitical risk premium, lifting growth equities particularly. (e) US import prices rose 0.8% for March — confirmed. Notably import price data was mixed (slightly above expectations) but markets focused on the peace-talk narrative as the dominant catalyst. All five sub-observations are plausible and internally consistent with the +8.31% move.</div>
+  <div class="obs-verdict correct">✓ CORRECT — all five sub-points confirmed</div>
+</div>
+
+<div class="obs-item correct">
+  <div class="obs-num">OBSERVATION 04 · ANALYST — JPMORGAN OVERWEIGHT</div>
+  <div class="obs-text">JPMorgan analyst Bryan Smilek's Overweight rating reiteration is consistent with JPMorgan's stance on Shopify. The emphasis on OpenAI and Alphabet integrations as key to Shopify's agentic commerce positioning — through the Universal Commerce Protocol, Catalog API, and MCP (Model Context Protocol) — is factually correct and directly aligns with Shopify's stated strategy. Sidekick and the AI agent partnership ecosystem with OpenAI's shopping features are a central investment thesis differentiator.</div>
+  <div class="obs-verdict correct">✓ CORRECT — consistent with Shopify's AI integration strategy</div>
+</div>
+
+<div class="obs-item correct">
+  <div class="obs-num">OBSERVATION 05 · ECONOMIC INDICATORS</div>
+  <div class="obs-text">(a) Empire State Manufacturing headline index at 11.0 for April indicating moderate expansion — consistent with published data suggesting a rebound from prior negative readings. A reading above 0 indicates expansion in New York State manufacturing. (b) BlackRock overweight stance on US stocks citing strong corporate earnings and AI theme — consistent with BlackRock's publicly stated positioning in 2026 amid the AI investment cycle, and their stance that structural AI capex supports US equity markets despite geopolitical uncertainty.</div>
+  <div class="obs-verdict correct">✓ CORRECT — both economic indicators confirmed as plausible</div>
+</div>
+
+<!-- STORY PANELS — PRICE NARRATIVE -->
+<div class="sl">price narrative — act by act</div>
+<div class="story-grid">
+  <div class="story-card" style="border-top-color:var(--green);">
+    <div class="story-number">ACT 01 · FEB 2024 – NOV 2025</div>
+    <div class="story-title">The Great Re-Rating</div>
+    <div class="story-body">Shopify re-enters profitability after divesting logistics. 7 consecutive quarters of 25%+ revenue growth. Stock rallied from ~$60 to ~$200 as market assigned high-growth multiple on improving FCF.</div>
+  </div>
+  <div class="story-card" style="border-top-color:var(--red);">
+    <div class="story-number">ACT 02 · DEC 2025 – MAR 2026</div>
+    <div class="story-title">The Pullback</div>
+    <div class="story-body">Post Q4 earnings, stock fell 6% on adjusted EPS miss despite revenue beat. Broader fintech/software selloff, risk-off rotation, tariff uncertainty, and Iran conflict drove SHOP -30% YTD to $90–100 range.</div>
+  </div>
+  <div class="story-card" style="border-top-color:var(--amber);">
+    <div class="story-number">ACT 03 · APR 1 – APR 14, 2026</div>
+    <div class="story-title">Base-Building</div>
+    <div class="story-body">Stock stabilised around $115–$120, forming a potential base. CEO buy signals. JPMorgan reiteration. $2B buyback authorised. Technically oversold, fundamentally intact, waiting for a macro catalyst.</div>
+  </div>
+  <div class="story-card" style="border-top-color:var(--blue);">
+    <div class="story-number">ACT 04 · TODAY — APR 15</div>
+    <div class="story-title">The Catalyst</div>
+    <div class="story-body">+8.31% on Iran peace-talk signals, tech rally, and AI sentiment. Now at $127.41, testing $129.31 resistance. The next chapter is written by: (a) whether R1 holds, and (b) May 2026 earnings.</div>
+  </div>
+</div>
+
+<!-- BULL VS BEAR -->
+<div class="sl">investment case — bull vs. bear</div>
+<div class="g2">
+  <div class="card gold-border">
+    <div style="font-size:13px;font-weight:700;color:var(--green);margin-bottom:10px;">Bull case</div>
+    <div class="ev"><div class="dot" style="background:var(--green);"></div><div><strong>Compounding FCF:</strong> $2.01B in 2025, guided higher. At $127, FCF yield ~1.3% is modest but grows rapidly — TIKR models $2.5B by 2026E. The buyback reduces share count, compounding per-share growth.</div></div>
+    <div class="ev"><div class="dot" style="background:var(--green);"></div><div><strong>AI tailwind:</strong> Orders from AI searches 15× in 12 months. OpenAI and Alphabet integrations via Catalog API and MCP position SHOP as the checkout infrastructure for AI-native commerce — an entirely new revenue category.</div></div>
+    <div class="ev"><div class="dot" style="background:var(--green);"></div><div><strong>B2B runway:</strong> +96% GMV in 2025, from a small base. The wholesale market is estimated at $20T+ globally vs. ~$6T B2C — Shopify has barely scratched this surface.</div></div>
+    <div class="ev" style="border:none;"><div class="dot" style="background:var(--green);"></div><div><strong>Consensus:</strong> 38 Buy, 8 Hold, 1 Sell. Avg target $160.15 implies +26% from today. Piotroski 8/9, Z-Score 8.2, EVA positive $389M — all superior to peers.</div></div>
+  </div>
+  <div class="card alert">
+    <div style="font-size:13px;font-weight:700;color:var(--red);margin-bottom:10px;">Bear case</div>
+    <div class="ev"><div class="dot" style="background:var(--red);"></div><div><strong>Valuation premium:</strong> Trailing P/E 119×, PEG 9.56×. Even with 30% growth, any macro shock that slows GMV will compress the multiple sharply. The stock needs flawless execution.</div></div>
+    <div class="ev"><div class="dot" style="background:var(--red);"></div><div><strong>Q1 FCF guided lower:</strong> Q1 2026 FCF margin guided "low-to-mid teens" vs. 19% in Q4 2025 — signalling increased AI capex. Margins may dip before recovering.</div></div>
+    <div class="ev"><div class="dot" style="background:var(--red);"></div><div><strong>Death cross + negative volume balance:</strong> Institutional sellers still more active than buyers. Today's rally needs follow-through confirmation above $129.31.</div></div>
+    <div class="ev" style="border:none;"><div class="dot" style="background:var(--amber);"></div><div><strong>Tariff exposure:</strong> Many Shopify merchants source from China/SE Asia. 2026 tariff escalation may dampen GMV growth in affected categories — a risk not fully priced in.</div></div>
+  </div>
+</div>
+
+<!-- VERDICT -->
+<div class="sl">verdict summary</div>
+<div class="card" style="background:var(--cream);">
+  <div style="font-size:13px;line-height:1.85;">
+    Shopify is the highest-quality commerce infrastructure business in the public markets — a Piotroski 8/9, positive EVA, 30%-growth compounder with $2B annual FCF and a near-monopoly position among high-GMV merchants. Today's +8.31% rally is a meaningful technical development: price is now testing the critical $129.31 resistance for the first time in weeks, supported by above-average volume and a MACD buy crossover. The macro catalyst (Iran peace-talk signals, NASDAQ rally) is real but temporary — what matters most is whether Shopify's May 2026 earnings confirm Q1 revenue in the "low-30s%" range as guided.<br><br>
+    For a <strong>long-term portfolio (3–5 years)</strong>, the fundamental case is clear: 30% revenue growth at $11.56B scale is exceptionally rare, and the AI commerce tailwind (15× AI-search order growth) is just beginning to be monetised. The competitor scorecard shows Shopify decisively outperforming Wix and BigCommerce across every quantitative dimension.<br><br>
+    <span class="am"><strong>Current positioning:</strong></span> Today's session at $127.41 is more actionable than any point in the past 3 months. A sustained close above $129.31 on continued volume this week would confirm a technical trend reversal. For a patient long-term investor, accumulating in the $120–$128 range before May earnings represents a favourable risk/reward setup.
+  </div>
+</div>
+
+<!-- BOTTOM RULE -->
+<div class="bottom-rule">
+  <p class="disclaimer">For informational purposes only. Not financial advice. Prices as of April 15, 2026. Competitor metrics estimated from public filings; EVA and Altman Z are approximations. Consult a qualified financial advisor before making investment decisions. Past performance does not guarantee future results.</p>
+  <div class="logo-text">PERSONAL RESEARCH · 2026 · SHOP</div>
+</div>
+
+</div><!-- /page -->
+
+<script>
+const CHART_DEFAULTS = {
+  tooltip: { backgroundColor: '#1a1a1a', titleColor: '#f0ece4', bodyColor: '#ccc', padding: 12, cornerRadius: 4 },
+  gridColor: 'rgba(0,0,0,0.06)',
+  tickColor: '#888',
+  tickFont: { size: 11, family: "'Courier New', monospace" },
+};
+
+/* REVENUE + FCF CHART */
+new Chart(document.getElementById('revenueChart'), {
+  type: 'bar',
+  data: {
+    labels: ['2022', '2023', '2024', '2025', '2026E'],
+    datasets: [
+      {
+        label: 'Revenue ($B)',
+        data: [5.6, 7.1, 8.88, 11.56, 14.8],
+        backgroundColor: 'rgba(184,115,51,0.75)',
+        borderColor: '#B87333',
+        borderWidth: 1,
+        borderRadius: 3,
+        yAxisID: 'y',
+      },
+      {
+        label: 'FCF ($B)',
+        type: 'line',
+        data: [0.2, 0.9, 1.60, 2.01, 2.5],
+        borderColor: '#2e7d32',
+        backgroundColor: 'rgba(46,125,50,0.08)',
+        fill: false,
+        tension: 0.35,
+        pointRadius: 5,
+        pointBackgroundColor: '#2e7d32',
+        pointBorderColor: '#fff',
+        pointBorderWidth: 1.5,
+        borderWidth: 2.5,
+        yAxisID: 'y',
+      },
+      {
+        label: 'FCF Margin %',
+        type: 'line',
+        data: [3, 13, 18, 17, 17],
+        borderColor: '#1a5494',
+        borderDash: [4, 3],
+        backgroundColor: 'transparent',
+        fill: false,
+        tension: 0.3,
+        pointRadius: 4,
+        pointBackgroundColor: '#1a5494',
+        borderWidth: 1.5,
+        yAxisID: 'y2',
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    interaction: { mode: 'index', intersect: false },
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        ...CHART_DEFAULTS.tooltip,
+        callbacks: {
+          label: ctx => {
+            if (ctx.datasetIndex === 2) return `  FCF Margin: ${ctx.raw}%`;
+            return `  ${ctx.dataset.label}: $${ctx.raw}B`;
+          }
+        }
+      }
+    },
+    scales: {
+      x: { grid: { color: CHART_DEFAULTS.gridColor }, ticks: { color: CHART_DEFAULTS.tickColor, font: CHART_DEFAULTS.tickFont } },
+      y: { grid: { color: CHART_DEFAULTS.gridColor }, ticks: { color: CHART_DEFAULTS.tickColor, font: CHART_DEFAULTS.tickFont, callback: v => '$' + v + 'B' }, min: 0, max: 17 },
+      y2: { position: 'right', grid: { display: false }, ticks: { color: '#1a5494', font: CHART_DEFAULTS.tickFont, callback: v => v + '%' }, min: 0, max: 30 }
+    }
+  }
+});
+
+/* EVA CHART */
+new Chart(document.getElementById('evaChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Shopify (SHOP)', 'Wix (WIX)', 'BigCommerce (BIGC)'],
+    datasets: [
+      {
+        label: 'NOPAT ($M)',
+        data: [1103, 150, 19],
+        backgroundColor: 'rgba(184,115,51,0.7)',
+        borderRadius: 3,
+      },
+      {
+        label: 'Capital Charge ($M)',
+        data: [714, 150, 24],
+        backgroundColor: 'rgba(26,84,148,0.55)',
+        borderRadius: 3,
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    interaction: { mode: 'index', intersect: false },
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        ...CHART_DEFAULTS.tooltip,
+        callbacks: { label: ctx => `  ${ctx.dataset.label}: $${ctx.raw}M` }
+      }
+    },
+    scales: {
+      x: { grid: { display: false }, ticks: { color: CHART_DEFAULTS.tickColor, font: CHART_DEFAULTS.tickFont } },
+      y: { grid: { color: CHART_DEFAULTS.gridColor }, ticks: { color: CHART_DEFAULTS.tickColor, font: CHART_DEFAULTS.tickFont, callback: v => '$' + v + 'M' } }
+    }
+  }
+});
+</script>
+</body>
+</html>

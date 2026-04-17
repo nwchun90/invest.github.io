@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wealth Creation Framework - Strategy Brief</title>
+    <style>
+        /* THEME CORE [cite: 34-61] */
+        :root {
+            --gold: #B87333; --ink: #1a1a1a; --paper: #faf9f6; --muted: #888;
+            --border: #e0ddd5; --cream: #f5f3ec; --green: #2e7d32; --red: #b71c1c;
+            --blue: #1a5494; --font-serif: 'Georgia', serif; --font-mono: 'Courier New', monospace;
+        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: var(--font-serif); background: var(--paper); color: var(--ink); font-size: 14px; line-height: 1.7; }
+        .page { max-width: 900px; margin: 0 auto; padding: 40px 28px 60px; }
+
+        /* HEADER [cite: 93-136] */
+        .masthead { border-top: 3px solid var(--ink); border-bottom: 1px solid var(--ink); padding: 16px 0 14px; margin-bottom: 32px; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; }
+        .eyebrow { font-family: var(--font-mono); font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+        .headline { font-size: 26px; font-weight: 400; line-height: 1.2; }
+        .headline span { font-style: italic; color: var(--gold); }
+        .datestamp { font-family: var(--font-mono); font-size: 11px; color: var(--muted); text-align: right; }
+
+        /* DECK [cite: 143-151] */
+        .deck { font-size: 15px; color: #444; border-left: 3px solid var(--gold); padding-left: 16px; margin-bottom: 28px; max-width: 720px; }
+
+        /* SECTION LABELS [cite: 156-174] */
+        .sl { font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); margin: 26px 0 12px; display: flex; align-items: center; gap: 12px; }
+        .sl::after { content: ""; flex: 1; height: 1px; background: var(--border); }
+
+        /* COMPARISON TABLE [cite: 244-247] */
+        .card { background: #fff; border: 1px solid var(--border); padding: 0; overflow: hidden; margin-bottom: 24px; }
+        table { width: 100%; border-collapse: collapse; text-align: left; }
+        th { background: var(--cream); font-family: var(--font-mono); font-size: 10px; text-transform: uppercase; color: var(--muted); padding: 12px 16px; border-bottom: 1px solid var(--border); }
+        td { padding: 14px 16px; border-bottom: 1px solid var(--border); font-size: 13px; vertical-align: top; }
+        tr:last-child td { border-bottom: none; }
+        .metric-name { font-family: var(--font-mono); font-weight: 600; color: var(--blue); font-size: 11px; }
+
+        /* UNDERSTANDING BOX [cite: 270-274] */
+        .understanding { background: var(--ink); color: #f0ece4; border-radius: 4px; padding: 22px 24px; margin-bottom: 28px; }
+        .understanding h3 { font-size: 13px; font-family: var(--font-mono); letter-spacing: 2px; text-transform: uppercase; color: var(--gold); margin-bottom: 14px; font-weight: 400; }
+        .u-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .understanding p { font-size: 12px; color: #bbb; line-height: 1.7; }
+        .understanding strong { color: #f0ece4; font-weight: 600; }
+
+        /* BOTTOM RULE [cite: 275-279] */
+        .bottom-rule { border-top: 1px solid var(--ink); padding-top: 12px; margin-top: 2rem; display: flex; justify-content: space-between; align-items: center; font-family: var(--font-mono); font-size: 10px; color: #aaa; }
+    </style>
+</head>
+<body>
+
+<div class="page">
+    <div class="masthead">
+        <div class="masthead-left">
+            <div class="eyebrow">Personal Investment Research &nbsp;·&nbsp; Economy Series</div>
+            <div class="headline">Wealth Creation <span>vs. Conventional Health</span></div>
+            <div class="author-line">by nwchun90</div>
+        </div>
+        <div class="datestamp">April 17, 2026<br>Internal Strategy Brief</div>
+    </div>
+
+    <div class="deck">
+        To outpace the market, we must move beyond surface-level profitability. This framework uses a synthesized "Economic Profit" approach to identify companies generating real wealth relative to their cost of capital.
+    </div>
+
+    <div class="sl">the inclusive comparison matrix</div>
+    <div class="card">
+        <table>
+            <thead>
+                <tr>
+                    <th>Metric</th>
+                    <th>Primary Focus</th>
+                    <th>Core Strength</th>
+                    <th>Main Weakness</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="metric-name">EBITDA</td>
+                    <td>Cash Profitability</td>
+                    <td>Normalizes comparisons across different tax and debt structures.</td>
+                    <td>Ignores capital expenditures and the cost of debt.</td>
+                </tr>
+                <tr>
+                    <td class="metric-name">Altman Z-Score</td>
+                    <td>Solvency Risk</td>
+                    <td>Quantifies structural safety and bankruptcy probability.</td>
+                    <td>Less accurate for asset-light service or tech industries.</td>
+                </tr>
+                <tr>
+                    <td class="metric-name">Piotroski F-Score</td>
+                    <td>Fundamental Trend</td>
+                    <td>Effectively filters for quality and operational momentum.</td>
+                    <td>Backward-looking; does not capture forward market shifts.</td>
+                </tr>
+                <tr>
+                    <td class="metric-name">CCC (Cash Cycle)</td>
+                    <td>Working Capital</td>
+                    <td>Measures "Velocity"—the speed at which cash returns to the firm.</td>
+                    <td>Can be misleading in highly seasonal businesses.</td>
+                </tr>
+                <tr>
+                    <td class="metric-name">EVA (Wealth Creation)</td>
+                    <td>Economic Profit</td>
+                    <td>The "Truth" metric: Accounts for the hidden cost of capital.</td>
+                    <td>Complex calculation; highly sensitive to management estimates.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="sl">strategic application</div>
+    <div class="understanding">
+        <h3>How to Read Wealth Creation</h3>
+        <div class="u-grid">
+            <div>
+                <p><strong>The Profit Mirage:</strong> Standard Net Income or EBITDA can be positive while <strong>EVA</strong> is negative. If a company doesn't earn more than its WACC, it is effectively a "zombie" destroying shareholder value over time.</p>
+            </div>
+            <div>
+                <p><strong>Speed as a Moat:</strong> A shrinking <strong>Cash Conversion Cycle</strong> is often a better signal of dominance than revenue growth. It indicates the business can self-fund its own expansion without dilution or debt.</p>
+            </div>
+            <div>
+                <p><strong>Safety Convergence:</strong> The ideal long-term compounder shows a rising <strong>F-Score</strong> (improving quality) while maintaining a <strong>Z-Score</strong> above 3.0 (financial integrity).</p>
+            </div>
+            <div>
+                <p><strong>Wealth Creation Signal:</strong> The ultimate goal is identifying positive <strong>EVA</strong> growth. This represents the "surplus value" that drives market-beating returns over full economic cycles.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="bottom-rule">
+        <p>FOR INFORMATIONAL PURPOSES ONLY. NOT FINANCIAL ADVICE.</p>
+        <div class="logo-text">NWCHUN90 · 2026 · WEALTH FRAMEWORK</div>
+    </div>
+</div>
+
+</body>
+</html>
