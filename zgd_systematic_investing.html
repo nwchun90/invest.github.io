@@ -161,13 +161,15 @@ body { font-family: var(--font-serif); background: var(--paper); color: var(--in
 <div class="masthead">
   <div>
     <div class="eyebrow">Personal Investment Research &middot; Gold Series &middot; Systematic Investing</div>
-    <div class="headline">Systematic Cost Averaging: A Case Study on <span>ZGD</span></div>
-    <div class="author-line">by nwchun90</div>
+    <div class="headline">Three ways to build wealth with <span>Canadian gold</span></div>
+    <div class="author-line">by nwchun90 &nbsp;&middot;&nbsp; Dollar Cost Averaging &nbsp;&middot;&nbsp; Value Averaging &nbsp;&middot;&nbsp; Golden Pulse</div>
   </div>
   <div class="datestamp">
     April 14, 2026<br>
     Data: BMO Asset Management<br>
-    monthly prices reconstructed
+    DividendHistory.org · PortfoliosLab<br>
+    Solactive Equal Weight Gold Index<br>
+    Note: monthly prices reconstructed
   </div>
 </div>
 
@@ -175,8 +177,7 @@ body { font-family: var(--font-serif); background: var(--paper); color: var(--in
      DECK
 ══════════════════════════════════════════════════════ -->
 <p class="deck">
-  This study compares three systematic approaches to building wealth with Canadian-listed gold equities: <strong>dollar cost averaging</strong>, <strong>value averaging</strong>, and <strong>golden pulse</strong>. Using the BMO Equal Weight Global Gold Index ETF (TSX: ZGD), we simulate each method over five- and ten-year periods starting with C$1,000.
-  Because each strategy deploys capital differently, performance is evaluated by return on invested capital rather than final portfolio value, ensuring a fair comparison.
+  BMO Equal Weight Global Gold Index ETF (TSX: ZGD) gives Canadian investors diversified, equally-weighted exposure to the world's senior gold producers — rebalanced quarterly, all dividends available for reinvestment. Starting with C$1,000, we simulate three distinct systematic strategies across both five-year and ten-year horizons and compare them not by absolute dollar value, but by <em>return on invested capital</em> — the only fair comparison when each strategy deploys a different amount of cash.
 </p>
 
 <!-- ══════════════════════════════════════════════════════
@@ -631,7 +632,7 @@ function build(yrs){
     {r:rp,name:'Golden Pulse',          tag:'PULSE',tc:'#4c1d95',bg:'#f5f3ff',bc:'#c4b5fd'},
   ];
 
-  document.getElementById('').innerHTML =
+  document.getElementById('statTiles').innerHTML =
     `<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin-bottom:0">`+
     models.map(({r,name,tag,tc,bg,bc})=>`
       <div style="background:#fff;border:1px solid var(--border);border-radius:4px;overflow:hidden">
@@ -645,7 +646,7 @@ function build(yrs){
           <div class="row"><span class="rl">Dividends reinvested (DRIP)</span><span class="rv bl">C$${fmtC(r.divTotal)}</span></div>
           <div class="row"><span class="rl">Return on invested capital</span><span class="rv up">${r.finalReturn.toFixed(1)}%</span></div>
           <div class="row"><span class="rl">Annualised CAGR</span><span class="rv up">${r.cagr.toFixed(2)}%</span></div>
-          <div class="row"><span class="rl">Worst drawdown (unrealised)</span><span class="rv dn">${r.maxDD.toFixed(1)}%</span></div>                              
+          <div class="row"><span class="rl">Worst drawdown (unrealised)</span><span class="rv dn">${r.maxDD.toFixed(1)}%</span></div>
           ${tag==='PULSE'?`<div class="row"><span class="rl">Dip buys (C$1,000 each)</span><span class="rv pu">${r.dipBuys} months</span></div><div class="row"><span class="rl">Momentum buys (C$100 each)</span><span class="rv pu">${r.momBuys} months</span></div><div class="row"><span class="rl">Hold months (C$0)</span><span class="rv">${r.holdMonths} months</span></div>`:''}
         </div>
       </div>`).join('')+`</div>`;
