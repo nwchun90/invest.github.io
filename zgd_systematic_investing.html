@@ -300,8 +300,8 @@ body { font-family: var(--font-serif); background: var(--paper); color: var(--in
 <!-- ══════════════════════════════════════════════════════
      STAT TILES (dynamic)
 ══════════════════════════════════════════════════════ -->
-<!-- <div class="sl">key metrics at a glance</div>
-<div id="statTiles"></div> -->
+<div class="sl">key metrics at a glance</div>
+<div id="statTiles"></div>
 
 <!-- ══════════════════════════════════════════════════════
      COMPARISON TABLE (dynamic)
@@ -631,7 +631,7 @@ function build(yrs){
     {r:rp,name:'Golden Pulse',          tag:'PULSE',tc:'#4c1d95',bg:'#f5f3ff',bc:'#c4b5fd'},
   ];
 
-  document.getElementById('statTiles').innerHTML =
+  document.getElementById('').innerHTML =
     `<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin-bottom:0">`+
     models.map(({r,name,tag,tc,bg,bc})=>`
       <div style="background:#fff;border:1px solid var(--border);border-radius:4px;overflow:hidden">
