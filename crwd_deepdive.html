@@ -25,6 +25,37 @@
 body { font-family: var(--font-serif); background: var(--paper); color: var(--ink); font-size: 14px; line-height: 1.7; }
 .page { max-width: 900px; margin: 0 auto; padding: 40px 28px 60px; }
 
+/* NAVIGATION BAR */
+.nav-bar {
+  margin: 40px 0 20px;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.nav-btn {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  padding: 6px 14px;
+  border: 1px solid var(--border);
+  background: #fff;
+  color: var(--ink);
+  text-decoration: none;
+  border-radius: 4px;
+  transition: 0.15s;
+}
+
+.nav-btn:hover {
+  background: var(--gold);
+  color: #fff;
+  border-color: var(--gold);
+}
+
+.nav-btn.disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
 /* MASTHEAD */
 .masthead { border-top: 3px solid var(--ink); border-bottom: 1px solid var(--ink); padding: 16px 0 14px; margin-bottom: 32px; display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
 .eyebrow { font-family: var(--font-mono); font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
@@ -544,6 +575,13 @@ body { font-family: var(--font-serif); background: var(--paper); color: var(--in
   </div>
 </div>
 
+<!-- NAVIGATION BAR -->
+<div class="nav-bar">
+  <a class="nav-btn" id="nav-back" href="#">‹ Back</a>
+  <a class="nav-btn" id="nav-home" href="index.html">Home</a>
+  <a class="nav-btn" id="nav-next" href="#">Next ›</a>
+</div>
+
 <!-- BOTTOM RULE -->
 <div class="bottom-rule">
   <p class="disclaimer">For informational purposes only. Not financial advice. Prices as of April 16, 2026. Competitor metrics estimated from public SEC filings; EVA, Altman Z, and Piotroski calculations are approximations for comparative purposes. Past performance does not guarantee future results. Consult a qualified financial advisor.</p>
@@ -659,5 +697,57 @@ new Chart(document.getElementById('evaChart'), {
   }
 });
 </script>
+
+<script>
+(function () {
+  const INDEX_URL = 'index.html';
+
+  const backBtn = document.getElementById('nav-back');
+  const nextBtn = document.getElementById('nav-next');
+
+  const currentFile = window.location.pathname.split('/').pop();
+
+  fetch(INDEX_URL)
+    .then(res => res.text())
+    .then(html => {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, 'text/html');
+
+      // Extract items directly from raw HTML (unsorted)
+      const items = Array.from(doc.querySelectorAll('.content-list .item'))
+        .map(item => ({
+          href: item.querySelector('a').getAttribute('href'),
+          date: item.getAttribute('data-date')
+        }))
+        .filter(x => x.href && x.date);
+
+      // Sort oldest → newest (chronological)
+      items.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+      // Match current file
+      const idx = items.findIndex(x => currentFile === x.href);
+
+      if (idx === -1) {
+        backBtn.classList.add('disabled');
+        nextBtn.classList.add('disabled');
+        return;
+      }
+
+      const prev = items[idx - 1];
+      const next = items[idx + 1];
+
+      if (prev) backBtn.href = prev.href;
+      else backBtn.classList.add('disabled');
+
+      if (next) nextBtn.href = next.href;
+      else nextBtn.classList.add('disabled');
+    })
+    .catch(() => {
+      backBtn.classList.add('disabled');
+      nextBtn.classList.add('disabled');
+    });
+})();
+</script>
+
 </body>
 </html>

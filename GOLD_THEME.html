@@ -66,6 +66,37 @@ body {
   line-height: 1.7;
 }
 
+/* NAVIGATION BAR */
+.nav-bar {
+  margin: 40px 0 20px;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.nav-btn {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  padding: 6px 14px;
+  border: 1px solid var(--border);
+  background: #fff;
+  color: var(--ink);
+  text-decoration: none;
+  border-radius: 4px;
+  transition: 0.15s;
+}
+
+.nav-btn:hover {
+  background: var(--gold);
+  color: #fff;
+  border-color: var(--gold);
+}
+
+.nav-btn.disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
    § 1 · PAGE WRAPPER
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
@@ -765,6 +796,13 @@ body {
   </div>
 </div>
 
+<!-- NAVIGATION BAR -->
+<div class="nav-bar">
+  <a class="nav-btn" id="nav-back" href="#">‹ Back</a>
+  <a class="nav-btn" id="nav-home" href="index.html">Home</a>
+  <a class="nav-btn" id="nav-next" href="#">Next ›</a>
+</div>
+
 <!-- ══════════════════════════════════════════════════════
      BOTTOM RULE  (required — appears on every document)
      ══════════════════════════════════════════════════════
@@ -867,5 +905,55 @@ new Chart(document.getElementById('chartExample'), {
   },
 });
 </script>
+
+<script>
+(function () {
+  const INDEX_URL = 'index.html';
+
+  const backBtn = document.getElementById('nav-back');
+  const nextBtn = document.getElementById('nav-next');
+
+  const currentFile = window.location.pathname.split('/').pop();
+
+  fetch(INDEX_URL)
+    .then(res => res.text())
+    .then(html => {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, 'text/html');
+
+      const items = Array.from(doc.querySelectorAll('.content-list .item'))
+        .map(item => ({
+          href: item.querySelector('a').getAttribute('href'),
+          date: item.getAttribute('data-date')
+        }))
+        .filter(x => x.href);
+
+      // Sort oldest → newest for chronological navigation
+      items.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+      const idx = items.findIndex(x => x.href.endsWith(currentFile));
+
+      if (idx === -1) {
+        backBtn.classList.add('disabled');
+        nextBtn.classList.add('disabled');
+        return;
+      }
+
+      const prev = items[idx - 1];
+      const next = items[idx + 1];
+
+      if (prev) backBtn.href = prev.href;
+      else backBtn.classList.add('disabled');
+
+      if (next) nextBtn.href = next.href;
+      else nextBtn.classList.add('disabled');
+    })
+    .catch(() => {
+      backBtn.classList.add('disabled');
+      nextBtn.classList.add('disabled');
+    });
+})();
+</script>
+
 </body>
 </html>
