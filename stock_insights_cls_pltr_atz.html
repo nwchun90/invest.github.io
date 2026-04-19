@@ -39,6 +39,37 @@
     padding: 40px 28px 60px;
   }
 
+/* NAVIGATION BAR */
+.nav-bar {
+  margin: 40px 0 20px;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.nav-btn {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  padding: 6px 14px;
+  border: 1px solid var(--border);
+  background: #fff;
+  color: var(--ink);
+  text-decoration: none;
+  border-radius: 4px;
+  transition: 0.15s;
+}
+
+.nav-btn:hover {
+  background: var(--gold);
+  color: #fff;
+  border-color: var(--gold);
+}
+
+.nav-btn.disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
   /* ── MASTHEAD (gold theme) ── */
   .masthead {
     border-top: 3px solid #1a1a1a;
@@ -712,6 +743,14 @@
     <div class="p-body" style="font-size:13px">This is a personal research summary reflecting the author's analysis of publicly available financial data as of April 2026. It is not professional investment advice, and all investment decisions carry risk of loss. Past earnings growth does not guarantee future results. Always do your own research before making any investment decisions.</div>
   </div>
 
+<!-- NAVIGATION BAR -->
+<div class="nav-bar">
+  <a class="nav-btn" id="nav-back" href="#">‹ Back</a>
+  <a class="nav-btn" id="nav-home" href="index.html">Home</a>
+  <a class="nav-btn" id="nav-next" href="#">Next ›</a>
+</div>
+
+
   <!-- ── BOTTOM RULE ── -->
   <div class="bottom-rule">
     <p class="disclaimer">For informational purposes only. Not financial advice. Data approximate as of April 9–11, 2026. Past performance does not guarantee future results. Consult a qualified financial advisor before making investment decisions.</p>
@@ -719,6 +758,57 @@
   </div>
 
 </div><!-- /page -->
+
+<script>
+(function () {
+  const INDEX_URL = 'index.html';
+
+  const backBtn = document.getElementById('nav-back');
+  const nextBtn = document.getElementById('nav-next');
+
+  const currentFile = window.location.pathname.split('/').pop();
+
+  fetch(INDEX_URL)
+    .then(res => res.text())
+    .then(html => {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, 'text/html');
+
+      // Extract items from raw HTML
+      const items = Array.from(doc.querySelectorAll('.content-list .item'))
+        .map(item => ({
+          href: item.querySelector('a').getAttribute('href'),
+          date: item.getAttribute('data-date')
+        }))
+        .filter(x => x.href && x.date);
+
+      // Sort oldest → newest
+      items.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+      // Match current file
+      const idx = items.findIndex(x => currentFile === x.href);
+
+      if (idx === -1) {
+        backBtn.classList.add('disabled');
+        nextBtn.classList.add('disabled');
+        return;
+      }
+
+      const prev = items[idx - 1];
+      const next = items[idx + 1];
+
+      if (prev) backBtn.href = prev.href;
+      else backBtn.classList.add('disabled');
+
+      if (next) nextBtn.href = next.href;
+      else nextBtn.classList.add('disabled');
+    })
+    .catch(() => {
+      backBtn.classList.add('disabled');
+      nextBtn.classList.add('disabled');
+    });
+})();
+</script>
 
 </body>
 </html>
