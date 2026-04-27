@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!--
+  ╔══════════════════════════════════════════════════════════════╗
+  ║  PERSONAL INVESTMENT RESEARCH — GOLD THEME                   ║
+  ║  Author: nwchun90                                            ║
+  ║  Series: Company Series                                      ║
+  ║  Document: AMD — Buy Timing & Business Status                ║
+  ║  Date: April 24, 2026                                        ║
+  ╚══════════════════════════════════════════════════════════════╝
+-->
+<title>AMD — Is Now the Right Time to Buy? · nwchun90 Research</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --gold:       #B87333;
+  --ink:        #1a1a1a;
+  --paper:      #faf9f6;
+  --muted:      #888;
+  --border:     #e0ddd5;
+  --cream:      #f5f3ec;
+  --green:      #2e7d32;
+  --amber:      #B87333;
+  --red:        #b71c1c;
+  --blue:       #1a5494;
+  --teal:       #1a7f6e;
+  --font-serif: 'Georgia', serif;
+  --font-mono:  'Courier New', monospace;
+}
+
+body { font-family: var(--font-serif); background: var(--paper); color: var(--ink); font-size: 14px; line-height: 1.7; }
+
+.page { max-width: 900px; margin: 0 auto; padding: 40px 28px 60px; }
+
+/* NAVIGATION BAR */
+.nav-bar {
+  margin: 40px 0 20px;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.nav-btn {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  padding: 6px 14px;
+  border: 1px solid var(--border);
+  background: #fff;
+  color: var(--ink);
+  text-decoration: none;
+  border-radius: 4px;
+  transition: 0.15s;
+}
+
+.nav-btn:hover {
+  background: var(--gold);
+  color: #fff;
+  border-color: var(--gold);
+}
+
+.nav-btn.disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+/* ── masthead ── */
+.masthead { border-top: 3px solid var(--ink); border-bottom: 1px solid var(--ink); padding: 16px 0 14px; margin-bottom: 32px; display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+.eyebrow { font-family: var(--font-mono); font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+.headline { font-size: 26px; font-weight: 400; line-height: 1.2; letter-spacing: -0.5px; font-family: var(--font-serif); }
+.headline span { font-style: italic; color: var(--gold); }
+.author-line { font-family: var(--font-mono); font-size: 11px; color: var(--muted); margin-top: 6px; }
+.datestamp { font-family: var(--font-mono); font-size: 11px; color: var(--muted); text-align: right; line-height: 1.7; }
+
+/* ── deck ── */
+.deck { font-size: 15px; color: #444; line-height: 1.75; max-width: 680px; margin-bottom: 28px; border-left: 3px solid var(--gold); padding-left: 16px; }
+
+/* ── section label ── */
+.sl { font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); margin: 26px 0 12px; display: flex; align-items: center; gap: 12px; }
+.sl::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+/* ── stat cards ── */
+.stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 24px; }
+.stat-card { background: #fff; border: 1px solid var(--border); border-radius: 4px; padding: 14px 16px; }
+.stat-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: #999; font-family: var(--font-mono); margin-bottom: 4px; }
+.stat-value { font-size: 22px; font-weight: 400; font-family: var(--font-mono); line-height: 1.1; }
+.stat-sub { font-size: 11px; color: #888; margin-top: 3px; font-style: italic; }
+.green { color: var(--green); } .red { color: var(--red); } .amber { color: var(--amber); } .blue { color: var(--blue); }
+
+/* ── card & rows ── */
+.card { background: #fff; border: 1px solid var(--border); border-radius: 4px; padding: 18px 20px; }
+.kv { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 0.5px solid var(--border); font-size: 13px; }
+.kv:last-child { border-bottom: none; }
+.kl { color: #777; }
+.kv-val { font-family: var(--font-mono); font-weight: 600; }
+
+/* ── bar ── */
+.bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.bar-row:last-child { margin-bottom: 0; }
+.bar-lbl { font-size: 12px; color: var(--muted); min-width: 140px; font-family: var(--font-mono); }
+.bar-track { flex: 1; height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+.bar-fill { height: 100%; border-radius: 4px; }
+.bar-val { font-size: 12px; font-weight: 600; width: 70px; text-align: right; font-family: var(--font-mono); }
+
+/* ── story panels ── */
+.story-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(195px, 1fr)); gap: 12px; }
+.story-card { background: #fff; border: 1px solid var(--border); border-top-width: 2px; border-radius: 0 0 4px 4px; padding: 14px 16px; }
+.story-number { font-family: var(--font-mono); font-size: 10px; color: #aaa; letter-spacing: 2px; margin-bottom: 5px; }
+.story-title { font-size: 13px; font-weight: 700; margin-bottom: 5px; }
+.story-body { font-size: 12px; color: #555; line-height: 1.7; }
+
+/* ── understanding ── */
+.understanding { background: var(--ink); color: #f0ece4; border-radius: 4px; padding: 22px 24px; margin-bottom: 0; }
+.understanding h3 { font-size: 11px; font-family: var(--font-mono); letter-spacing: 2px; text-transform: uppercase; color: var(--gold); margin-bottom: 14px; font-weight: 400; }
+.understanding-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.understanding p { font-size: 12px; color: #bbb; line-height: 1.8; }
+.understanding strong { color: #f0ece4; }
+
+/* ── risk pills ── */
+.pill { display: inline-block; font-size: 10px; padding: 2px 9px; border-radius: 2px; font-family: var(--font-mono); font-weight: 700; margin-right: 4px; margin-bottom: 4px; }
+.pill-g { background: rgba(46,125,50,0.12); color: #1b5e20; }
+.pill-r { background: rgba(183,28,28,0.1); color: #7f1d1d; }
+.pill-a { background: rgba(184,115,51,0.12); color: #7a4c15; }
+
+/* ── evidence bullets ── */
+.ev { display: flex; gap: 12px; padding: 9px 0; border-bottom: 0.5px solid var(--border); font-size: 13px; line-height: 1.65; }
+.ev:last-child { border-bottom: none; }
+.dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 6px; }
+
+/* ── chart ── */
+.chart-box { position: relative; width: 100%; height: 240px; }
+
+/* ── bottom rule ── */
+.bottom-rule { border-top: 1px solid var(--ink); padding-top: 12px; margin-top: 32px; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 8px; }
+.disclaimer { font-size: 10px; color: #aaa; font-style: italic; font-family: var(--font-mono); max-width: 580px; line-height: 1.6; }
+.logo-text { font-family: var(--font-mono); font-size: 10px; color: #bbb; letter-spacing: 1px; }
+
+@media (max-width: 560px) {
+  .headline { font-size: 20px; }
+  .understanding-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- ── MASTHEAD ── -->
+<div class="masthead">
+  <div class="masthead-left">
+    <div class="eyebrow">Personal Investment Research &middot; Company Series</div>
+    <div class="headline">Advanced Micro Devices — <span>is now the right time?</span></div>
+    <div class="author-line">by nwchun90</div>
+  </div>
+  <div class="datestamp">
+    April 26, 2026<br>
+    Data: CNBC · SeekingAlpha · Investing.com
+  </div>
+</div>
+
+<!-- ── DECK ── -->
+<p class="deck">
+  AMD ripped almost 14% in its last session — its biggest one‑day pop in half a year. The funny part? It wasn’t even AMD news. Intel dropped a monster Q1 and the whole CPU space got re‑rated overnight. Now the real question is whether this move has legs, or if it’s just one of those gaps that fades as fast as it appeared.
+</p>
+
+<!-- ── PRICE ACTION ── -->
+<div class="sl">price vs key levels</div>
+<div class="stat-row">
+  <div class="stat-card">
+    <div class="stat-label">Price</div>
+    <div class="stat-value green">~$305</div>
+    <div class="stat-sub">+13–14% gap up</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">All-time high</div>
+    <div class="stat-value amber">$281.05</div>
+    <div class="stat-sub">Apr 17 — now exceeded</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">March 2026 trough</div>
+    <div class="stat-value" style="color:#555">~$196</div>
+    <div class="stat-sub">+55% recovery from low</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Analyst consensus</div>
+    <div class="stat-value red">$287–$290</div>
+    <div class="stat-sub">Below current price</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">DA Davidson target</div>
+    <div class="stat-value green">$375</div>
+    <div class="stat-sub">+70% hike, Upgraded Buy</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Next earnings</div>
+    <div class="stat-value blue">May 5</div>
+    <div class="stat-sub">Q1 2026 · est. $9.8B rev.</div>
+  </div>
+</div>
+
+<!-- ── WHAT CAUSED ── -->
+<div class="sl">what caused the gap — the intel read-through</div>
+<div class="card">
+  <div class="ev">
+    <div class="dot" style="background:var(--blue)"></div>
+    <div><strong>Intel reported a massive Q1 beat</strong> — server CPU demand grew far beyond consensus, with Intel guiding double-digit server CPU unit growth for 2026, up from expectations of barely slight growth just six months ago.</div>
+  </div>
+  <div class="ev">
+    <div class="dot" style="background:var(--blue)"></div>
+    <div><strong>The market's read-through to AMD:</strong> If Intel — which has been losing CPU market share to AMD for years — is seeing this demand, AMD's EPYC server CPU position must be even stronger. DA Davidson upgraded AMD from Neutral to Buy and hiked its target by 70% to $375 on exactly this logic.</div>
+  </div>
+  <div class="ev">
+    <div class="dot" style="background:var(--amber)"></div>
+    <div><strong>"The CPU is reinserting itself as an indispensable foundation of the AI era"</strong> — DA Davidson. Agentic AI workloads are now demanding CPU compute alongside GPU compute, expanding AMD's total addressable market beyond GPUs alone.</div>
+  </div>
+  <div class="ev">
+    <div class="dot" style="background:var(--green)"></div>
+    <div><strong>Stifel's Ruben Roy (ranked #9 of 12,000+ analysts)</strong> had already raised his target to $320 on April 20, citing the Meta and OpenAI deployment commitments. Bank of America put its target at $310, estimating every gigawatt of AI capacity equals $15–$20 billion in AMD net revenue.</div>
+  </div>
+</div>
+
+<!-- ── BUSINESS STATUS ── -->
+<div class="sl">business status — five health metrics</div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:0">
+  <div class="card">
+    <div class="kv"><span class="kl">Q4 2025 revenue</span><span class="kv-val green">$10.3B (+34% YoY)</span></div>
+    <div class="kv"><span class="kl">Q4 non-GAAP EPS</span><span class="kv-val green">$1.53 (+40% YoY)</span></div>
+    <div class="kv"><span class="kl">Q1 2026 guidance</span><span class="kv-val amber">$9.8B (−5% QoQ)</span></div>
+    <div class="kv"><span class="kl">Data centre revenue mix</span><span class="kv-val green">52%+ of total</span></div>
+    <div class="kv"><span class="kl">Non-GAAP gross margin</span><span class="kv-val green">57% (Q4 2025)</span></div>
+    <div class="kv"><span class="kl">Long-term DC growth target</span><span class="kv-val green">>60% p.a.</span></div>
+  </div>
+  <div class="card">
+    <div class="kv"><span class="kl">Meta deal size</span><span class="kv-val green">$60B+ · 6GW commitment</span></div>
+    <div class="kv"><span class="kl">OpenAI partnership</span><span class="kv-val green">1GW DC starting H2 2026</span></div>
+    <div class="kv"><span class="kl">MI450 (CDNA5) launch</span><span class="kv-val amber">H2 2026 · Helios rack</span></div>
+    <div class="kv"><span class="kl">EPYC server CPU share</span><span class="kv-val green">~29% (up from <1% in 2017)</span></div>
+    <div class="kv"><span class="kl">Free cash flow trend</span><span class="kv-val green">All-time high in Q4 2025</span></div>
+    <div class="kv"><span class="kl">Share dilution risk</span><span class="kv-val amber">Meta warrants: 160M shares</span></div>
+  </div>
+</div>
+
+<!-- ── REVENUE SEGMENT BREAKDOWN ── -->
+<div class="sl">revenue segment composition — Q4 2025</div>
+<div class="card">
+  <div class="bar-row">
+    <span class="bar-lbl">Data Centre (AI + EPYC)</span>
+    <div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--blue)"></div></div>
+    <span class="bar-val blue">$5.38B</span>
+  </div>
+  <div class="bar-row">
+    <span class="bar-lbl">Client (PC CPUs)</span>
+    <div class="bar-track"><div class="bar-fill" style="width:43%;background:var(--green)"></div></div>
+    <span class="bar-val green">$2.31B</span>
+  </div>
+  <div class="bar-row">
+    <span class="bar-lbl">Gaming (consoles)</span>
+    <div class="bar-track"><div class="bar-fill" style="width:22%;background:var(--red)"></div></div>
+    <span class="bar-val red">$1.16B ↓</span>
+  </div>
+  <div class="bar-row" style="margin-bottom:0">
+    <span class="bar-lbl">Embedded (FPGAs)</span>
+    <div class="bar-track"><div class="bar-fill" style="width:25%;background:var(--muted)"></div></div>
+    <span class="bar-val" style="color:#888">$0.92B</span>
+  </div>
+</div>
+
+<!-- ── KEY EVENTS TIMELINE ── -->
+<div class="sl">the price story — events that moved the stock</div>
+<div class="story-grid">
+  <div class="story-card" style="border-top-color:var(--red)">
+    <div class="story-number">ACT 01 · NOV 2025 – MAR 2026</div>
+    <div class="story-title">The collapse — from peak to trough</div>
+    <div class="story-body">AMD shed nearly 28% from late-2025 highs, pressured by a disappointing post-earnings reaction, China GPU export controls capping MI308 sales at ~$100M/quarter, and broad semiconductor anxiety. The trough was around $196 in early March.</div>
+  </div>
+  <div class="story-card" style="border-top-color:var(--amber)">
+    <div class="story-number">ACT 02 · MAR – APR 16 2026</div>
+    <div class="story-title">TSMC validates the AI demand floor</div>
+    <div class="story-body">TSMC reported 41% Q1 2026 sales growth and guided 32% for Q2 — a direct proxy for AI accelerator demand from its customers, AMD included. AMD recovered 37% from trough, closing at a new 52-week high of $278 on April 17.</div>
+  </div>
+  <div class="story-card" style="border-top-color:var(--blue)">
+    <div class="story-number">ACT 03 · APR 17 – 23 2026</div>
+    <div class="story-title">All-time high — then consolidation</div>
+    <div class="story-body">AMD hit $281.05 ATH on April 17. Analysts begin raising targets ahead of earnings: Stifel to $320 (Apr 20), BofA to $310 (Apr 18). RSI reaches 84.87 — deep overbought. Stock consolidates near $260–270.</div>
+  </div>
+  <div class="story-card" style="border-top-color:var(--green)">
+    <div class="story-number">ACT 04 · APR 24 2026 — NOW</div>
+    <div class="story-title">Intel's earnings ignite AMD +14%</div>
+    <div class="story-body">Intel's double-digit server CPU growth guidance triggers a sector-wide read-through. DA Davidson upgrades AMD, hikes target to $375. AMD gaps to ~$305 — now trading above the entire Wall Street consensus average of $287–$290.</div>
+  </div>
+</div>
+
+<!-- ── SUPPLY CHAIN & COMPETITION ── -->
+<div class="sl">supply chain risks & competitive position</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+  <div class="card">
+    <div style="font-size:11px;color:var(--red);font-family:var(--font-mono);margin-bottom:10px">SUPPLY CHAIN CONSTRAINTS</div>
+    <div class="ev" style="padding:7px 0">
+      <div class="dot" style="background:var(--red)"></div>
+      <div style="font-size:12px"><strong>TSMC N2 (2nm)</strong> — both MI450 and EPYC Venice depend on TSMC's newest, highest-risk node. Any yield issues flow directly to AMD shipments.</div>
+    </div>
+    <div class="ev" style="padding:7px 0">
+      <div class="dot" style="background:var(--red)"></div>
+      <div style="font-size:12px"><strong>HBM4 memory</strong> — MI450 requires 432GB per chip. HBM4 from SK Hynix and Samsung is sold out through 2027. Supply is the limiting factor, not demand.</div>
+    </div>
+    <div class="ev" style="padding:7px 0;border:none">
+      <div class="dot" style="background:var(--amber)"></div>
+      <div style="font-size:12px"><strong>UALink switches</strong> — Helios rack-scale relies on UALink interconnect, whose broad availability in 2026 remains uncertain — an industry-wide gating factor.</div>
+    </div>
+  </div>
+  <div class="card">
+    <div style="font-size:11px;color:var(--blue);font-family:var(--font-mono);margin-bottom:10px">COMPETITIVE POSITION</div>
+    <div class="ev" style="padding:7px 0">
+      <div class="dot" style="background:var(--red)"></div>
+      <div style="font-size:12px"><strong>vs. NVIDIA</strong> — NVIDIA holds ~80% AI accelerator share with $194B data centre revenue. CUDA ecosystem is the deepest moat AMD cannot replicate quickly. AMD is the credible #2, not an equal rival.</div>
+    </div>
+    <div class="ev" style="padding:7px 0">
+      <div class="dot" style="background:var(--green)"></div>
+      <div style="font-size:12px"><strong>vs. Intel</strong> — AMD is winning server CPU share decisively (~29% vs Intel's decline). The Intel beat actually validates AMD's market, not Intel's recovery.</div>
+    </div>
+    <div class="ev" style="padding:7px 0;border:none">
+      <div class="dot" style="background:var(--amber)"></div>
+      <div style="font-size:12px"><strong>Custom silicon threat</strong> — Hyperscalers building TPUs and custom ASICs reduces the merchant GPU market. AMD's Meta/OpenAI partnerships partially offset this by locking in multi-year supply commitments.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── ROADMAP ── -->
+<div class="sl">product roadmap — what's coming</div>
+<div class="card">
+  <div class="kv"><span class="kl">MI450 / Instinct (CDNA5)</span><span><span class="pill pill-a">H2 2026</span> 432GB HBM4 · 40 PFLOPs FP4 · directly vs. Vera Rubin</span></div>
+  <div class="kv"><span class="kl">Helios rack platform</span><span><span class="pill pill-a">Q3 2026</span> 72× MI455X · 3 AI exaflops per rack · first to Meta/OpenAI</span></div>
+  <div class="kv"><span class="kl">EPYC Venice (Zen 6)</span><span><span class="pill pill-a">2026</span> 256 cores per socket · 2nm process · #1 in server CPU value</span></div>
+  <div class="kv"><span class="kl">MI500 series (CDNA6)</span><span><span class="pill pill-a">2027 preview</span> 2nm · HBM4E · 1,000× perf. vs. MI300X claim</span></div>
+  <div class="kv" style="border:none"><span class="kl">China GPU ceiling</span><span><span class="pill pill-r">CAP</span> Export controls limit MI308 to ~$100M/quarter — not expanding</span></div>
+</div>
+
+<!-- ── TECHNICAL ── -->
+<div class="sl">technical analysis — The latest picture</div>
+<div class="card" style="margin-bottom:16px">
+  <div class="kv"><span class="kl">Current price</span><span class="kv-val green">~$305 · +14% intraday</span></div>
+  <div class="kv"><span class="kl">RSI before the last gap</span><span class="kv-val red">84.87 — deep overbought</span></div>
+  <div class="kv"><span class="kl">RSI after the last gap</span><span class="kv-val red">Likely approaching 90+ — extreme</span></div>
+  <div class="kv"><span class="kl">50-day moving average</span><span class="kv-val green">~$276 · price well above</span></div>
+  <div class="kv"><span class="kl">200-day moving average</span><span class="kv-val green">~$228 · strong uptrend confirmed</span></div>
+  <div class="kv"><span class="kl">All moving averages signal</span><span class="kv-val green">12 Buy · 0 Sell</span></div>
+  <div class="kv"><span class="kl">Analyst consensus vs. price</span><span class="kv-val red">$287–$290 avg — stock has run past it</span></div>
+  <div class="kv" style="border:none"><span class="kl">Key event risk</span><span class="kv-val amber">May 5 earnings — binary</span></div>
+</div>
+
+<!-- ── RISKS ── -->
+<div class="sl">key risks at this price</div>
+<div class="card" style="margin-bottom:0">
+  <span class="pill pill-r">RSI ~90</span> Historically, RSI above 85 after a prolonged run precedes a short-term pullback or consolidation even in a structural uptrend. The 11-day winning streak that preceded now was statistically extreme.<br><br>
+  <span class="pill pill-r">Price above consensus</span> The stock is trading above the Wall Street average target of $287–$290. New money is betting on H2 execution, not current fundamentals. Any shortfall in Helios timing language on May 5 will be punished.<br><br>
+  <span class="pill pill-r">HBM4 supply gate</span> Demand is strong. Supply — specifically HBM4 and TSMC N2 capacity — is the actual constraint. AMD's revenue ramp is bounded by manufacturing, not customers.<br><br>
+  <span class="pill pill-a">Meta warrants</span> 160 million performance-based shares (≈10% of AMD) vest as hardware deliveries are confirmed. Dilution is real if execution stays on track.<br><br>
+  <span class="pill pill-a">May 5 is binary</span> A clean beat with raised guidance and confirmed Helios/MI450 timing pushes toward $375. Any delay language or supply constraint commentary pulls the stock back sharply toward the $260–$270 range.
+</div>
+
+<!-- ── UNDERSTANDING ── -->
+<div class="sl">why AMD moved even without its own news</div>
+<div class="understanding">
+  <h3>The sector read-through mechanism</h3>
+  <div class="understanding-grid">
+    <p><strong>What happened:</strong> Intel's Q1 results showed server CPU demand accelerating dramatically — double-digit unit growth vs. near-flat prior expectations. Wall Street immediately asked: if Intel is growing this fast despite losing share to AMD, how fast must AMD be growing?</p>
+    <p><strong>Why it matters for AMD specifically:</strong> AMD's EPYC server CPUs are the primary beneficiary of every server build that deploys AI infrastructure. More AI servers = more EPYC chips. Intel's results confirmed that the server buildout is arriving faster than projected.</p>
+    <p><strong>The agentic AI shift:</strong> DA Davidson's insight is key — agentic AI workloads (AI agents running autonomously) are CPU-intensive in ways that pure inference on GPUs is not. This widens AMD's addressable market from GPU-only to GPU + CPU infrastructure simultaneously.</p>
+    <p><strong>What May 5 needs to confirm:</strong> That Q1 data centre revenue is tracking the 60%+ growth trajectory, that Helios rack systems are on schedule for H2 delivery to Meta and OpenAI, and that supply constraints are not worsening materially.</p>
+  </div>
+</div>
+
+<!-- ── VERDICT ── -->
+<div class="sl">verdict — is now the right time?</div>
+<div class="card" style="background:var(--cream)">
+  <div style="font-size:13px;line-height:1.9">
+    <strong>The business is genuinely excellent.</strong> Record Q4, 34% revenue growth, 57% gross margin, $60B+ Meta commitment, dominant EPYC server CPU market share, and a clear H2 2026 product catalyst in MI450/Helios. The structural AI infrastructure thesis is intact and strengthened by Intel's read-through.<br><br>
+    <strong>The timing, however, is the challenge.</strong> At ~$305, AMD is trading above the Wall Street average price target, has an RSI approaching extreme overbought levels (~85–90), and has already recovered 55% from its March trough. The stock is priced for perfect execution on Helios — a product that has never shipped at volume. Supply constraints (HBM4, TSMC N2, UALink) could compress the H2 ramp even with strong demand.<br><br>
+    <span class="amber"><strong>Positioning guidance:</strong></span> Already holding AMD — hold, first target $375 (DA Davidson) if May 5 confirms. Not yet in — wait for the post-earnings reaction on May 5 rather than chasing the latest gap. A miss or delay language could provide a re-entry between $260–$270. The fundamental thesis is not in question; the entry price is.
+  </div>
+</div>
+
+<!-- NAVIGATION BAR -->
+<div class="nav-bar">
+  <a class="nav-btn" id="nav-back" href="#">‹ Back</a>
+  <a class="nav-btn" id="nav-home" href="index.html">Home</a>
+  <a class="nav-btn" id="nav-next" href="#">Next ›</a>
+</div>
+
+<!-- ── BOTTOM RULE ── -->
+<div class="bottom-rule">
+  <p class="disclaimer">For informational purposes only. Not financial advice. Prices approximate as of April 24, 2026. Past performance does not guarantee future results. Analyst price targets represent third-party opinions and are not guarantees. Consult a qualified financial advisor before making investment decisions.</p>
+  <div class="logo-text">PERSONAL RESEARCH · 2026 · NASDAQ:AMD</div>
+</div>
+
+</div><!-- /page -->
+
+<script>
+(function () {
+  const INDEX_URL = 'index.html';
+
+  const backBtn = document.getElementById('nav-back');
+  const nextBtn = document.getElementById('nav-next');
+
+  const currentFile = window.location.pathname.split('/').pop();
+
+  fetch(INDEX_URL)
+    .then(res => res.text())
+    .then(html => {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, 'text/html');
+
+      // Extract items from raw HTML
+      const items = Array.from(doc.querySelectorAll('.content-list .item'))
+        .map(item => ({
+          href: item.querySelector('a').getAttribute('href'),
+          date: item.getAttribute('data-date')
+        }))
+        .filter(x => x.href && x.date);
+
+      // Sort oldest → newest
+      items.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+      // Match current file
+      const idx = items.findIndex(x => currentFile === x.href);
+
+      if (idx === -1) {
+        backBtn.classList.add('disabled');
+        nextBtn.classList.add('disabled');
+        return;
+      }
+
+      const prev = items[idx - 1];
+      const next = items[idx + 1];
+
+      if (prev) backBtn.href = prev.href;
+      else backBtn.classList.add('disabled');
+
+      if (next) nextBtn.href = next.href;
+      else nextBtn.classList.add('disabled');
+    })
+    .catch(() => {
+      backBtn.classList.add('disabled');
+      nextBtn.classList.add('disabled');
+    });
+})();
+</script>
+
+</body>
+</html>
