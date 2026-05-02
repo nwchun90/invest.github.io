@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!--
+  ╔══════════════════════════════════════════════════════════════╗
+  ║  PERSONAL INVESTMENT RESEARCH — GOLD THEME                   ║
+  ║  Author: nwchun90                                            ║
+  ║  Series: Gold Series                                         ║
+  ║  Document: Gold Spot — War, Panic & Recovery                 ║
+  ║  Date: May 2, 2026                                           ║
+  ╚══════════════════════════════════════════════════════════════╝
+-->
+<title>Gold Spot — War, Panic &amp; Recovery · nwchun90</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --gold: #B87333; --ink: #1a1a1a; --paper: #faf9f6;
+  --muted: #888; --border: #e0ddd5; --cream: #f5f3ec;
+  --green: #2e7d32; --red: #b71c1c; --blue: #1a5494;
+  --font-serif: 'Georgia', serif; --font-mono: 'Courier New', monospace;
+}
+body { font-family: var(--font-serif); background: var(--paper); color: var(--ink); font-size: 14px; line-height: 1.7; }
+.page { max-width: 900px; margin: 0 auto; padding: 40px 28px 60px; }
+
+/* NAVIGATION BAR */
+.nav-bar {
+  margin: 40px 0 20px;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.nav-btn {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  padding: 6px 14px;
+  border: 1px solid var(--border);
+  background: #fff;
+  color: var(--ink);
+  text-decoration: none;
+  border-radius: 4px;
+  transition: 0.15s;
+}
+
+.nav-btn:hover {
+  background: var(--gold);
+  color: #fff;
+  border-color: var(--gold);
+}
+
+.nav-btn.disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+/* masthead */
+.masthead { border-top: 3px solid var(--ink); border-bottom: 1px solid var(--ink); padding: 16px 0 14px; margin-bottom: 32px; display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+.eyebrow { font-family: var(--font-mono); font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+.headline { font-size: 26px; font-weight: 400; line-height: 1.2; letter-spacing: -0.5px; }
+.headline span { font-style: italic; color: var(--gold); }
+.author-line { font-family: var(--font-mono); font-size: 11px; color: var(--muted); margin-top: 6px; }
+.datestamp { font-family: var(--font-mono); font-size: 11px; color: var(--muted); text-align: right; line-height: 1.8; }
+
+/* deck */
+.deck { font-size: 15px; color: #444; line-height: 1.75; max-width: 680px; margin-bottom: 28px; border-left: 3px solid var(--gold); padding-left: 16px; }
+
+/* section label */
+.sl { font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); margin: 26px 0 12px; display: flex; align-items: center; gap: 12px; }
+.sl::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+/* cover photo placeholder */
+.cover { border: 1.5px dashed var(--border); border-radius: 4px; background: var(--cream); display: flex; align-items: center; justify-content: center; height: 360px; margin-bottom: 0; }
+.cover-label { font-family: var(--font-mono); font-size: 11px; color: #bbb; letter-spacing: 1px; text-align: center; line-height: 1.8; }
+
+/* stats */
+.stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(145px, 1fr)); gap: 12px; margin-bottom: 0; }
+.stat-card { background: #fff; border: 1px solid var(--border); border-radius: 4px; padding: 12px 14px; }
+.stat-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: #999; font-family: var(--font-mono); margin-bottom: 3px; }
+.stat-value { font-size: 22px; font-weight: 400; font-family: var(--font-mono); line-height: 1.1; }
+.stat-sub { font-size: 11px; color: var(--muted); margin-top: 3px; font-style: italic; }
+.g { color: var(--green); } .r { color: var(--red); } .a { color: var(--gold); } .b { color: var(--blue); }
+
+/* story panels */
+.story-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(195px, 1fr)); gap: 12px; }
+.story-card { background: #fff; border: 1px solid var(--border); border-top: 2px solid; border-radius: 0 0 4px 4px; padding: 14px 16px; }
+.phase { font-family: var(--font-mono); font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; display: inline-block; padding: 2px 8px; border-radius: 2px; margin-bottom: 6px; font-weight: 700; }
+.story-title { font-size: 13px; font-weight: 700; margin-bottom: 5px; }
+.story-body { font-size: 12px; color: #555; line-height: 1.7; }
+
+/* understanding */
+.understanding { background: var(--ink); color: #f0ece4; border-radius: 4px; padding: 22px 24px; }
+.understanding h3 { font-size: 11px; font-family: var(--font-mono); letter-spacing: 2px; text-transform: uppercase; color: var(--gold); margin-bottom: 14px; font-weight: 400; }
+.understanding-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.understanding p { font-size: 12px; color: #bbb; line-height: 1.8; }
+.understanding strong { color: #f0ece4; }
+
+/* timeline */
+.g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.card { background: #fff; border: 1px solid var(--border); border-radius: 4px; padding: 16px 18px; }
+.timeline { position: relative; padding-left: 24px; }
+.timeline::before { content: ''; position: absolute; left: 5px; top: 6px; bottom: 6px; width: 2px; background: var(--border); }
+.tl-item { position: relative; margin-bottom: 18px; }
+.tl-item:last-child { margin-bottom: 0; }
+.tl-dot { position: absolute; left: -21px; top: 5px; width: 10px; height: 10px; border-radius: 50%; border: 2px solid #fff; }
+.tl-date { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.5px; color: var(--muted); margin-bottom: 2px; }
+.tl-title { font-size: 12px; font-weight: 700; margin-bottom: 3px; }
+.tl-body { font-size: 11px; color: #666; line-height: 1.65; }
+
+/* RSI / evidence rows */
+.ev { display: flex; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 12px; line-height: 1.6; }
+.ev:last-child { border-bottom: none; }
+.dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 4px; flex-shrink: 0; }
+
+/* what to watch */
+.wrow { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 7px 0; border-bottom: 1px solid var(--border); font-size: 12px; }
+.wrow:last-child { border-bottom: none; }
+.wl { font-family: var(--font-mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); white-space: nowrap; }
+.wr { color: #444; }
+
+/* verdict */
+.verdict { background: var(--cream); border-left: 3px solid var(--gold); border-radius: 0 4px 4px 0; padding: 16px 18px; font-size: 13px; line-height: 1.85; color: #444; }
+
+/* bottom rule */
+.bottom-rule { border-top: 1px solid var(--ink); padding-top: 12px; margin-top: 36px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+.disclaimer { font-size: 10px; color: #aaa; font-style: italic; font-family: var(--font-mono); max-width: 580px; line-height: 1.6; }
+.logo-text { font-family: var(--font-mono); font-size: 10px; color: #bbb; letter-spacing: 1px; }
+
+@media (max-width: 560px) {
+  .headline { font-size: 20px; }
+  .understanding-grid, .g2 { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- ══ MASTHEAD ═══════════════════════════════════════════════ -->
+<div class="masthead">
+  <div>
+    <div class="eyebrow">Personal Investment Research &middot; Gold Series</div>
+    <div class="headline">Gold spot — <span>war, panic &amp; recovery</span></div>
+    <div class="author-line">by nwchun90</div>
+  </div>
+  <div class="datestamp">
+    May 2, 2026<br>
+    Data: TradingView · FXOpen · Wikipedia<br>
+  </div>
+</div>
+
+
+<!-- ══ DECK ══════════════════════════════════════════════════ -->
+<p class="deck" style="margin-top:24px">
+  Gold’s slide from $5,602 to $4,190 — and its rebound above $4,600 — isn’t just volatility. It’s the imprint of the US–Iran war pressed straight onto the chart. In sixty days, the market moved through three clean phases: a fear‑driven spike, a supply‑shock collapse, and a double‑bottom reset. Each phase had a cause. Each one still echoes in today’s price.
+</p>
+
+<!-- ══ KEY LEVELS ════════════════════════════════════════════ -->
+<div class="sl">key levels</div>
+<div class="stat-row">
+  <div class="stat-card">
+    <div class="stat-label">Pre-war base</div>
+    <div class="stat-value a">$4,900</div>
+    <div class="stat-sub">Feb 28 · war day open</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">All-time high</div>
+    <div class="stat-value a">$5,602</div>
+    <div class="stat-sub">Mar 2 · safe-haven peak</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Double-bottom low</div>
+    <div class="stat-value r">~$4,190</div>
+    <div class="stat-sub">Mar 19–22 · panic trough</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Neckline</div>
+    <div class="stat-value b">~$4,730</div>
+    <div class="stat-sub">Breakout confirms recovery</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Peak-to-trough</div>
+    <div class="stat-value r">−25.2%</div>
+    <div class="stat-sub">17 trading days</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Today</div>
+    <div class="stat-value a">$4,613</div>
+    <div class="stat-sub">RSI 43–49 · neutral</div>
+  </div>
+</div>
+
+<!-- ══ FOUR PHASES ════════════════════════════════════════════ -->
+<div class="sl">four phases</div>
+<div class="story-grid">
+
+  <div class="story-card" style="border-top-color:var(--red)">
+    <div class="phase" style="background:rgba(183,28,28,0.1);color:var(--red)">① Feb 28 – Mar 2</div>
+    <div class="story-title">Safe-haven spike</div>
+    <div class="story-body">Operation Epic Fury launched at 1:15am EST. ~900 targets struck in 12 hours; Khamenei killed. Gold surged from $4,900 to ATH $5,602 in two sessions. RSI ~80 — deep overbought.</div>
+  </div>
+
+  <div class="story-card" style="border-top-color:var(--gold)">
+    <div class="phase" style="background:rgba(184,115,51,0.1);color:var(--gold)">② Mar 3 – Mar 22</div>
+    <div class="story-title">Logistics panic collapse</div>
+    <div class="story-body">Iran closed the Strait of Hormuz. Ship transits: 130/day → 6/day (−95%). Oil surged toward $100/bbl → inflation spiked → Fed held rates → gold's opportunity cost rose. Price collapsed 25% in 17 days to ~$4,190.</div>
+  </div>
+
+  <div class="story-card" style="border-top-color:var(--blue)">
+    <div class="phase" style="background:rgba(26,84,148,0.1);color:var(--blue)">③ Mar 23 – Apr 8</div>
+    <div class="story-title">Double bottom &amp; recovery</div>
+    <div class="story-body">RSI ~20 — extreme oversold. Two tests of ~$4,190 confirmed selling exhaustion. Breakout above neckline ~$4,730 re-established the uptrend. Gold recovered to ~$4,870. Central bank buying provided the structural floor.</div>
+  </div>
+
+  <div class="story-card" style="border-top-color:var(--muted)">
+    <div class="phase" style="background:rgba(136,136,136,0.1);color:var(--muted)">④ Apr 9 – Today</div>
+    <div class="story-title">Consolidation</div>
+    <div class="story-body">US blockade of Iranian ports (Apr 11) renewed inflation concern. Gold pulled back to $4,613. RSI 43–49 — neutral. The chart is coiling; the next move hinges on peace talks and the May 10 CPI print.</div>
+  </div>
+
+</div>
+
+<!-- ══ THE KEY PARADOX ════════════════════════════════════════ -->
+<div class="sl">the paradox — why conflict caused gold to fall</div>
+<div class="understanding">
+  <h3>The Hormuz transmission mechanism</h3>
+  <div class="understanding-grid">
+    <p><strong>Phase 1 — expected:</strong> War begins → safe-haven demand → gold to ATH $5,602. The textbook response lasted 48 hours.</p>
+    <p><strong>Phase 2 — the twist:</strong> Hormuz closes → oil +55% → inflation spikes → Fed holds rates → real yields stay elevated → opportunity cost of non-yielding gold rises → sell-off.</p>
+    <p><strong>Phase 3 — reassertion:</strong> Once the closure proved structural, gold shifted from short-term trade to long-term insurance. Central banks and sovereign funds re-entered. RSI ~20 signalled selling exhaustion.</p>
+    <p><strong>The double bottom:</strong> Two tests of ~$4,190 with RSI at extreme oversold confirmed exhaustion. The neckline at ~$4,730 was the pivotal level — a confirmed close above it re-established the medium-term uptrend.</p>
+  </div>
+</div>
+
+<!-- ══ VERIFIED TIMELINE ══════════════════════════════════════ -->
+<div class="sl">verified timeline</div>
+<div class="g2">
+  <div class="card">
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-dot" style="background:var(--red)"></div>
+        <div class="tl-date">Feb 28 · 1:15am EST</div>
+        <div class="tl-title">Operation Epic Fury begins</div>
+        <div class="tl-body">~900 targets struck. Khamenei killed. Iran launches retaliatory missiles and drones. Gold gaps up at open.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot" style="background:var(--gold)"></div>
+        <div class="tl-date">Mar 2</div>
+        <div class="tl-title">Gold ATH — $5,602</div>
+        <div class="tl-body">Full safe-haven bid priced in. RSI ~80. Highest gold has ever traded in nominal terms. The Hormuz mechanism is already building beneath the surface.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot" style="background:var(--gold)"></div>
+        <div class="tl-date">Mar 3–6</div>
+        <div class="tl-title">Shipping flees Hormuz</div>
+        <div class="tl-body">MSC and Maersk halt Hormuz bookings. War-risk insurance withdrawn. Tanker traffic drops 70% in three days.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot" style="background:var(--red)"></div>
+        <div class="tl-date">Mar 9</div>
+        <div class="tl-title">Oil breaks $100/barrel</div>
+        <div class="tl-body">First time since 2022. Inflation transmission locks in. Fed rate-cut expectations collapse. Gold falls below $5,000.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-dot" style="background:var(--red)"></div>
+        <div class="tl-date">Mar 13–16</div>
+        <div class="tl-title">IEA warning · Hormuz at zero</div>
+        <div class="tl-body">IEA: largest supply disruption since 1970s. Transits: 130/day → 6/day. ~2,000 ships stranded in the Gulf. Gold below $4,600.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot" style="background:var(--green)"></div>
+        <div class="tl-date">Mar 19–22</div>
+        <div class="tl-title">Double bottom — RSI ~20</div>
+        <div class="tl-body">Two tests of ~$4,190 four days apart. RSI at extreme oversold. Institutional and central bank buyers re-enter quietly.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot" style="background:var(--green)"></div>
+        <div class="tl-date">Late Mar – Apr 8</div>
+        <div class="tl-title">Neckline breakout · recovery to $4,870</div>
+        <div class="tl-body">Confirmed close above ~$4,730. 16% rally from trough. Safe-haven thesis reasserts as Hormuz closure proves structural.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot" style="background:var(--blue)"></div>
+        <div class="tl-date">Apr 11 – May 2</div>
+        <div class="tl-title">US blockade · second leg down · $4,613</div>
+        <div class="tl-body">Naval blockade of Iranian ports renews inflation concern. Second corrective leg. RSI returns to neutral 43–49.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ RSI SIGNALS ════════════════════════════════════════════ -->
+<div class="sl">reading the RSI circles</div>
+<div class="card">
+  <div class="ev">
+    <div class="dot" style="background:var(--red)"></div>
+    <div><strong style="color:var(--red)">Red circle — Mar 2–4 · RSI ~80:</strong> Buyers exhausted. RSI above 70 signals an impending reversal regardless of headlines. The 25% collapse over the following 17 days validated the signal.</div>
+  </div>
+  <div class="ev">
+    <div class="dot" style="background:var(--green)"></div>
+    <div><strong style="color:var(--green)">First green circle — Mar 19–22 · RSI ~20:</strong> Sellers exhausted. Coinciding with the double-bottom pattern, this was the cleanest entry signal of the 60-day period. A 16% rally followed within two weeks.</div>
+  </div>
+  <div class="ev">
+    <div class="dot" style="background:var(--green)"></div>
+    <div><strong style="color:var(--green)">Second green circle — late Apr · RSI ~27–36:</strong> Approaching oversold again after the post-Apr 8 corrective leg. A lower-conviction signal than March — macro headwinds persist — but notable given the double-bottom support zone beneath.</div>
+  </div>
+</div>
+
+<!-- ══ WHAT TO WATCH ══════════════════════════════════════════ -->
+<div class="sl">what to watch next</div>
+<div class="card">
+  <div class="wrow"><span class="wl">Islamabad talks</span><span class="wr">Ceasefire scope — does it include Lebanon &amp; Hormuz? The pivotal binary catalyst.</span></div>
+  <div class="wrow"><span class="wl">Hormuz reopening</span><span class="wr">Partial reopening deflates the inflation premium → gold dips 5–8% initially, then structural bids return.</span></div>
+  <div class="wrow"><span class="wl">US CPI · May 10</span><span class="wr" style="color:var(--red)">Forecast 3.7% YoY. A beat reinforces the rate-hold headwind; a miss is bullish for gold.</span></div>
+  <div class="wrow"><span class="wl">Central bank buying</span><span class="wr" style="color:var(--green)">850t forecast for 2026 — the structural floor independent of war or peace.</span></div>
+  <div class="wrow"><span class="wl">Support level</span><span class="wr">~$4,550–4,600 · former neckline zone. A daily close below $4,550 turns short-term bearish.</span></div>
+</div>
+
+<!-- ══ VERDICT ════════════════════════════════════════════════ -->
+<div class="sl">verdict</div>
+<div class="card" style="background:#fff;border-left:3px solid var(--gold);border-radius:0 4px 4px 0">
+  <div style="font-size:13px;line-height:1.9">
+    The gold chart from February to today is one of the most instructive macro case studies of the decade — not because of what gold did, but because of <em>why</em>. The initial surge to $5,602 was the expected safe-haven response. The collapse to $4,190 was not weakness — it was the logical result of the Hormuz closure transmitting through oil prices into inflation and then into rate expectations. The double bottom and recovery were gold's structural thesis reasserting against that headwind, supported by central bank demand that does not pause for geopolitical news.<br><br>
+    <span class="am"><strong>Current positioning:</strong></span> At $4,613, gold sits above the double-bottom support zone but below the April recovery peak. The RSI at 43–49 is neutral — not a strong entry signal. The cleaner entry would be on a confirmed Islamabad breakdown (Hormuz stays closed → gold retests $4,200–4,400 on safe-haven re-entry) or on a CPI undershoot (Fed can cut → rate headwind eases → gold rallies toward $5,000).
+  </div>
+</div>
+
+<!-- NAVIGATION BAR -->
+<div class="nav-bar">
+  <a class="nav-btn" id="nav-back" href="#">‹ Back</a>
+  <a class="nav-btn" id="nav-home" href="index.html">Home</a>
+  <a class="nav-btn" id="nav-next" href="#">Next ›</a>
+</div>
+
+<!-- ══ BOTTOM RULE ════════════════════════════════════════════ -->
+<div class="bottom-rule">
+  <p class="disclaimer">For informational and educational purposes only. Not financial advice. Event data: Britannica, Wikipedia, UNCTAD, IEA, JPMorgan Research. Past performance does not guarantee future results.</p>
+  <div class="logo-text">nwchun90 · 2026 · XAU/USD</div>
+</div>
+
+<script>
+(function () {
+  const INDEX_URL = 'index.html';
+
+  const backBtn = document.getElementById('nav-back');
+  const nextBtn = document.getElementById('nav-next');
+
+  const currentFile = window.location.pathname.split('/').pop();
+
+  fetch(INDEX_URL)
+    .then(res => res.text())
+    .then(html => {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, 'text/html');
+
+      // Extract items from raw HTML
+      const items = Array.from(doc.querySelectorAll('.content-list .item'))
+        .map(item => ({
+          href: item.querySelector('a').getAttribute('href'),
+          date: item.getAttribute('data-date')
+        }))
+        .filter(x => x.href && x.date);
+
+      // Sort oldest → newest
+      items.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+      // Match current file
+      const idx = items.findIndex(x => currentFile === x.href);
+
+      if (idx === -1) {
+        backBtn.classList.add('disabled');
+        nextBtn.classList.add('disabled');
+        return;
+      }
+
+      const prev = items[idx - 1];
+      const next = items[idx + 1];
+
+      if (prev) backBtn.href = prev.href;
+      else backBtn.classList.add('disabled');
+
+      if (next) nextBtn.href = next.href;
+      else nextBtn.classList.add('disabled');
+    })
+    .catch(() => {
+      backBtn.classList.add('disabled');
+      nextBtn.classList.add('disabled');
+    });
+})();
+</script>
+
+</div><!-- /page -->
+</body>
+</html>
