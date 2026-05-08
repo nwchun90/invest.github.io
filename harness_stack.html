@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Harness Engineering Stack — NVDA · CLS · ORCL — nwchun90 Research</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --gold:   #B87333;
+  --ink:    #1a1a1a;
+  --paper:  #faf9f6;
+  --muted:  #888;
+  --border: #e0ddd5;
+  --cream:  #f5f3ec;
+  --green:  #2e7d32;
+  --amber:  #B87333;
+  --red:    #b71c1c;
+  --blue:   #1a5494;
+  --teal:   #1a7f6e;
+  --font-serif: 'Georgia', serif;
+  --font-mono:  'Courier New', monospace;
+}
+
+body { font-family: var(--font-serif); background: var(--paper); color: var(--ink); font-size: 14px; line-height: 1.7; }
+
+/* ── COVER IMAGE ── */
+.cover-image {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto 0;
+  display: block;
+  aspect-ratio: 16 / 6;
+  object-fit: cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #1a1410 0%, #2e1f0a 40%, #1a1a1a 100%);
+  color: #b87333;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  border-bottom: 3px solid var(--gold);
+}
+
+/* ── NAV ── */
+.nav-bar { margin: 40px 0 20px; display: flex; justify-content: center; gap: 20px; }
+.nav-btn { font-family: var(--font-mono); font-size: 12px; padding: 6px 14px; border: 1px solid var(--border); background: #fff; color: var(--ink); text-decoration: none; border-radius: 4px; transition: 0.15s; }
+.nav-btn:hover { background: var(--gold); color: #fff; border-color: var(--gold); }
+.nav-btn.disabled { opacity: 0.4; pointer-events: none; }
+
+/* ── PAGE ── */
+.page { max-width: 900px; margin: 0 auto; padding: 40px 28px 60px; }
+
+/* ── MASTHEAD ── */
+.masthead { border-top: 3px solid var(--ink); border-bottom: 1px solid var(--ink); padding: 16px 0 14px; margin-bottom: 32px; display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+.eyebrow { font-family: var(--font-mono); font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+.headline { font-size: 26px; font-weight: 400; line-height: 1.2; letter-spacing: -0.5px; font-family: var(--font-serif); }
+.headline span { font-style: italic; color: var(--gold); }
+.author-line { font-family: var(--font-mono); font-size: 11px; color: var(--muted); margin-top: 6px; }
+.datestamp { font-family: var(--font-mono); font-size: 11px; color: var(--muted); text-align: right; line-height: 1.7; }
+
+/* ── DECK ── */
+.deck { font-size: 15px; color: #444; line-height: 1.75; max-width: 680px; margin-bottom: 28px; border-left: 3px solid var(--gold); padding-left: 16px; }
+
+/* ── SECTION LABELS ── */
+.sl { font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); margin: 26px 0 12px; display: flex; align-items: center; gap: 12px; }
+.sl::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+/* ── STORY TYPE STRIP ── */
+.story-strip { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; border: 1px solid var(--border); margin-bottom: 28px; }
+.story-panel { padding: 18px 18px 16px; border-right: 1px solid var(--border); }
+.story-panel:last-child { border-right: none; }
+.story-tag { font-family: var(--font-mono); font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 6px; }
+.story-ticker { font-size: 22px; font-weight: 400; font-family: var(--font-serif); margin-bottom: 4px; }
+.story-name { font-size: 11px; color: var(--muted); font-family: var(--font-mono); margin-bottom: 10px; }
+.story-desc { font-size: 12.5px; color: #555; line-height: 1.65; }
+
+/* ── STAT CARDS ── */
+.stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 20px; }
+.stat-card { background: #fff; border: 1px solid var(--border); border-radius: 4px; padding: 14px 16px; }
+.stat-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: #999; font-family: var(--font-mono); margin-bottom: 4px; }
+.stat-value { font-size: 26px; font-weight: 400; font-family: var(--font-mono); line-height: 1.1; margin-bottom: 3px; }
+.stat-sub { font-size: 11px; color: var(--muted); font-style: italic; }
+.green { color: var(--green); } .amber { color: var(--amber); } .red { color: var(--red); } .blue { color: var(--blue); }
+
+/* ── CARDS ── */
+.card { background: #fff; border: 1px solid var(--border); padding: 16px 18px; margin-bottom: 14px; border-radius: 4px; }
+
+/* ── THREE-COLUMN COMPARE ROW ── */
+.tri-row { display: grid; grid-template-columns: 160px 1fr 1fr 1fr; gap: 0; border-bottom: 1px solid var(--border); padding: 9px 0; font-size: 12.5px; align-items: start; }
+.tri-row:last-child { border-bottom: none; }
+.tri-label { font-family: var(--font-mono); font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; padding-right: 10px; padding-top: 2px; }
+.tri-cell { padding: 0 8px; line-height: 1.55; }
+.tri-head { font-family: var(--font-mono); font-size: 10px; font-weight: 700; letter-spacing: 1px; padding: 6px 8px 4px; }
+
+/* ── CHART ── */
+.chart-wrap { background: #fff; border: 1px solid var(--border); border-radius: 4px; padding: 20px 16px 14px; margin-bottom: 20px; }
+.chart-legend { display: flex; gap: 20px; margin-bottom: 14px; flex-wrap: wrap; }
+.leg-item { display: flex; align-items: center; gap: 8px; font-size: 11px; color: #555; font-family: var(--font-mono); }
+.leg-swatch { width: 24px; height: 3px; border-radius: 2px; }
+.chart-canvas-wrap { position: relative; width: 100%; height: 280px; }
+.chart-note { font-size: 11px; color: #999; font-style: italic; margin-top: 10px; font-family: var(--font-mono); }
+
+/* ── UNDERSTANDING BOX ── */
+.understanding { background: var(--ink); color: #f0ece4; border-radius: 4px; padding: 22px 24px; margin-bottom: 20px; }
+.understanding h3 { font-size: 11px; font-family: var(--font-mono); letter-spacing: 2px; text-transform: uppercase; color: var(--gold); margin-bottom: 14px; font-weight: 400; }
+.understanding-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.understanding p { font-size: 12.5px; color: #bbb; line-height: 1.75; }
+.understanding strong { color: #f0ece4; }
+
+/* ── STORY CARDS ── */
+.story-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; margin-bottom: 20px; }
+.story-card { border-top: 2px solid var(--border); padding: 14px 16px; background: #fff; border: 1px solid var(--border); border-top-width: 2px; border-radius: 2px; }
+.story-number { font-family: var(--font-mono); font-size: 10px; color: #aaa; letter-spacing: 2px; margin-bottom: 6px; }
+.story-title { font-size: 13px; font-weight: 700; margin-bottom: 6px; line-height: 1.3; }
+.story-body { font-size: 12px; color: #555; line-height: 1.7; }
+
+/* ── AUTHOR NOTE ── */
+.author-note { border: 1px dashed var(--gold); border-radius: 4px; padding: 14px 18px; margin-bottom: 20px; background: #fffdf8; }
+.author-note-label { font-family: var(--font-mono); font-size: 10px; color: var(--gold); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 6px; }
+.author-note p { font-size: 13px; color: #444; line-height: 1.75; font-style: italic; }
+
+/* ── BADGES ── */
+.badge { font-size: 10px; padding: 2px 9px; border-radius: 999px; font-weight: 700; display: inline-block; font-family: var(--font-mono); letter-spacing: 0.05em; }
+.b-growth { background: #e6f5ea; color: #1a5c24; }
+.b-transition { background: #fdf3e3; color: #7a4200; }
+.b-income { background: #e8f4fb; color: #0c447c; }
+
+/* ── EVIDENCE ROWS ── */
+.ev { display: flex; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px; line-height: 1.6; }
+.ev:last-child { border-bottom: none; }
+.dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 6px; flex-shrink: 0; }
+.dot-g { background: var(--green); } .dot-a { background: var(--amber); } .dot-r { background: var(--red); }
+
+/* ── BOTTOM RULE ── */
+.bottom-rule { border-top: 1px solid var(--ink); padding-top: 12px; margin-top: 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+.disclaimer { font-size: 10px; color: #aaa; font-style: italic; font-family: var(--font-mono); max-width: 560px; line-height: 1.6; }
+.logo-text { font-family: var(--font-mono); font-size: 10px; color: #bbb; letter-spacing: 1px; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 680px) {
+  .masthead { flex-direction: column; }
+  .datestamp { text-align: left; }
+  .headline { font-size: 20px; }
+  .stat-value { font-size: 20px; }
+  .story-strip { grid-template-columns: 1fr; }
+  .story-panel { border-right: none; border-bottom: 1px solid var(--border); }
+  .story-panel:last-child { border-bottom: none; }
+  .tri-row { grid-template-columns: 1fr; gap: 4px; }
+  .tri-label { font-size: 10px; }
+  .understanding-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── COVER IMAGE ── -->
+<div style="width:100%; height:250px; overflow:hidden;">
+  <img src="harness1.png"
+       style="width:100%; height:100%; object-fit:cover; display:block;">
+</div>
+
+<div class="page">
+
+<!-- ── MASTHEAD ── -->
+<div class="masthead">
+  <div class="masthead-left">
+    <div class="eyebrow">Personal Investment Research &nbsp;·&nbsp; AI Series</div>
+    <div class="headline">The <span>Harness Engineering</span> Stack</div>
+    <div class="headline" style="font-size:18px;margin-top:4px;color:var(--muted)">NVDA &nbsp;·&nbsp; CLS &nbsp;·&nbsp; ORCL</div>
+    <div class="author-line">by nwchun90</div>
+  </div>
+  <div class="datestamp">
+    May 7, 2026<br>
+    Data: SEC filings · earnings calls<br>
+    analyst consensus
+  </div>
+</div>
+
+<!-- ── TOP NAV ── -->
+<div class="nav-bar">
+  <a class="nav-btn" id="nav-back" href="#">‹ Previous</a>
+  <a class="nav-btn" id="nav-home" href="index.html">Home</a>
+  <a class="nav-btn" id="nav-next" href="#">Next ›</a>
+</div>
+
+<!-- ── DECK ── -->
+<div class="deck">
+  AI models are no longer the story — the infrastructure beneath them is. Think of the AI ecosystem as a new global highway: NVIDIA builds the engines, Celestica lays the asphalt, and Oracle runs the tolls and traffic systems. You need all three for the system to work, and every major tech company on earth is racing to build more of it. That’s where the real investment story lives.
+</div>
+
+<!-- ── AUTHOR NOTE ── -->
+<div class="author-note">
+  <div class="author-note-label">A note before we begin</div>
+  <p>This presentation uses the “AI highway” analogy to simplify a complex stack. The point isn’t the metaphor — it’s the structure underneath it. Compute, systems, and platforms form a single chain, and NVIDIA, Celestica, and Oracle each anchor one of those links. Keep that in mind as we walk through the numbers.</p>
+</div>
+
+<!-- ── STORY TYPES ── -->
+<div class="sl">story type — what kind of investment is this?</div>
+
+<div class="story-strip">
+  <div class="story-panel" style="border-top: 3px solid var(--green);">
+    <div class="story-tag" style="color: var(--green);">Growth Story</div>
+    <div class="story-ticker">NVDA</div>
+    <div class="story-name">NVIDIA CORP · Nasdaq · ~$198</div>
+    <div class="story-desc">The dominant designer of AI chips. Growing at 65% per year. Every AI agent running anywhere in the world depends on NVIDIA silicon. The growth story is confirmed and accelerating.</div>
+    <div style="margin-top:10px"><span class="badge b-growth">Growth Story</span></div>
+  </div>
+  <div class="story-panel" style="border-top: 3px solid var(--blue);">
+    <div class="story-tag" style="color: var(--blue);">Growth Story</div>
+    <div class="story-ticker">CLS</div>
+    <div class="story-name">CELESTICA INC · NYSE · ~$401</div>
+    <div class="story-desc">Builds the physical servers, switches, and networking systems that house NVIDIA chips. Revenue growing 53% and accelerating. Was treated as a boring manufacturer for years — the market is now catching on.</div>
+    <div style="margin-top:10px"><span class="badge b-growth">Growth Story</span></div>
+  </div>
+  <div class="story-panel" style="border-top: 3px solid var(--amber);">
+    <div class="story-tag" style="color: var(--amber);">Transition Story</div>
+    <div class="story-ticker">ORCL</div>
+    <div class="story-name">ORACLE CORP · NYSE · ~$191</div>
+    <div class="story-desc">A 47-year-old database company reinventing itself as cloud infrastructure for AI. Hosts OpenAI, Anthropic, Meta, and xAI simultaneously. The transformation is well underway but not yet fully reflected in the share price.</div>
+    <div style="margin-top:10px"><span class="badge b-transition">Transition Story</span></div>
+  </div>
+</div>
+
+<!-- ── WHAT IS THE HARNESS? ── -->
+<div class="sl">what is harness engineering?</div>
+
+<div class="understanding">
+  <h3>The concept in plain English</h3>
+  <div class="understanding-grid">
+    <p>An AI model on its own is like a powerful engine sitting in a field. It can do nothing useful until someone builds the car around it — the chassis, the wheels, the fuel system, the dashboard. That car is the <strong>harness</strong>: the tools, memory, networking, and infrastructure that let the model actually do work in the real world.</p>
+    <p>The companies winning the AI race in 2026 are not necessarily the ones with the smartest model. They are the ones building the best harness around it. NVIDIA provides the engine power. Celestica builds the chassis. Oracle provides the road, the fuel, and the navigation system. The model itself — ChatGPT, Claude, Gemini — rides inside.</p>
+    <p><strong>Why this matters for investors:</strong> Models are becoming interchangeable. The harness is not. A company that owns a critical layer of the harness has a durable competitive advantage that does not disappear when a new model comes along. That is what we are looking for in these three companies.</p>
+    <p><strong>Where the money flows:</strong> Every major technology company — Google, Microsoft, Amazon, Meta — is spending hundreds of billions building this infrastructure. That spending flows directly to NVIDIA (chips), Celestica (assembly), and Oracle (cloud platform). The capex (capital expenditure — money spent building long-term physical assets like data centres and factories) cycle is the largest in technology history.</p>
+  </div>
+</div>
+
+<!-- ── THREE HEALTH CHECKS ── -->
+<div class="sl">three financial health checks</div>
+
+<!-- CHECK 1 -->
+<div class="card">
+  <div style="font-family:var(--font-mono);font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px;">Check 1 of 3 &nbsp;·&nbsp; Is the business actually growing?</div>
+  <div style="font-size:13px;color:#444;line-height:1.75;margin-bottom:14px;">The clearest proof of real growth is signed customer contracts — money that companies have already committed to spend, just not yet received. In cloud businesses, this is called the <em>remaining performance obligation</em>, or RPO.</div>
+
+  <div class="stat-row" style="margin-bottom:14px;">
+    <div class="stat-card">
+      <div class="stat-label">NVDA · AI chip revenue</div>
+      <div class="stat-value green">$115B</div>
+      <div class="stat-sub">Up 142% in one year. Every hyperscaler is buying.</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">CLS · AI infrastructure revenue</div>
+      <div class="stat-value" style="color:var(--blue);">$14.4B</div>
+      <div class="stat-sub">Guided for 2026. Up 70% from last year.</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">ORCL · Signed future contracts (RPO)</div>
+      <div class="stat-value amber">$130B</div>
+      <div class="stat-sub">Up 62%. Customers have already committed this spend.</div>
+    </div>
+  </div>
+
+  <div class="ev">
+    <div class="dot dot-g"></div>
+    <div><strong>NVDA</strong> — fastest raw growth rate (+142%), but customer orders are not publicly disclosed. Growth is confirmed by delivered results, not signed contracts. Next earnings: May 20.</div>
+  </div>
+  <div class="ev">
+    <div class="dot dot-g"></div>
+    <div><strong>CLS</strong> — CEO described the order backlog as "the strongest in my tenure." No dollar figure published, but every quarterly result has beaten expectations. Next earnings: July 27.</div>
+  </div>
+  <div class="ev">
+    <div class="dot dot-a"></div>
+    <div><strong>ORCL</strong> — the $130B in signed contracts is the most concrete, independently audited growth signal of the three. It converts to revenue over the next 3–5 years. Next earnings: June 2026.</div>
+  </div>
+</div>
+
+<!-- CHECK 2 -->
+<div class="card">
+  <div style="font-family:var(--font-mono);font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px;">Check 2 of 3 &nbsp;·&nbsp; Is the spending disciplined?</div>
+  <div style="font-size:13px;color:#444;line-height:1.75;margin-bottom:16px;">Capital expenditure (capex) is money spent building long-term assets — factories, data centres, equipment. Heavy capex is necessary to grow, but too much relative to income is a warning sign. We use two ratios: capex as a share of revenue, and capex as a share of operating income.</div>
+
+  <div class="chart-wrap" style="margin-bottom:14px;">
+    <div class="chart-legend">
+      <div class="leg-item"><div class="leg-swatch" style="background:var(--gold);"></div>Capex as % of revenue</div>
+      <div class="leg-item"><div class="leg-swatch" style="background:var(--blue);"></div>Capex as % of operating income</div>
+    </div>
+    <div class="chart-canvas-wrap"><canvas id="capexChart" role="img" aria-label="Bar chart comparing capex ratios. NVDA: 2.5% of revenue, 3.8% of operating income. CLS: 5.3% of revenue, 65% of operating income. ORCL: 28% of revenue, 80% of operating income."></canvas></div>
+    <p class="chart-note">Lower bars = more disciplined spending. NVDA benefits from outsourcing manufacturing entirely — TSMC builds the chips so NVDA pays almost no capex. CLS and ORCL are building physical infrastructure, which is expensive but necessary.</p>
+  </div>
+
+  <div class="ev">
+    <div class="dot dot-g"></div>
+    <div><strong>NVDA</strong> — spends just 2.5% of revenue on capital expenditure. The fabless model (outsourcing all manufacturing to TSMC) means NVDA captures 67% profit margins without owning a single factory. Exceptional discipline.</div>
+  </div>
+  <div class="ev">
+    <div class="dot dot-a"></div>
+    <div><strong>CLS</strong> — spending ~65% of operating income on capex to expand factories in Thailand and the US. Heavy, but self-funded — no need to borrow or issue new shares. The return on invested capital of ~50% confirms this spending is paying off.</div>
+  </div>
+  <div class="ev">
+    <div class="dot dot-a"></div>
+    <div><strong>ORCL</strong> — spending ~80% of operating income on capex to build OCI data centres globally. The most aggressive of the three. Justified by the $130B contract backlog, but demands that customer demand converts on schedule. The June earnings call is the key update.</div>
+  </div>
+</div>
+
+<!-- CHECK 3 -->
+<div class="card">
+  <div style="font-family:var(--font-mono);font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px;">Check 3 of 3 &nbsp;·&nbsp; Is there cash left over?</div>
+  <div style="font-size:13px;color:#444;line-height:1.75;margin-bottom:14px;">After paying all costs and building all assets, how much cash is left? This is free cash flow — the money a company has available to pay shareholders, reduce debt, or invest in new opportunities. A growing, cash-generative business is the gold standard.</div>
+
+  <div class="tri-row" style="background:var(--cream);">
+    <div class="tri-label"></div>
+    <div class="tri-head green">NVDA</div>
+    <div class="tri-head" style="color:var(--blue);">CLS</div>
+    <div class="tri-head amber">ORCL</div>
+  </div>
+  <div class="tri-row">
+    <div class="tri-label">Operating profit margin</div>
+    <div class="tri-cell green"><strong>66.7%</strong> — among the highest of any large company on earth</div>
+    <div class="tri-cell"><strong>8.1%</strong> — record high for this industry; expanding every quarter</div>
+    <div class="tri-cell"><strong>~32%</strong> — strong, though capex is consuming most of it right now</div>
+  </div>
+  <div class="tri-row">
+    <div class="tri-label">Cash generated (operating)</div>
+    <div class="tri-cell green">$60.9B</div>
+    <div class="tri-cell">~$1.5B estimated</div>
+    <div class="tri-cell">~$22B estimated</div>
+  </div>
+  <div class="tri-row">
+    <div class="tri-label">Capital expenditure (capex)</div>
+    <div class="tri-cell green">$3.3B — minimal</div>
+    <div class="tri-cell amber">~$1.0B — significant relative to size</div>
+    <div class="tri-cell red">~$16B — very heavy</div>
+  </div>
+  <div class="tri-row">
+    <div class="tri-label">Free cash flow (what's left)</div>
+    <div class="tri-cell green"><strong>$57.6B</strong> — unconstrained</div>
+    <div class="tri-cell amber"><strong>~$500M</strong> — positive; tight in H2</div>
+    <div class="tri-cell amber"><strong>~$6B</strong> — positive; RPO must convert</div>
+  </div>
+</div>
+
+<!-- ── WHERE EACH COMPANY SITS ── -->
+<div class="sl">where each company sits in the AI harness</div>
+
+<div class="story-grid">
+  <div class="story-card" style="border-top-color: var(--green);">
+    <div class="story-number">LAYER 1 · THE ENGINE</div>
+    <div class="story-title">NVDA — The chip inside everything</div>
+    <div class="story-body">Every AI workload running anywhere in the world — from a chatbot answering a question to a military targeting system making a decision — runs on NVIDIA chips. The company does not make its own products physically; it designs the chips and TSMC manufactures them. This keeps costs low and margins extraordinary. The new Blackwell chip generation is now shipping; the next generation (Rubin) arrives later in 2026. No credible alternative exists at this scale today.</div>
+  </div>
+  <div class="story-card" style="border-top-color: var(--blue);">
+    <div class="story-number">LAYER 2 · THE CHASSIS</div>
+    <div class="story-title">CLS — The builder of AI's physical home</div>
+    <div class="story-body">Celestica assembles the physical systems that house NVIDIA chips: AI servers, networking switches, and complete rack-scale platforms. It does not just build to a design — it co-designs the platforms alongside companies like AMD and Google, which is a much higher-value activity. The latest win (co-packaged optics switch, using fibre to connect AI systems at the speed of light) is a world first. Revenue guided at $19 billion for 2026 — up 53%. CEO called the order backlog "the strongest in my tenure."</div>
+  </div>
+  <div class="story-card" style="border-top-color: var(--amber);">
+    <div class="story-number">LAYER 3 · THE PLATFORM</div>
+    <div class="story-title">ORCL — The cloud home every AI model needs</div>
+    <div class="story-body">Oracle Cloud Infrastructure (OCI) has quietly become the preferred data centre for AI's biggest names: OpenAI, Anthropic, Meta, xAI, and Cohere all run workloads on Oracle's infrastructure. The company is spending aggressively to build capacity — $16 billion in capital expenditure this year — backed by $130 billion in signed customer contracts. Oracle also owns the database layer: the persistent storage and memory system that AI agents read from and write to when they work on long tasks.</div>
+  </div>
+  <div class="story-card" style="border-top-color: var(--red);">
+    <div class="story-number">THE RISK · FOR ALL THREE</div>
+    <div class="story-title">What breaks the story?</div>
+    <div class="story-body">For NVDA: a rival chip (AMD, custom Google/Amazon silicon) narrows the performance gap meaningfully. For CLS: a major customer builds its own assembly capability in-house. For ORCL: the hyperscaler giants (AWS, Azure, Google Cloud) retake the AI workloads that have migrated to OCI. None of these is likely in the next 12–18 months, but all three are worth watching over a 3–5 year horizon.</div>
+  </div>
+</div>
+
+<!-- ── FRONTIER MODEL QUESTION ── -->
+<div class="sl">do they own an AI model — or are they tied to one?</div>
+
+<div class="card" style="background: var(--cream);">
+  <div style="font-size:13px;color:#444;line-height:1.85;">
+    An important question for the long run: does each company own its own frontier AI model (like ChatGPT or Claude), or does it depend on someone else's model to power its products? The answer shapes how much pricing power each company has in the future.<br><br>
+    <strong>NVIDIA</strong> does not develop its own language model and does not need to. Every model lab — OpenAI, Anthropic, Google, Meta, xAI — runs on NVIDIA hardware. NVIDIA wins regardless of which model wins the race. Perfect neutrality.<br><br>
+    <strong>Celestica</strong> has no model and needs none. Its business is one layer below: assembling the hardware that runs the chips that run the models. As long as AI exists and requires physical infrastructure, Celestica has a role.<br><br>
+    <strong>Oracle</strong> is the most interesting case. It does not develop its own frontier model, but it has contractual relationships with every major model provider simultaneously. Oracle is the landlord; the model companies are tenants paying rent in the form of cloud contracts. This is a powerful position — Oracle benefits from all of them without betting on any one of them.
+  </div>
+</div>
+
+<!-- ── AUTHOR CLOSING NOTE ── -->
+<div class="author-note">
+  <div class="author-note-label">My read on this</div>
+  <p>The harness engineering thesis is really a simple idea dressed in technical language: when a new technology becomes essential infrastructure, the companies that build and maintain that infrastructure tend to win over the long run — even more reliably than the companies making the flashiest product on top of it. NVIDIA, Celestica, and Oracle are infrastructure plays. The AI model companies grabbing headlines are the tenants. I'd rather own the building.</p>
+</div>
+
+<!-- ── VERDICT ── -->
+<div class="sl">the short version</div>
+<div class="card" style="background: var(--cream);">
+  <div style="font-size:13px;line-height:1.85;">
+    All three companies pass the three financial health checks, each with a different risk profile. NVDA is the most financially sound — exceptional margins, minimal capital spending, and $57 billion in annual free cash flow. CLS is growing the fastest relative to its starting point, with the most direct exposure to the physical AI infrastructure buildout. ORCL carries the heaviest capital spending burden but has the most concrete evidence of future demand — $130 billion in signed contracts already on the books.<br><br>
+    <span class="amber"><strong>Together:</strong></span> These three companies occupy three non-overlapping layers of the same infrastructure stack. Owning all three is not three bets on AI — it is one coherent bet, spread across the engine, the chassis, and the platform.
+  </div>
+</div>
+
+<!-- ── BOTTOM NAV ── -->
+<div class="nav-bar">
+  <a class="nav-btn" id="nav-back-b" href="#">‹ Previous</a>
+  <a class="nav-btn" href="index.html">Home</a>
+  <a class="nav-btn" id="nav-next-b" href="#">Next ›</a>
+</div>
+
+<!-- ── BOTTOM RULE ── -->
+<div class="bottom-rule">
+  <p class="disclaimer">For informational purposes only. Not financial advice. Prices approximate as of May 2026. Past performance does not guarantee future results. Consult a qualified financial advisor before making investment decisions.</p>
+  <div class="logo-text">PERSONAL RESEARCH · 2026 · NVDA · CLS · ORCL</div>
+</div>
+
+</div><!-- /page -->
+
+<script>
+const CHART_DEFAULTS = {
+  tooltip: { backgroundColor: '#1a1a1a', titleColor: '#f0ece4', bodyColor: '#ccc', padding: 12, cornerRadius: 4 },
+  gridColor: 'rgba(0,0,0,0.06)',
+  tickColor: '#888',
+  tickFont: { size: 11, family: "'Courier New', monospace" },
+};
+
+new Chart(document.getElementById('capexChart'), {
+  type: 'bar',
+  data: {
+    labels: ['NVDA', 'CLS', 'ORCL'],
+    datasets: [
+      {
+        label: 'Capex / Revenue (%)',
+        data: [2.5, 5.3, 28],
+        backgroundColor: 'rgba(184,115,51,0.75)',
+        borderColor: '#B87333',
+        borderWidth: 1.5,
+        borderRadius: 3,
+      },
+      {
+        label: 'Capex / Operating Income (%)',
+        data: [3.8, 65, 80],
+        backgroundColor: 'rgba(26,84,148,0.65)',
+        borderColor: '#1a5494',
+        borderWidth: 1.5,
+        borderRadius: 3,
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    interaction: { mode: 'index', intersect: false },
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        ...CHART_DEFAULTS.tooltip,
+        callbacks: { label: ctx => `  ${ctx.dataset.label}: ${ctx.raw}%` }
+      }
+    },
+    scales: {
+      x: { grid: { color: CHART_DEFAULTS.gridColor }, ticks: { color: CHART_DEFAULTS.tickColor, font: CHART_DEFAULTS.tickFont } },
+      y: { max: 100, grid: { color: CHART_DEFAULTS.gridColor }, ticks: { color: CHART_DEFAULTS.tickColor, font: CHART_DEFAULTS.tickFont, callback: v => v + '%' } }
+    }
+  }
+});
+</script>
+
+<script>
+(function () {
+  const backBtn  = document.getElementById('nav-back');
+  const nextBtn  = document.getElementById('nav-next');
+  const backBtnB = document.getElementById('nav-back-b');
+  const nextBtnB = document.getElementById('nav-next-b');
+  const currentFile = window.location.pathname.split('/').pop();
+
+  fetch('index.html')
+    .then(r => r.text())
+    .then(html => {
+      const doc = new DOMParser().parseFromString(html, 'text/html');
+      const items = Array.from(doc.querySelectorAll('.content-list .item'))
+        .map(el => ({ href: el.querySelector('a').getAttribute('href'), date: el.getAttribute('data-date') }))
+        .filter(x => x.href)
+        .sort((a, b) => new Date(a.date) - new Date(b.date));
+      const idx = items.findIndex(x => x.href.endsWith(currentFile));
+      if (idx === -1) { [backBtn,nextBtn,backBtnB,nextBtnB].forEach(b => b && b.classList.add('disabled')); return; }
+      const prev = items[idx - 1];
+      const next = items[idx + 1];
+      if (prev) { [backBtn,backBtnB].forEach(b => b && (b.href = prev.href)); }
+      else        { [backBtn,backBtnB].forEach(b => b && b.classList.add('disabled')); }
+      if (next) { [nextBtn,nextBtnB].forEach(b => b && (b.href = next.href)); }
+      else        { [nextBtn,nextBtnB].forEach(b => b && b.classList.add('disabled')); }
+    })
+    .catch(() => [backBtn,nextBtn,backBtnB,nextBtnB].forEach(b => b && b.classList.add('disabled')));
+})();
+</script>
+
+</body>
+</html>
