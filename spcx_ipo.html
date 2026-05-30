@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SpaceX IPO — What You're Really Buying · nwchun90 Research</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --gold:#B87333;--ink:#1a1a1a;--paper:#faf9f6;--muted:#888;
+  --border:#e0ddd5;--cream:#f5f3ec;
+  --green:#2e7d32;--red:#b71c1c;--blue:#1a5494;--teal:#1a7f6e;
+  --font-serif:'Georgia',serif;--font-mono:'Courier New',monospace;
+}
+body{font-family:var(--font-serif);background:var(--paper);color:var(--ink);font-size:14px;line-height:1.7;}
+.page{max-width:900px;margin:0 auto;padding:40px 28px 60px;}
+
+/* NAVIGATION BAR */
+.nav-bar {
+  margin: 40px 0 20px;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.nav-btn {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  padding: 6px 14px;
+  border: 1px solid var(--border);
+  background: #fff;
+  color: var(--ink);
+  text-decoration: none;
+  border-radius: 4px;
+  transition: 0.15s;
+}
+
+.nav-btn:hover {
+  background: var(--gold);
+  color: #fff;
+  border-color: var(--gold);
+}
+
+.nav-btn.disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+/* MASTHEAD */
+.masthead{border-top:3px solid var(--ink);border-bottom:1px solid var(--ink);padding:16px 0 14px;margin-bottom:28px;display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+.eyebrow{font-family:var(--font-mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
+.headline{font-size:26px;font-weight:400;line-height:1.2;letter-spacing:-.5px;}
+.headline span{font-style:italic;color:var(--gold);}
+.author-line{font-family:var(--font-mono);font-size:11px;color:var(--muted);margin-top:6px;}
+.datestamp{font-family:var(--font-mono);font-size:11px;color:var(--muted);text-align:right;line-height:1.7;}
+
+/* DECK */
+.deck{font-size:14.5px;color:#444;line-height:1.8;max-width:680px;margin-bottom:24px;border-left:3px solid var(--gold);padding-left:16px;}
+
+/* SECTION LABELS */
+.sl{font-family:var(--font-mono);font-size:10px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin:24px 0 10px;display:flex;align-items:center;gap:12px;}
+.sl::after{content:'';flex:1;height:1px;background:var(--border);}
+
+/* STAT CARDS */
+.stat-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:24px;}
+.stat-card{background:#fff;border:1px solid var(--border);border-radius:4px;padding:14px 16px;}
+.stat-label{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:#999;font-family:var(--font-mono);margin-bottom:4px;}
+.stat-value{font-size:22px;font-weight:400;font-family:var(--font-mono);line-height:1.1;margin-bottom:3px;}
+.stat-sub{font-size:11px;color:var(--muted);font-style:italic;}
+.green{color:var(--green);}.amber{color:var(--gold);}.red{color:var(--red);}.blue{color:var(--blue);}
+
+/* CARDS */
+.card{background:#fff;border:1px solid var(--border);padding:14px 16px;margin-bottom:12px;}
+.card.alert{border-left:4px solid var(--red);padding-left:13px;}
+.card.gold-l{border-left:4px solid var(--gold);padding-left:13px;}
+.card.dark{background:var(--ink);color:#f0ece4;border:none;padding:20px 22px;}
+
+/* GRIDS */
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:12px;}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px;}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+.met{background:var(--cream);border:1px solid var(--border);padding:10px 12px;}
+.ml{font-family:var(--font-mono);font-size:10px;color:var(--muted);margin-bottom:2px;text-transform:uppercase;letter-spacing:.08em;}
+.mv{font-size:16px;font-weight:600;margin-bottom:1px;}
+.ms{font-size:11px;color:var(--muted);}
+
+/* ROWS */
+.row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px;}
+.row:last-child{border-bottom:none;}
+.rl{color:var(--muted);font-family:var(--font-mono);font-size:11px;text-transform:uppercase;letter-spacing:.07em;}
+.rv{font-weight:500;}
+.up{color:var(--green);}.dn{color:var(--red);}.am{color:var(--gold);}
+
+/* EV BULLETS */
+.ev{display:flex;gap:10px;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px;line-height:1.55;}
+.ev:last-child{border-bottom:none;}
+.dot{width:8px;height:8px;border-radius:50%;margin-top:5px;flex-shrink:0;}
+
+/* TABLES */
+.dt{width:100%;border-collapse:collapse;font-size:12px;}
+.dt th{font-family:var(--font-mono);font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);padding:7px 10px;border-bottom:2px solid var(--ink);text-align:right;}
+.dt th:first-child{text-align:left;}
+.dt td{padding:8px 10px;border-bottom:1px solid var(--border);text-align:right;font-family:var(--font-mono);font-size:12px;}
+.dt td:first-child{text-align:left;font-family:var(--font-serif);font-size:13px;}
+.dt tr:last-child td{border-bottom:none;}
+.dt .hl td{background:#fffdf5;}
+.w{color:var(--green);font-weight:700;}.lo{color:var(--red);}.mi{color:var(--gold);}
+
+/* CHART WRAP */
+.chart-wrap{background:#fff;border:1px solid var(--border);padding:16px 14px 10px;margin-bottom:16px;}
+.chart-canvas-wrap{position:relative;width:100%;}
+.chart-note{font-size:10px;color:#999;font-style:italic;margin-top:8px;text-align:center;font-family:var(--font-mono);}
+
+/* PRICE BAND */
+.price-band{background:var(--ink);color:#f0ece4;padding:16px 22px;margin-bottom:18px;display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:14px;}
+.pb-l{font-family:var(--font-mono);font-size:10px;color:#666;letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;}
+.pb-p{font-family:var(--font-mono);font-size:30px;font-weight:400;color:var(--gold);}
+.pb-m{font-family:var(--font-mono);font-size:11px;color:#888;line-height:1.9;margin-top:6px;}
+.pb-r{text-align:right;}
+.pb-rv{font-family:var(--font-mono);font-size:13px;color:#f0ece4;margin-top:4px;}
+
+/* CAPITAL LOOP */
+.loop-wrap{background:var(--ink);padding:22px 24px;margin-bottom:14px;overflow:hidden;}
+.loop-title{font-family:var(--font-mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:18px;}
+.loop-row{display:flex;align-items:stretch;gap:0;margin-bottom:8px;}
+.loop-node{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);padding:10px 14px;font-size:11px;color:#f0ece4;font-family:var(--font-mono);text-align:center;flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:3px;position:relative;}
+.loop-node.gold{background:rgba(184,115,51,0.2);border-color:rgba(184,115,51,0.5);}
+.loop-node.red{background:rgba(183,28,28,0.2);border-color:rgba(183,28,28,0.5);}
+.loop-node.green{background:rgba(46,125,50,0.2);border-color:rgba(46,125,50,0.5);}
+.loop-arr{display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:16px;padding:0 4px;flex-shrink:0;}
+.loop-node-label{font-size:9px;color:#888;letter-spacing:1px;text-transform:uppercase;}
+.loop-note{font-size:11px;color:#888;line-height:1.7;margin-top:12px;}
+.loop-note strong{color:#f0ece4;}
+
+/* THRESHOLD ITEM */
+.thresh{display:flex;gap:12px;padding:9px 0;border-bottom:1px solid var(--border);font-size:13px;align-items:flex-start;}
+.thresh:last-child{border-bottom:none;}
+.thresh-num{font-family:var(--font-mono);font-size:12px;font-weight:700;color:var(--red);flex-shrink:0;width:20px;}
+.thresh-body{}
+.thresh-title{font-weight:700;margin-bottom:2px;font-size:13px;}
+.thresh-desc{font-size:12px;color:#555;line-height:1.55;}
+
+/* ANTHROPIC STRESS BOX */
+.anthropic-box{background:rgba(183,28,28,0.05);border:2px solid var(--red);padding:18px 20px;margin-bottom:14px;}
+.ab-eyebrow{font-family:var(--font-mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--red);margin-bottom:10px;font-weight:600;}
+.ab-headline{font-size:18px;font-weight:400;line-height:1.3;margin-bottom:10px;color:var(--ink);}
+.ab-headline span{color:var(--red);font-weight:700;}
+.ab-body{font-size:13px;color:#444;line-height:1.7;}
+
+/* SCENARIO TABLE */
+.scen-wrap{border:1px solid var(--border);margin-bottom:14px;overflow:hidden;}
+.scen-row{display:grid;grid-template-columns:80px 140px 1fr 200px;align-items:center;padding:9px 12px;border-bottom:1px solid var(--border);font-size:12px;gap:12px;}
+.scen-row:last-child{border-bottom:none;}
+.scen-row.hdr{background:var(--cream);font-family:var(--font-mono);font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);}
+.scen-tag{font-family:var(--font-mono);font-size:11px;font-weight:700;}
+.scen-move{font-family:var(--font-mono);font-size:13px;font-weight:700;}
+.scen-what{color:#444;line-height:1.4;}
+.scen-action{font-size:12px;color:var(--ink);line-height:1.4;border-left:2px solid var(--border);padding-left:10px;}
+
+/* VERDICT */
+.verdict{background:var(--ink);color:#bbb;padding:20px 22px;margin-bottom:12px;font-size:13px;line-height:1.8;}
+.verdict h3{font-family:var(--font-mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:10px;font-weight:400;}
+.verdict strong{color:#f0ece4;}
+
+/* BOTTOM */
+.bottom-rule{border-top:1px solid var(--ink);padding-top:12px;margin-top:28px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;}
+.disclaimer{font-size:10px;color:#aaa;font-style:italic;font-family:var(--font-mono);max-width:600px;line-height:1.6;}
+.logo-text{font-family:var(--font-mono);font-size:10px;color:#bbb;letter-spacing:1px;}
+
+@media(max-width:650px){
+  .g4,.g3,.g2{grid-template-columns:1fr;}
+  .scen-row{grid-template-columns:60px 1fr;}
+  .scen-move,.scen-action,.scen-what{grid-column:span 2;}
+  .loop-row{flex-direction:column;}
+  .loop-arr{transform:rotate(90deg);padding:2px 0;}
+  .price-band{flex-direction:column;}
+  .pb-r{text-align:left;}
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- MASTHEAD -->
+<div class="masthead">
+  <div>
+    <div class="eyebrow">Personal Investment Research &nbsp;·&nbsp; Company Series</div>
+    <div class="headline">SpaceX IPO — <span>What You're Really Buying</span></div>
+    <div class="author-line">by nwchun90</div>
+  </div>
+  <div class="datestamp">
+    May 29, 2026<br>
+    Data: SpaceX S-1 (SEC EDGAR) · Morningstar<br>
+    Fortune · BitMEX · Axi · IndMoney
+  </div>
+</div>
+
+<!-- NAVIGATION BAR -->
+<div class="nav-bar">
+  <a class="nav-btn" id="nav-back" href="#">‹ Back</a>
+  <a class="nav-btn" id="nav-home" href="index.html">Home</a>
+  <a class="nav-btn" id="nav-next" href="#">Next ›</a>
+</div>
+
+<!-- DECK -->
+<div class="deck">
+  SpaceX isn’t coming public as just a rocket company. It’s coming public as a rocket company, a global internet provider, an AI lab, and a social platform — all wrapped into one ticker, all controlled by one person holding 85% of the votes. Starlink is the real engine here, and it’s impressive. But a $1.75 trillion valuation, nearly $5 billion in yearly losses, and a major contract that can walk away with 90 days’ notice make this the most complicated IPO of this generation.
+</div>
+
+<!-- IPO SNAPSHOT -->
+<div class="price-band">
+  <div>
+    <div class="pb-l">Nasdaq: SPCX &nbsp;·&nbsp; IPO Target June 18–30, 2026</div>
+    <div class="pb-p">$1.75T–$2T</div>
+    <div style="font-family:var(--font-mono);font-size:13px;color:#4ade80;margin-top:3px;">Roadshow: June 8 &nbsp;·&nbsp; Raise target: $75B (largest IPO in history)</div>
+    <div class="pb-m">Underwriters: Morgan Stanley · Goldman Sachs · JPMorgan · BofA · Citi<br>Retail allocation: 30% of float · 5-for-1 stock split already completed</div>
+  </div>
+  <div class="pb-r">
+    <div class="pb-l">Musk voting control</div>
+    <div class="pb-p" style="font-size:24px;">85%</div>
+    <div class="pb-rv">Class B shares — you have no say</div>
+    <div style="margin-top:8px;font-family:var(--font-mono);font-size:10px;color:#666;">42% economic interest</div>
+  </div>
+</div>
+
+<!-- WHAT YOU'RE BUYING -->
+<div class="sl">what you're actually buying — 4 businesses in 1 ticker</div>
+<div class="card" style="padding:0;overflow:hidden;">
+  <table class="dt">
+    <thead>
+      <tr>
+        <th style="text-align:left;">Business</th>
+        <th>Revenue (FY2025)</th>
+        <th>Profit/Loss</th>
+        <th style="text-align:left;">Simple description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="hl"><td><strong>Starlink (Connectivity)</strong></td><td class="w">$11.4B (+50%)</td><td class="w">$4.4B profit</td><td style="text-align:left;color:var(--muted);font-size:12px;">Satellite internet. The only profitable part. 10.3M subscribers.</td></tr>
+      <tr><td>Space (Rockets)</td><td>$4.1B</td><td class="lo">Loss</td><td style="text-align:left;color:var(--muted);font-size:12px;">Falcon 9 launches for NASA, DoD, commercial clients.</td></tr>
+      <tr><td>xAI / Grok / Colossus</td><td>Growing</td><td class="lo">-$6.4B loss</td><td style="text-align:left;color:var(--muted);font-size:12px;">AI chatbot + data centre. Burning $2.5B every 3 months.</td></tr>
+      <tr><td>X (formerly Twitter)</td><td>Declining</td><td class="lo">Loss</td><td style="text-align:left;color:var(--muted);font-size:12px;">Social media. Valued at $33B. Advertiser base has shrunk.</td></tr>
+    </tbody>
+  </table>
+</div>
+<div class="card gold-l" style="font-size:13px;color:#444;">
+  <strong>Plain English summary:</strong> Starlink makes money and subsidises everything else. xAI, which includes Grok and a supercomputer in Memphis, is burning through Starlink's profits. Before the xAI merger, SpaceX was earning ~$8B profit per year. After the merger, it is reporting a $4.94B annual <em>loss</em>. You are buying one excellent business and three loss-making ones.
+</div>
+
+<!-- STARLINK — THE ENGINE -->
+<div class="sl">starlink — the reason anyone is buying</div>
+<div class="stat-row">
+  <div class="stat-card">
+    <div class="stat-label">2025 Revenue</div>
+    <div class="stat-value green">$11.4B</div>
+    <div class="stat-sub">+49.8% year on year</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">2025 EBITDA</div>
+    <div class="stat-value green">$7.2B</div>
+    <div class="stat-sub">+86% year on year</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Subscribers</div>
+    <div class="stat-value green">10.3M</div>
+    <div class="stat-sub">Crossed 10M Feb 2026</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Monthly ARPU</div>
+    <div class="stat-value amber">$81</div>
+    <div class="stat-sub">↓18% — growing by lowering price</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Satellites in orbit</div>
+    <div class="stat-value">9,600+</div>
+    <div class="stat-sub">Biggest constellation ever</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Enterprise pricing</div>
+    <div class="stat-value blue">$3K/mo</div>
+    <div class="stat-sub">vs. $120–250 consumer</div>
+  </div>
+</div>
+
+<!-- OVERALL FINANCIALS -->
+<div class="sl">overall financials — the full picture</div>
+<div class="chart-wrap">
+  <div style="display:flex;gap:20px;margin-bottom:10px;flex-wrap:wrap;">
+    <span style="display:flex;align-items:center;gap:6px;font-size:11px;color:#555;font-family:var(--font-mono);"><span style="width:14px;height:10px;background:var(--green);display:inline-block;border-radius:2px;"></span>Starlink EBITDA (cash earned)</span>
+    <span style="display:flex;align-items:center;gap:6px;font-size:11px;color:#555;font-family:var(--font-mono);"><span style="width:14px;height:10px;background:var(--red);display:inline-block;border-radius:2px;"></span>xAI losses (cash burned)</span>
+    <span style="display:flex;align-items:center;gap:6px;font-size:11px;color:#555;font-family:var(--font-mono);"><span style="width:14px;height:3px;background:var(--gold);display:inline-block;"></span>Total GAAP net result</span>
+  </div>
+  <div class="chart-canvas-wrap" style="height:200px;"><canvas id="finChart"></canvas></div>
+  <p class="chart-note">Starlink earns billions. xAI burns billions. The GAAP "net" is the leftover — a growing loss as xAI scales up.</p>
+</div>
+
+<!-- ═══ ANTHROPIC DEAL — STRESSED ═══════════════════════════ -->
+<div class="sl">the anthropic deal — stressed</div>
+
+<div class="anthropic-box">
+  <div class="ab-eyebrow">⚠ Critical — Read This Carefully</div>
+  <div class="ab-headline">$1.25B/month with Anthropic. <span>Not locked in.</span></div>
+  <div class="ab-body">
+    SpaceX's Colossus 1 data centre in Memphis has a deal with Anthropic — the AI company behind Claude — worth <strong>$1.25 billion per month</strong>, running until May 2029. That sounds like $45 billion in guaranteed revenue. It is not.
+  <div class="ab-headline"> <span>Material Uncertainty.</span></div>
+    Elon Musk posted on X on May 28, 2026, directly contradicting the S-1's framing of the Anthropic deal. Musk wrote. "This is a 180 day lease with 90 day notice mutual cancellation thereafter. The short term was our request, not Anthropic's." Musk's statement directly contradicts SpaceX's S-1 filing, which presents the deal as running "through May 2029." The disclosure gap — the S-1 says three years, the CEO says six months???
+  </div>
+</div>
+
+<div class="g2">
+  <div class="card alert">
+    <div style="font-family:var(--font-mono);font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--red);margin-bottom:8px;">The termination clause</div>
+    <div class="ev"><div class="dot" style="background:var(--red);"></div><div><strong>Either party can exit with 90 days' notice — no penalty.</strong> There is no lock-in. The $45B total is a maximum possible value, not a guaranteed figure.</div></div>
+    <div class="ev"><div class="dot" style="background:var(--red);"></div><div>Anthropic is majority-funded by Amazon, which operates its own competing cloud (AWS). If Amazon steers Anthropic's compute to AWS, this contract evaporates.</div></div>
+    <div class="ev" style="border:none;"><div class="dot" style="background:var(--red);"></div><div>Anthropic can also negotiate pricing down aggressively as more data centre supply comes online (Meta, Microsoft, Google all expanding). Renewal is not guaranteed.</div></div>
+  </div>
+  <div class="card">
+    <div style="font-family:var(--font-mono);font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:8px;">Why it still matters</div>
+    <div class="ev"><div class="dot" style="background:var(--green);"></div><div>$1.25B/month is $15B/year if sustained — comparable to Starlink's 2025 revenue. Even 2 years of this contract ($30B) would materially change SpaceX's financial profile.</div></div>
+    <div class="ev"><div class="dot" style="background:var(--green);"></div><div>It proves there is real enterprise demand for SpaceX's AI compute infrastructure — not just a pitch deck. The contract exists today.</div></div>
+    <div class="ev" style="border:none;"><div class="dot" style="background:var(--gold);"></div><div>But at a $1.75T IPO valuation, the market appears to be pricing this as if it's guaranteed. The 90-day exit clause means it isn't.</div></div>
+  </div>
+</div>
+
+<!-- 5 THRESHOLDS -->
+<div class="sl">the 5 thresholds — what has to go right</div>
+<div class="card">
+  <div class="thresh">
+    <div class="thresh-num">01</div>
+    <div class="thresh-body">
+      <div class="thresh-title">Power grid bottleneck</div>
+      <div class="thresh-desc">Colossus needs gigawatts of electricity. The Memphis power grid wasn't built for this. Expanding grid capacity takes 3–5 years. You can't rush the electricity authority. Production target of 1 million GPUs requires power supply that does not yet exist at that scale.</div>
+    </div>
+  </div>
+  <div class="thresh">
+    <div class="thresh-num">02</div>
+    <div class="thresh-body">
+      <div class="thresh-title">Funding limitation</div>
+      <div class="thresh-desc">Capex jumped from $5.6B (2024) to $20.7B (2025) — a near-fivefold increase. Total liabilities now exceed $60.5B. The IPO's $75B raise is partly needed to sustain this spending rate. If AI investment returns don't materialise fast enough, another capital raise is likely within 2 years.</div>
+    </div>
+  </div>
+  <div class="thresh">
+    <div class="thresh-num">03</div>
+    <div class="thresh-body">
+      <div class="thresh-title">Supply chain &amp; engineering lead times</div>
+      <div class="thresh-desc">NVIDIA GPU allocations are rationed globally. Cooling systems, power electronics, and data centre components have 12–18 month lead times. SpaceX is not the only company competing for this supply — Meta, Microsoft, and Google are all ordering at scale simultaneously.</div>
+    </div>
+  </div>
+  <div class="thresh">
+    <div class="thresh-num">04</div>
+    <div class="thresh-body">
+      <div class="thresh-title">Talent — 9 of 11 xAI co-founders are gone</div>
+      <div class="thresh-desc">Since the merger completed in February 2026, nine of xAI's eleven original co-founders have departed. These were researchers from DeepMind, OpenAI, and Google Brain. The xAI CFO also left in April 2026. Rebuilding this team while integrating three companies simultaneously is a serious operational risk.</div>
+    </div>
+  </div>
+  <div class="thresh">
+    <div class="thresh-num">05</div>
+    <div class="thresh-body">
+      <div class="thresh-title">Orbital AI compute — the "big vision" isn't until 2028 at the earliest</div>
+      <div class="thresh-desc">SpaceX's long-term thesis involves putting AI data centres in space — satellites that process AI workloads in orbit using solar power. Timeline: demos late 2026, customer pilots 2027, volume deployment 2028 <em>best case</em>. Investors buying at IPO are funding a concept that won't generate revenue for at minimum 2 full years. This assumes Starship — which has never flown a commercial mission — also succeeds on schedule.</div>
+    </div>
+  </div>
+</div>
+
+<!-- CAPITAL LOOP -->
+<div class="sl">the capital loop — how the banks are exiting through you</div>
+
+<div class="loop-wrap">
+  <div class="loop-title">The Underwriting Syndicate's Closed Circuit</div>
+
+  <div class="loop-row">
+    <div class="loop-node gold">
+      <div class="loop-node-label">Step 1</div>
+      <div style="font-size:12px;font-weight:600;">SpaceX / xAI need capital</div>
+      <div style="font-size:11px;color:#bbb;">$20.7B capex in 2025<br>xAI burning $2.5B/quarter</div>
+    </div>
+    <div class="loop-arr">→</div>
+    <div class="loop-node red">
+      <div class="loop-node-label">Step 2</div>
+      <div style="font-size:12px;font-weight:600;">High-interest bonds issued</div>
+      <div style="font-size:11px;color:#bbb;">Private debt at 8–12%<br>to fund xAI & Colossus</div>
+    </div>
+    <div class="loop-arr">→</div>
+    <div class="loop-node gold">
+      <div class="loop-node-label">Step 3</div>
+      <div style="font-size:12px;font-weight:600;">Banks provide bridge loans</div>
+      <div style="font-size:11px;color:#bbb;">Morgan Stanley · Goldman<br>JPMorgan · BofA · Citi<br>at lower rates, secured vs IPO</div>
+    </div>
+  </div>
+
+  <div style="display:flex;justify-content:center;font-size:20px;color:var(--gold);padding:6px 0;">↓</div>
+
+  <div class="loop-row" style="flex-direction:row-reverse;">
+    <div class="loop-node red">
+      <div class="loop-node-label">Step 6 — You are here</div>
+      <div style="font-size:12px;font-weight:600;">Public investors buy</div>
+      <div style="font-size:11px;color:#bbb;">$75B raised from retail<br>& institutions at IPO</div>
+    </div>
+    <div class="loop-arr">←</div>
+    <div class="loop-node green">
+      <div class="loop-node-label">Step 5</div>
+      <div style="font-size:12px;font-weight:600;">Banks underwrite IPO</div>
+      <div style="font-size:11px;color:#bbb;">Same banks now price<br>and sell the shares<br>Fee: ~$2.6B at 3.5%</div>
+    </div>
+    <div class="loop-arr">←</div>
+    <div class="loop-node gold">
+      <div class="loop-node-label">Step 4</div>
+      <div style="font-size:12px;font-weight:600;">High-interest bonds retired</div>
+      <div style="font-size:11px;color:#bbb;">Bridge loans replace costly<br>private debt. Banks now<br>control the exit timing.</div>
+    </div>
+  </div>
+
+  <div style="display:flex;justify-content:center;font-size:20px;color:var(--green);padding:6px 0;">↓</div>
+
+  <div class="loop-row">
+    <div class="loop-node green" style="flex:none;width:100%;">
+      <div class="loop-node-label">Step 7 — Banks exit clean</div>
+      <div style="font-size:12px;font-weight:600;">IPO proceeds repay bridge loans + ~$2.6B in underwriting fees</div>
+      <div style="font-size:11px;color:#bbb;margin-top:4px;">Banks have earned: (a) bridge loan interest, (b) underwriting fees. Their credit risk is transferred to public investors.</div>
+    </div>
+  </div>
+
+  <div class="loop-note">
+    <strong>The conflict of interest in plain English:</strong> The five banks are simultaneously the lenders (who want the IPO to raise enough to repay their bridge loans) and the price-setters (who control what price the IPO is offered at). Their incentive is to price the IPO as <strong>high as possible</strong> — more proceeds repay more bridge debt and generate larger fees. There is no independent party representing what the stock is actually <em>worth</em> to a long-term holder. Public investors absorb the credit risk the banks assumed during the bridge phase. This is the "overdraft" of the valuation — the price is set to satisfy the financing chain, not to reflect fundamental value.
+  </div>
+</div>
+
+<div class="g3">
+  <div class="met"><div class="ml">Bridge loan exposure (est.)</div><div class="mv red">$15–20B</div><div class="ms">Banks' skin in the game</div></div>
+  <div class="met"><div class="ml">Underwriting fees (~3.5%)</div><div class="mv">~$2.6B</div><div class="ms">Collected regardless of performance</div></div>
+  <div class="met"><div class="ml">Revenue multiple at IPO</div><div class="mv red">94–107×</div><div class="ms">Apple: 7×. Amazon: 3.8×.</div></div>
+</div>
+
+<!-- VALUATION REALITY CHECK -->
+<div class="sl">valuation — the gap between story and numbers</div>
+<div class="chart-wrap">
+  <div style="font-size:11px;font-family:var(--font-mono);color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;">Revenue multiple comparison — SpaceX vs. benchmarks</div>
+  <div class="chart-canvas-wrap" style="height:180px;"><canvas id="multChart"></canvas></div>
+  <p class="chart-note">SpaceX at 94× revenue. Even Starlink at its fastest growth doesn't mathematically close this gap for 10+ years.</p>
+</div>
+
+<!-- DAY 1 SCENARIOS -->
+<div class="sl">day 1 — five scenarios and how to react</div>
+<div class="scen-wrap">
+  <div class="scen-row hdr">
+    <div>Scenario</div>
+    <div>Move</div>
+    <div>What's driving it</div>
+    <div>Your move</div>
+  </div>
+  <div class="scen-row">
+    <div class="scen-tag" style="color:var(--red);">MOON</div>
+    <div class="scen-move" style="color:var(--green);">+40–80%</div>
+    <div class="scen-what">Retail FOMO + short squeeze + Musk hype. No new information.</div>
+    <div class="scen-action">Do not chase. History shows +80% Day 1 IPOs (Airbnb, DoorDash) fell 50–75% within 18 months. Wait for the retest.</div>
+  </div>
+  <div class="scen-row" style="background:#fafaf7;">
+    <div class="scen-tag" style="color:var(--green);">STRONG</div>
+    <div class="scen-move" style="color:var(--green);">+15–30%</div>
+    <div class="scen-what">Healthy demand. Institutional buyers visible. Starlink narrative lands well.</div>
+    <div class="scen-action">Consider a small starter position (25% of intended). Hold rest for lock-up expiry dip in ~180 days.</div>
+  </div>
+  <div class="scen-row">
+    <div class="scen-tag" style="color:var(--gold);">FLAT</div>
+    <div class="scen-move" style="color:var(--gold);">0–10%</div>
+    <div class="scen-what">Institutional flipping. xAI losses dominate headlines. S&P 500 exclusion noted widely.</div>
+    <div class="scen-action">Best near-term entry point. Price reflects reality, not euphoria. Build full position here.</div>
+  </div>
+  <div class="scen-row" style="background:#fafaf7;">
+    <div class="scen-tag" style="color:var(--red);">WEAK</div>
+    <div class="scen-move" style="color:var(--red);">-5–15%</div>
+    <div class="scen-what">Soft book-build. OSHA investigation headline. Macro event. xAI scrutiny.</div>
+    <div class="scen-action">Banks will stabilise near IPO price for 30 days (green shoe). Use that window to accumulate in tranches.</div>
+  </div>
+  <div class="scen-row">
+    <div class="scen-tag" style="color:var(--red);">BREAK</div>
+    <div class="scen-move" style="color:var(--red);">-20%+</div>
+    <div class="scen-what">Macro crash week of IPO. Legal action on Grok. OSHA shutdown order. Musk controversy.</div>
+    <div class="scen-action">Wait for one full session of stabilisation before entering. Do not buy a freefall. Diagnose cause first — operational vs. sentiment.</div>
+  </div>
+</div>
+<div style="font-size:11px;color:var(--muted);font-family:var(--font-mono);padding:6px 0;">Note: S&P 500 requires 4 consecutive quarters of GAAP profit — SpaceX is ineligible at listing. No passive index fund buying on Day 1.</div>
+
+<!-- VERDICT -->
+<div class="sl">the verdict</div>
+<div class="verdict">
+  <h3>Should you participate?</h3>
+  <strong>What is genuinely good:</strong> Starlink is a near-monopoly satellite internet business growing 50% annually with $7.2B EBITDA. The Anthropic compute contract proves real enterprise demand. The Colossus data centre, if the power and talent problems are solved, addresses the largest growing cost line in enterprise technology — AI compute.<br><br>
+  <strong>What is genuinely concerning:</strong> At $1.75 trillion, you are paying 94× revenue for a company reporting a $4.94 billion annual loss. The underwriting banks have a structural incentive to overprice the IPO. The Anthropic contract is not locked in and can exit in 90 days. The orbital AI vision is 2+ years from generating a dollar of revenue. Nine of eleven xAI co-founders have departed. The power grid, GPU supply chain, and funding cycle all face hard constraints that cannot be solved by ambition alone.<br><br>
+  <strong style="color:var(--gold);">The one-sentence verdict:</strong> Starlink alone is worth owning — but at $1.75 trillion, you are paying for three other businesses you may not want, at a price set by banks who need the IPO to succeed more than they need you to profit. If you participate, size small, expect volatility, and treat the lock-up expiry (180 days post-IPO) as your real entry point.
+</div>
+
+<!-- NAVIGATION BAR -->
+<div class="nav-bar">
+  <a class="nav-btn" id="nav-back" href="#">‹ Back</a>
+  <a class="nav-btn" id="nav-home" href="index.html">Home</a>
+  <a class="nav-btn" id="nav-next" href="#">Next ›</a>
+</div>
+
+<!-- BOTTOM RULE -->
+<div class="bottom-rule">
+  <p class="disclaimer">For informational purposes only. Not financial advice. Data from SpaceX S-1 (SEC EDGAR CIK 0001181412), filed May 20, 2026. All financial figures from public filings. Capital loop analysis is an interpretive framework, not a legal characterisation of the underwriting process. Consult a qualified financial advisor before making investment decisions.</p>
+  <div class="logo-text">PERSONAL RESEARCH · 2026 · SPCX</div>
+</div>
+
+</div>
+
+<script>
+const T={gridColor:'rgba(0,0,0,0.06)',tickColor:'#888',tickFont:{size:10,family:"'Courier New',monospace"},tooltip:{backgroundColor:'#1a1a1a',titleColor:'#f0ece4',bodyColor:'#ccc',padding:10,cornerRadius:3}};
+
+/* FIN CHART */
+new Chart(document.getElementById('finChart'),{
+  type:'bar',
+  data:{
+    labels:['2023','2024','2025','Q1 2026 (ann.)'],
+    datasets:[
+      {label:'Starlink EBITDA',data:[3.5,3.85,7.17,8.35],backgroundColor:'rgba(46,125,50,0.75)',borderRadius:3},
+      {label:'xAI / AI losses',data:[0,-0.5,-6.4,-10],backgroundColor:'rgba(183,28,28,0.65)',borderRadius:3},
+      {label:'Net GAAP result',type:'line',data:[1.5,0.5,-4.94,-12.4],borderColor:'#B87333',backgroundColor:'transparent',fill:false,tension:.3,pointRadius:4,pointBackgroundColor:'#B87333',pointBorderColor:'#fff',pointBorderWidth:1.5,borderWidth:2,borderDash:[4,3]}
+    ]
+  },
+  options:{
+    responsive:true,maintainAspectRatio:false,
+    interaction:{mode:'index',intersect:false},
+    plugins:{legend:{display:false},tooltip:{...T.tooltip,callbacks:{label:ctx=>`  ${ctx.dataset.label}: $${ctx.raw}B`}}},
+    scales:{
+      x:{grid:{display:false},ticks:{color:T.tickColor,font:T.tickFont}},
+      y:{grid:{color:T.gridColor},ticks:{color:T.tickColor,font:T.tickFont,callback:v=>'$'+v+'B'}}
+    }
+  }
+});
+
+/* MULTIPLE CHART */
+new Chart(document.getElementById('multChart'),{
+  type:'bar',
+  data:{
+    labels:['SpaceX IPO','Top SaaS avg','Apple','Amazon','Google'],
+    datasets:[{
+      data:[94,15,7.5,3.8,6.2],
+      backgroundColor:(ctx)=>ctx.dataIndex===0?'rgba(183,28,28,0.75)':'rgba(184,115,51,0.5)',
+      borderRadius:3
+    }]
+  },
+  options:{
+    indexAxis:'y',responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},tooltip:{...T.tooltip,callbacks:{label:ctx=>`  Revenue multiple: ${ctx.raw}×`}}},
+    scales:{
+      x:{grid:{color:T.gridColor},ticks:{color:T.tickColor,font:T.tickFont,callback:v=>v+'×'}},
+      y:{grid:{display:false},ticks:{color:T.tickColor,font:T.tickFont}}
+    }
+  }
+});
+</script>
+
+<script>
+(function () {
+  const INDEX_URL = 'index.html';
+
+  const backBtn = document.getElementById('nav-back');
+  const nextBtn = document.getElementById('nav-next');
+
+  const currentFile = window.location.pathname.split('/').pop();
+
+  fetch(INDEX_URL)
+    .then(res => res.text())
+    .then(html => {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, 'text/html');
+
+      // Extract items from raw HTML
+      const items = Array.from(doc.querySelectorAll('.content-list .item'))
+        .map(item => ({
+          href: item.querySelector('a').getAttribute('href'),
+          date: item.getAttribute('data-date')
+        }))
+        .filter(x => x.href && x.date);
+
+      // Sort oldest → newest
+      items.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+      // Match current file
+      const idx = items.findIndex(x => currentFile === x.href);
+
+      if (idx === -1) {
+        backBtn.classList.add('disabled');
+        nextBtn.classList.add('disabled');
+        return;
+      }
+
+      const prev = items[idx - 1];
+      const next = items[idx + 1];
+
+      if (prev) backBtn.href = prev.href;
+      else backBtn.classList.add('disabled');
+
+      if (next) nextBtn.href = next.href;
+      else nextBtn.classList.add('disabled');
+    })
+    .catch(() => {
+      backBtn.classList.add('disabled');
+      nextBtn.classList.add('disabled');
+    });
+})();
+</script>
+
+</body>
+</html>
