@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>What $10,000 in Tesla Taught Us About Smarter Investing — nwchun90 Research</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+/* ── GOLD THEME BASE (from template) ───────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --gold:   #B87333;
+  --ink:    #1a1a1a;
+  --paper:  #faf9f6;
+  --muted:  #888;
+  --border: #e0ddd5;
+  --cream:  #f5f3ec;
+  --green:  #2e7d32;
+  --amber:  #B87333;
+  --red:    #b71c1c;
+  --blue:   #1a5494;
+  --teal:   #1a7f6e;
+  --font-serif: 'Georgia', serif;
+  --font-mono:  'Courier New', monospace;
+  /* chart line colours */
+  --c-tsla:  #00ACC1;   /* cyan  — TSLA lump */
+  --c-avgo:  #C2185B;   /* magenta — AVGO lump */
+  --c-au:    #B87333;   /* gold — AU lump */
+  --c-vta:   #1a5494;   /* dark blue — VAA TSLA+AVGO */
+  --c-vtg:   #2e7d32;   /* dark green — VAA TSLA+AU */
+}
+body { font-family: var(--font-serif); background: var(--paper);
+       color: var(--ink); font-size: 14px; line-height: 1.7; }
+
+/* NAV BAR */
+.nav-bar { margin: 28px 0 18px; display: flex; justify-content: center; gap: 18px; }
+.nav-btn { font-family: var(--font-mono); font-size: 12px; padding: 6px 16px;
+           border: 1px solid var(--border); background: #fff; color: var(--ink);
+           text-decoration: none; border-radius: 3px; transition: .15s; cursor: pointer; }
+.nav-btn:hover { background: var(--gold); color: #fff; border-color: var(--gold); }
+.nav-btn.disabled { opacity: .4; pointer-events: none; }
+
+/* PAGE WRAPPER */
+.page { max-width: 900px; margin: 0 auto; padding: 40px 28px 60px; }
+
+/* MASTHEAD */
+.masthead { border-top: 3px solid var(--ink); border-bottom: 1px solid var(--ink);
+            padding: 16px 0 14px; margin-bottom: 6px;
+            display: flex; align-items: flex-start; justify-content: space-between;
+            flex-wrap: wrap; gap: 10px; }
+.eyebrow { font-family: var(--font-mono); font-size: 10px; letter-spacing: 2px;
+           text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+.headline { font-size: 26px; font-weight: 400; line-height: 1.2;
+            letter-spacing: -.5px; font-family: var(--font-serif); }
+.headline span { font-style: italic; color: var(--gold); }
+.author-line { font-family: var(--font-mono); font-size: 11px; color: var(--muted); margin-top: 6px; }
+.datestamp { font-family: var(--font-mono); font-size: 11px; color: var(--muted);
+             text-align: right; line-height: 1.7; }
+
+/* DECK */
+.deck { font-size: 15px; color: #444; line-height: 1.75; max-width: 680px;
+        margin-bottom: 28px; border-left: 3px solid var(--gold); padding-left: 16px; }
+
+/* SECTION LABELS */
+.sl { font-family: var(--font-mono); font-size: 10px; font-weight: 600;
+      letter-spacing: .18em; text-transform: uppercase; color: var(--muted);
+      margin: 28px 0 12px; display: flex; align-items: center; gap: 12px; }
+.sl::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+/* CARDS */
+.card { background: #fff; border: 1px solid var(--border); padding: 16px 18px; margin-bottom: 14px; }
+.card.gold-left { border-left: 3px solid var(--gold); padding-left: 14px; }
+.card.dark { background: var(--ink); color: #f0ece4; border: none; }
+.card.dark p, .card.dark li { color: #ccc; }
+.card.dark strong { color: #f0ece4; }
+.card.cream { background: var(--cream); }
+
+/* STAT ROW */
+.stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+             gap: 12px; margin-bottom: 22px; }
+.stat-card { background: #fff; border: 1px solid var(--border); border-radius: 3px; padding: 14px 16px; }
+.stat-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1px;
+              color: #999; font-family: var(--font-mono); margin-bottom: 4px; }
+.stat-value { font-size: 26px; font-weight: 400; font-family: var(--font-mono);
+              line-height: 1.1; margin-bottom: 3px; }
+.stat-sub { font-size: 11px; color: var(--muted); font-style: italic; }
+.green { color: var(--green); } .amber { color: var(--amber); }
+.red   { color: var(--red);   } .blue  { color: var(--blue);  } .teal { color: var(--teal); }
+
+/* COMPACT TILES */
+.g3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 14px; }
+.g4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 14px; }
+.g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+.met { background: var(--cream); border: 1px solid var(--border); padding: 12px 14px; }
+.ml { font-family: var(--font-mono); font-size: 10px; color: var(--muted);
+      margin-bottom: 3px; text-transform: uppercase; letter-spacing: .08em; }
+.mv { font-size: 17px; font-weight: 600; margin-bottom: 2px; }
+.ms { font-size: 11px; color: var(--muted); }
+
+/* ROW DATA */
+.row { display: flex; justify-content: space-between; align-items: center;
+       padding: 7px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+.row:last-child { border-bottom: none; }
+.rl { color: var(--muted); font-family: var(--font-mono); font-size: 11px;
+      text-transform: uppercase; letter-spacing: .08em; }
+.rv { font-weight: 500; }
+.up { color: var(--green); } .dn { color: var(--red); } .am { color: var(--amber); }
+
+/* EVIDENCE BULLETS */
+.ev { display: flex; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border);
+      font-size: 13px; line-height: 1.6; }
+.ev:last-child { border-bottom: none; }
+.dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
+
+/* UNDERSTANDING BOX */
+.understanding { background: var(--ink); color: #f0ece4; border-radius: 3px;
+                 padding: 22px 24px; margin-bottom: 22px; }
+.understanding h3 { font-size: 12px; font-family: var(--font-mono); letter-spacing: 2px;
+                    text-transform: uppercase; color: var(--gold); margin-bottom: 14px; font-weight: 400; }
+.understanding-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.understanding p { font-size: 12px; color: #bbb; line-height: 1.75; }
+.understanding strong { color: #f0ece4; font-weight: 600; }
+
+/* STORY GRID */
+.story-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+              gap: 14px; margin-bottom: 22px; }
+.story-card { border-top: 2px solid var(--border); padding: 14px 16px;
+              background: #fff; border: 1px solid var(--border); border-top-width: 3px; }
+.story-number { font-family: var(--font-mono); font-size: 10px; color: #aaa;
+                letter-spacing: 2px; margin-bottom: 6px; }
+.story-title { font-size: 14px; font-weight: 700; margin-bottom: 6px; line-height: 1.3; }
+.story-body { font-size: 12px; color: #555; line-height: 1.7; }
+
+/* CHART */
+.chart-wrap { background: #fff; border: 1px solid var(--border); border-radius: 3px;
+              padding: 20px 16px 14px; margin-bottom: 24px; }
+.chart-title-row { display: flex; align-items: baseline; justify-content: space-between;
+                   flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+.chart-title-text { font-family: var(--font-mono); font-size: 11px; font-weight: 600;
+                    text-transform: uppercase; letter-spacing: .1em; color: var(--ink); }
+.chart-legend { display: flex; gap: 18px; flex-wrap: wrap; margin-bottom: 14px; }
+.leg-item { display: flex; align-items: center; gap: 7px; font-size: 11.5px; color: #555;
+            font-family: var(--font-mono); }
+.leg-swatch { width: 24px; height: 3px; border-radius: 2px; }
+.leg-swatch.dashed { background: none; border-bottom: 3px dashed; }
+.chart-canvas-wrap { position: relative; width: 100%; height: 360px; }
+.chart-note { font-size: 10px; color: #aaa; font-style: italic; margin-top: 10px;
+              text-align: center; font-family: var(--font-mono); }
+
+/* RESULTS TABLE */
+.res-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.res-table th { font-family: var(--font-mono); font-size: 10px; letter-spacing: .1em;
+                text-transform: uppercase; color: var(--muted); padding: 9px 12px;
+                text-align: left; border-bottom: 2px solid var(--border); white-space: nowrap; }
+.res-table td { padding: 10px 12px; border-bottom: 1px solid var(--border);
+                vertical-align: middle; font-family: var(--font-mono); }
+.res-table td.lbl { font-family: var(--font-serif); font-size: 13px; white-space: nowrap; }
+.res-table td.big { font-size: 16px; font-weight: 700; }
+.res-table tr:last-child td { border-bottom: none; }
+.res-table tr.hi td { background: #eef4fb; }
+.res-table tr.hi2 td { background: #f0fdf0; }
+.color-dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%;
+             margin-right: 7px; vertical-align: middle; flex-shrink: 0; }
+.method-tag { font-size: 9px; font-family: var(--font-mono); padding: 2px 6px;
+              background: #e6eef8; color: #1a4070; border-radius: 2px; margin-left: 6px;
+              vertical-align: middle; letter-spacing: .05em; }
+
+/* BADGE */
+.badge { font-size: 11px; padding: 2px 8px; border-radius: 999px; font-weight: 600;
+         display: inline-block; font-family: var(--font-mono); }
+.b-up { background: #e1f5ee; color: #085041; }
+.b-bl { background: #e6f1fb; color: #0c447c; }
+.b-am { background: #faeeda; color: #633806; }
+
+/* BOTTOM RULE */
+.bottom-rule { border-top: 1px solid var(--ink); padding-top: 12px; margin-top: 40px;
+               display: flex; justify-content: space-between; align-items: center;
+               flex-wrap: wrap; gap: 8px; }
+.disclaimer { font-size: 10px; color: #aaa; font-style: italic;
+              font-family: var(--font-mono); max-width: 560px; line-height: 1.6; }
+.logo-text { font-family: var(--font-mono); font-size: 10px; color: #bbb; letter-spacing: 1px; }
+
+/* BODY TEXT */
+.body-text { font-size: 14px; line-height: 1.85; color: #333; margin-bottom: 14px; }
+.body-text + .body-text { text-indent: 1.5em; }
+.lead { font-size: 15.5px; line-height: 1.8; color: #333; margin-bottom: 16px; }
+
+/* PULLQUOTE */
+.pullquote { border-left: 3px solid var(--gold); padding: 10px 0 10px 18px;
+             margin: 18px 0; font-size: 17px; color: var(--ink); font-style: italic;
+             line-height: 1.5; }
+
+/* INLINE LINK */
+a.doc-link { color: var(--blue); text-decoration: underline; font-family: var(--font-mono);
+             font-size: 12px; }
+a.doc-link:hover { color: var(--gold); }
+
+/* BAR */
+.bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.bar-lbl { font-family: var(--font-mono); font-size: 11px; color: var(--muted);
+           width: 130px; flex-shrink: 0; }
+.bar-track { flex: 1; background: var(--cream); border-radius: 3px; height: 10px; overflow: hidden; }
+.bar-fill  { height: 100%; border-radius: 3px; }
+
+@media (max-width: 700px) {
+  .masthead       { flex-direction: column; }
+  .datestamp      { text-align: left; }
+  .headline       { font-size: 20px; }
+  .g4, .g3       { grid-template-columns: repeat(2, 1fr); }
+  .g2             { grid-template-columns: 1fr; }
+  .understanding-grid { grid-template-columns: 1fr; }
+  .chart-canvas-wrap  { height: 280px; }
+  .res-table      { font-size: 11px; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- ══ MASTHEAD ══════════════════════════════════════════════════════════ -->
+<div class="masthead">
+  <div>
+    <div class="eyebrow">Personal Investment Research &nbsp;·&nbsp; Systematic Investing</div>
+    <div class="headline">Tesla — <span>A Smarter Way to Invest</span></div>
+    <div class="author-line">by nwchun90 &nbsp;·&nbsp; Part 2 on Tesla</div>
+  </div>
+  <div class="datestamp">
+    June 1, 2026<br>
+    Data: estimated month-end prices<br>
+    TSLA · AVGO · AU (NYSE)
+  </div>
+</div>
+
+<!-- ══ TOP NAVIGATION ════════════════════════════════════════════════════ -->
+<div class="nav-bar">
+  <a class="nav-btn" id="nav-back" href="tsla_value-investing.html">‹ Previous</a>
+  <a class="nav-btn" id="nav-home" href="index.html">Home</a>
+  <a class="nav-btn" id="nav-next" href="#" class="disabled">Next ›</a>
+</div>
+
+<!-- ══ DECK ══════════════════════════════════════════════════════════════ -->
+<div class="deck">
+  In the first part of this series we made the case for Tesla as a value opportunity in early 2019. Now we run the numbers — comparing a simple lump-sum bet against a systematic, rule-based Value Averaging Accumulation (VAA) approach that pairs Tesla with a second stock, automatically buys more during dips, and quietly rebalances between the two every month. The full methodology behind this strategy is available for reference — <a href="diversifier_weight-v3.0.md" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:underline;font-family:var(--font-mono);font-size:13px;">read it here</a>.
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     SECTION 1 · THE $10K QUESTION
+══════════════════════════════════════════════════════════════════════════ -->
+<div class="sl">if you bought tesla in january 2019</div>
+
+<p class="lead">Imagine you had set aside $10,000 in January 2019 — and put every dollar into Tesla. No second-guessing, no stop-losses. Just buy and hold.</p>
+
+<p class="body-text">By May 2026, that $10,000 would have grown to roughly <strong>$223,600</strong>. That is a 22× return in seven years — a result most professional fund managers will never come close to matching in a career.</p>
+
+<div class="pullquote">"A $10,000 bet on Tesla at the start of 2019 turned into more than $220,000 — without doing anything."</div>
+
+<p class="body-text">But here is the honest part: the ride was brutal. Tesla lost nearly half its value in the first three months of 2019 alone. It crashed again in early 2020 during COVID. Then, just when everyone felt comfortable after the 2021 rally, it fell more than 70% through 2022. Holding on through all of that required either extraordinary conviction — or a good strategy that made the discipline automatic.</p>
+
+<div class="stat-row">
+  <div class="stat-card">
+    <div class="stat-label">If you bought TSLA Jan 2019</div>
+    <div class="stat-value green">$223,600</div>
+    <div class="stat-sub">final value, May 2026</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">That is a return of</div>
+    <div class="stat-value green">22.4×</div>
+    <div class="stat-sub">on your original $10,000</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Annualised return</div>
+    <div class="stat-value green">52.8%</div>
+    <div class="stat-sub">per year, compounded</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Worst drop along the way</div>
+    <div class="stat-value red">−73%</div>
+    <div class="stat-sub">peak-to-trough, 2021–2022</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     SECTION 2 · WHY PAIR IT WITH SOMETHING ELSE?
+══════════════════════════════════════════════════════════════════════════ -->
+<div class="sl">not everyone can stomach one stock</div>
+
+<p class="body-text">Going 100% into any single company is not a strategy most people can actually live with — especially during a 73% drawdown. A more realistic approach is to split your money between two stocks that behave differently, and let a set of rules handle when to buy more and when to trim.</p>
+
+<p class="body-text">The question then becomes: <strong>which second stock?</strong> The choice matters enormously. A bad diversifier can drag your returns without giving you anything in return. A good one — one that moves differently to Tesla — can actually <em>improve</em> your returns, not just reduce your risk.</p>
+
+<p class="body-text">We tested two candidates: <strong>Broadcom (AVGO)</strong> and <strong>AngloGold Ashanti (AU)</strong>. They were chosen for completely different reasons.</p>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     SECTION 2B · TIMING THE MARKET VS THE MECHANICAL ALTERNATIVE
+══════════════════════════════════════════════════════════════════════════ -->
+<div class="sl">the real problem — timing the market</div>
+
+<div class="understanding" style="margin-bottom:22px;">
+  <h3>Why even a great business can destroy a good investor</h3>
+  <div class="understanding-grid">
+    <div>
+      <p>Tesla clearing the bar as a <strong>value investment in 2019</strong> was a necessary condition — not a sufficient one. A company worth owning long-term is only half the puzzle. The other half is entry: when you buy, how much you deploy, and what happens to your conviction the moment the stock falls 40%.</p>
+      <p style="margin-top:12px;">This is the core problem of market timing — and it is not a problem of intelligence. Even investors who correctly identify a great business routinely destroy their own returns by buying too much at peaks, selling too early during drawdowns, or simply running out of patience before the thesis plays out.</p>
+    </div>
+    <div>
+      <p><strong>The lump-sum Tesla investor in January 2019 was down 25% by March.</strong> They were down again in March 2020. And again — massively — through all of 2022. At each of those moments, the correct move was to buy more. Very few did. The information was available. The nerve was not.</p>
+      <p style="margin-top:12px;">This is exactly what VAA with internal rebalancing solves. A company that qualifies under value investing principles — durable moat, long-term growth, reasonable entry — already satisfies the "what." VAA removes the "when" from the equation entirely. <strong>The rules force you to buy more when it hurts most — automatically, without discretion.</strong></p>
+    </div>
+  </div>
+</div>
+
+<div class="card" style="border-left:3px solid var(--gold);padding-left:14px;margin-bottom:14px;background:var(--cream);">
+  <p style="font-size:13.5px;line-height:1.9;"><strong>The honest framing:</strong> VAA does not replace stock selection — it amplifies it. A mediocre business run through VAA will still underperform. The strategy only works because Tesla was genuinely worth owning over a 7-year horizon. What VAA adds is <em>mechanical robustness</em> — an algorithm that never panics, never overtrades, and never misses the months that matter most. The investor's job is to pick the right business. The strategy's job is to eliminate the timing risk of owning it.</p>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     SECTION 3 · WHY AVGO AND WHY AU
+══════════════════════════════════════════════════════════════════════════ -->
+<div class="sl">choosing the right partner</div>
+
+<div class="story-grid">
+  <div class="story-card" style="border-top-color: var(--c-avgo);">
+    <div class="story-number">BROADCOM (AVGO) &nbsp;·&nbsp; THE NEAR-EQUAL</div>
+    <div class="story-title">A rival performer — almost as strong as Tesla</div>
+    <div class="story-body">AVGO returned 12.4× over the same period when you factor in its generous dividends — not far behind Tesla's 22.4×. Broadcom builds the chips that power data centres and AI workloads, giving it a completely different business engine to Tesla's cars and energy products. A strong second stock alongside Tesla means you are not giving up much return in exchange for the discipline benefits of holding two assets.</div>
+  </div>
+  <div class="story-card" style="border-top-color: var(--c-au);">
+    <div class="story-number">ANGLOGOLD ASHANTI (AU) &nbsp;·&nbsp; THE SAFE HARBOUR</div>
+    <div class="story-title">A gold miner that zigs when Tesla zags</div>
+    <div class="story-body">AU returned 6.8× — far behind Tesla — but that is not why it is here. AngloGold is a gold mining company, and gold tends to rise when investors panic and sell growth stocks. In the COVID crash of 2020 and the rate-hike selloff of 2022, AU moved in the opposite direction to Tesla. This opposite movement is the key ingredient in a strategy that benefits from volatility — and AU has plenty of it.</div>
+  </div>
+</div>
+
+<div class="understanding">
+  <h3>What makes a good second stock — the formula behind it</h3>
+  <div class="understanding-grid">
+    <p><strong>Higher return asset gets more weight.</strong> Our formula automatically gives more of your money to whichever of the two stocks has performed better recently. The underperformer gets a smaller slice — enough to do its job as a ballast, but not so much it drags the whole portfolio.</p>
+    <p><strong>More volatile stocks earn a bigger role.</strong> Counterintuitively, we want the diversifier to swing a lot. Every time it swings far from Tesla, it creates a chance to rebalance — sell the winner, buy the loser at a discount. The bigger the swings, the bigger that harvesting opportunity.</p>
+    <p><strong>Correlation is the key.</strong> When two stocks move together, there is nothing to harvest. AU and TSLA frequently move in opposite directions — that gap is where the extra return comes from. AVGO moves more similarly to Tesla, but its raw strength as a performer makes it useful in a different way.</p>
+    <p><strong>The full methodology.</strong> The exact formula, parameter rules, and rebalancing conditions are documented in the strategy guide. If you want to understand what fires each monthly decision — or run your own numbers — <a class="doc-link" href="diversifier_weight-v3.0.md" target="_blank" style="font-weight:700;font-size:13px;">the complete VAA playbook is here →</a></p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     SECTION 4 · THE STRATEGY EXPLAINED
+══════════════════════════════════════════════════════════════════════════ -->
+<div class="sl">how the strategy works — in plain english</div>
+
+<div class="card gold-left" style="margin-bottom:14px">
+  <p style="font-size:14px;line-height:1.85;"><strong>Value Averaging Accumulation (VAA):</strong> Instead of investing a fixed amount every month regardless of price, VAA sets a target for what your portfolio <em>should</em> be worth each month. The target grows by $500 per month. If your portfolio falls short of the target — because the stock dropped — you invest the exact difference to catch up. If the portfolio is already above target, you do nothing and keep your cash. This means you automatically buy more when prices are low and hold back when prices are high.</p>
+</div>
+
+<div class="card gold-left" style="margin-bottom:14px">
+  <p style="font-size:14px;line-height:1.85;"><strong>Internal Rebalancing:</strong> When one stock in the pair drifts more than 10% away from its target weight, the strategy sells a little of the winner and uses that money to buy more of the laggard — entirely within the portfolio, with no extra cash from you. There is one guard: if the winner is above its 12-month average price (a sign it is still in a strong uptrend), the trim is skipped for that month so you do not cut a winner short.</p>
+</div>
+
+<div class="card" style="background:var(--cream);margin-bottom:6px">
+  <p style="font-size:13px;line-height:1.75;color:#555;">
+    <strong>The combined effect:</strong> VAA buys more Tesla when it crashes. Rebalancing automatically shifts money into whichever of the two stocks is lagging. Together, they create a mechanical discipline that does what most investors find emotionally impossible — buying aggressively during the bad months.
+  </p>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     SECTION 5 · SIMULATION PARAMETERS
+══════════════════════════════════════════════════════════════════════════ -->
+<div class="sl">simulation setup</div>
+
+<div class="g3">
+  <div class="met"><div class="ml">Total capital</div><div class="mv amber">$10,000</div><div class="ms">hard ceiling — never exceeded</div></div>
+  <div class="met"><div class="ml">Starting stake</div><div class="mv">$2,000</div><div class="ms">initial investment at Jan 2019</div></div>
+  <div class="met"><div class="ml">Monthly target step</div><div class="mv">+$500</div><div class="ms">how fast the target grows</div></div>
+</div>
+<div class="g2">
+  <div class="met"><div class="ml">Period</div><div class="mv">Jan 2019 – May 2026</div><div class="ms">7.3 years · 89 monthly steps</div></div>
+  <div class="met"><div class="ml">Benchmark</div><div class="mv">Lump Sum TSLA</div><div class="ms">$10,000 deployed upfront, held</div></div>
+</div>
+
+<div class="card" style="font-size:12.5px;line-height:1.85;color:#555;margin-bottom:6px;border-left:3px solid var(--gold);padding-left:14px;">
+  The two VAA cases begin with $2,000 already invested and draw from the remaining $8,000 pool only when a monthly shortfall arises. Because Tesla's bull runs in 2020 and 2021 kept the portfolio well above target, neither strategy ever needed the full $10,000 — both stopped drawing around the $7,200 mark. Return multiples below are calculated on cash actually deployed, not the full $10,000 pool. The rebalancing trigger, momentum check, and weight window parameters that govern each monthly decision are fully documented in the <a href="diversifier_weight-v3.0.md" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:underline;font-family:var(--font-mono);">VAA strategy guide →</a>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     SECTION 6 · THE CHART
+══════════════════════════════════════════════════════════════════════════ -->
+<div class="sl">return on money deployed — all five cases</div>
+
+<div class="chart-wrap">
+  <div class="chart-title-row">
+    <span class="chart-title-text">Return multiple over time (portfolio value ÷ cash invested)</span>
+    <span style="font-family:var(--font-mono);font-size:10px;color:var(--muted)">1.0× = break-even</span>
+  </div>
+  <div class="chart-legend">
+    <div class="leg-item">
+      <div class="leg-swatch" style="border-bottom:3px dashed var(--c-tsla);height:0;margin-top:1px;"></div>
+      Lump Sum TSLA
+    </div>
+    <div class="leg-item">
+      <div class="leg-swatch" style="border-bottom:3px dashed var(--c-avgo);height:0;margin-top:1px;"></div>
+      Lump Sum AVGO
+    </div>
+    <div class="leg-item">
+      <div class="leg-swatch" style="border-bottom:3px dashed var(--c-au);height:0;margin-top:1px;"></div>
+      Lump Sum AU
+    </div>
+    <div class="leg-item">
+      <div class="leg-swatch" style="background:var(--c-vta);"></div>
+      VAA — TSLA + AVGO
+    </div>
+    <div class="leg-item">
+      <div class="leg-swatch" style="background:var(--c-vtg);"></div>
+      VAA — TSLA + AU
+    </div>
+  </div>
+  <div class="chart-canvas-wrap">
+    <canvas id="chartReturn" role="img" aria-label="Return multiple over time for five investment strategies Jan 2019 to May 2026"></canvas>
+  </div>
+  <p class="chart-note">Lump sums: value ÷ $10,000 &nbsp;|&nbsp; VA strategies: value ÷ cash actually deployed that month &nbsp;|&nbsp; Prices are month-end estimates; dividends included in AVGO via backward price adjustment</p>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     SECTION 7 · RESULTS TABLE
+══════════════════════════════════════════════════════════════════════════ -->
+<div class="sl">final results — january 2019 to may 2026</div>
+
+<div class="card" style="padding:0;overflow-x:auto;">
+  <table class="res-table">
+    <thead>
+      <tr>
+        <th>Strategy</th>
+        <th>Cash deployed</th>
+        <th>Final value</th>
+        <th>Return</th>
+        <th>Per year</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="lbl"><span class="color-dot" style="background:var(--c-tsla)"></span>Lump Sum — Tesla only</td>
+        <td>$10,000</td>
+        <td class="big">$223,600</td>
+        <td class="big up">22.4×</td>
+        <td class="up">52.8%</td>
+      </tr>
+      <tr>
+        <td class="lbl"><span class="color-dot" style="background:var(--c-avgo)"></span>Lump Sum — Broadcom only</td>
+        <td>$10,000</td>
+        <td class="big">$124,500</td>
+        <td class="big up">12.4×</td>
+        <td class="up">41.1%</td>
+      </tr>
+      <tr>
+        <td class="lbl"><span class="color-dot" style="background:var(--c-au)"></span>Lump Sum — AngloGold only</td>
+        <td>$10,000</td>
+        <td class="big">$67,600</td>
+        <td class="big am">6.8×</td>
+        <td class="am">29.8%</td>
+      </tr>
+      <tr class="hi">
+        <td class="lbl"><span class="color-dot" style="background:var(--c-vta)"></span>VAA — Tesla + Broadcom<span class="method-tag">systematic</span></td>
+        <td>$7,186 <span style="font-size:10px;color:var(--muted)">(of $10k)</span></td>
+        <td class="big blue">$252,300</td>
+        <td class="big blue"><strong>35.1×</strong></td>
+        <td class="blue"><strong>62.5%</strong></td>
+      </tr>
+      <tr class="hi2">
+        <td class="lbl"><span class="color-dot" style="background:var(--c-vtg)"></span>VAA — Tesla + AngloGold<span class="method-tag">systematic</span></td>
+        <td>$7,251 <span style="font-size:10px;color:var(--muted)">(of $10k)</span></td>
+        <td class="big green">$167,000</td>
+        <td class="big green">23.0×</td>
+        <td class="green">53.4%</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- VISUAL BAR COMPARISON -->
+<div class="sl">return multiple — at a glance</div>
+<div class="card">
+  <div class="bar-row">
+    <span class="bar-lbl">VAA TSLA+AVGO</span>
+    <div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--c-vta)"></div></div>
+    <span style="font-family:var(--font-mono);font-size:13px;font-weight:700;color:var(--blue);width:60px;text-align:right">35.1×</span>
+  </div>
+  <div class="bar-row">
+    <span class="bar-lbl">Lump Sum TSLA</span>
+    <div class="bar-track"><div class="bar-fill" style="width:63.8%;background:var(--c-tsla)"></div></div>
+    <span style="font-family:var(--font-mono);font-size:13px;width:60px;text-align:right">22.4×</span>
+  </div>
+  <div class="bar-row">
+    <span class="bar-lbl">VAA TSLA+AU</span>
+    <div class="bar-track"><div class="bar-fill" style="width:65.5%;background:var(--c-vtg)"></div></div>
+    <span style="font-family:var(--font-mono);font-size:13px;font-weight:700;color:var(--green);width:60px;text-align:right">23.0×</span>
+  </div>
+  <div class="bar-row">
+    <span class="bar-lbl">Lump Sum AVGO</span>
+    <div class="bar-track"><div class="bar-fill" style="width:35.3%;background:var(--c-avgo)"></div></div>
+    <span style="font-family:var(--font-mono);font-size:13px;width:60px;text-align:right">12.4×</span>
+  </div>
+  <div class="bar-row" style="margin-bottom:0">
+    <span class="bar-lbl">Lump Sum AU</span>
+    <div class="bar-track"><div class="bar-fill" style="width:19.4%;background:var(--c-au)"></div></div>
+    <span style="font-family:var(--font-mono);font-size:13px;width:60px;text-align:right">6.8×</span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     SECTION 8 · WHAT THIS MEANS
+══════════════════════════════════════════════════════════════════════════ -->
+<div class="sl">what these numbers are telling us</div>
+
+<div class="card">
+  <div class="ev">
+    <div class="dot" style="background:var(--c-vta)"></div>
+    <div><strong>The VAA + Broadcom combination was the outright winner.</strong> It turned $7,186 of actual cash into $252,300 — a 35× return, better than buying Tesla alone. The key was AVGO's strong independent performance: when Tesla stumbled, AVGO often held up, and the rebalancing shifted money from AVGO back into Tesla at lower prices. That cycle, repeated month after month, generated real extra return.</div>
+  </div>
+  <div class="ev">
+    <div class="dot" style="background:var(--c-vtg)"></div>
+    <div><strong>The VAA + AngloGold combination is a very different story.</strong> It kept pace with the Tesla lump sum (23× vs 22.4×) while deploying $2,800 less cash. The gold miner protected the portfolio during the worst crashes — but its lower long-term return meant the rebalancing premium was partially offset by persistently shifting money toward the weaker performer.</div>
+  </div>
+  <div class="ev">
+    <div class="dot" style="background:var(--c-tsla)"></div>
+    <div><strong>Pure lump-sum Tesla was still exceptional</strong> — just not the most efficient. It required all $10,000 upfront and offered no mechanism to take advantage of the 2022 crash. Someone who simply held never had the chance to buy Tesla at $123 (its December 2022 low).</div>
+  </div>
+  <div class="ev">
+    <div class="dot" style="background:var(--muted)"></div>
+    <div><strong>Broadcom alone beat AngloGold alone handily</strong> (12.4× vs 6.8×). But as a <em>partner</em> to Tesla, AngloGold brings something AVGO cannot: reliable opposite movement during crises. Choosing between them depends entirely on what you want the second asset to do — contribute return, or provide ballast.</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     SECTION 9 · BOTTOM LINE
+══════════════════════════════════════════════════════════════════════════ -->
+<div class="sl">bottom line</div>
+
+<div class="card cream">
+  <p style="font-size:13.5px;line-height:1.9;">
+    A simple lump-sum in Tesla produced extraordinary results — but it demanded iron nerves through a 73% drawdown and left no room to buy more during the crash. The systematic VAA approach, pairing Tesla with Broadcom and letting a fixed set of rules decide when to invest and rebalance, delivered a higher return on the cash actually used — and did it by following a repeatable process rather than requiring any market timing. The gold miner pairing, while less profitable in this specific period, offered genuine crash protection and still matched the lump-sum Tesla result, with $2,800 left undeployed.
+  </p>
+  <p style="font-size:13px;line-height:1.75;color:#555;margin-top:10px;">
+    <span class="am"><strong>One caveat:</strong></span> these results rely on estimated historical prices and the benefit of hindsight. The strategy rules are mechanical and would have required real discipline — particularly during the months when Tesla was down 50% and every instinct said to stop investing. The numbers work because the rules forced buying at exactly those moments.
+  </p>
+</div>
+
+<!-- ══ BOTTOM NAVIGATION ══════════════════════════════════════════════════ -->
+<div class="nav-bar">
+  <a class="nav-btn" id="nav-back-b" href="tsla_value-investing.html">‹ Previous</a>
+  <a class="nav-btn" id="nav-home-b" href="index.html">Home</a>
+  <a class="nav-btn" id="nav-next-b" href="#" class="disabled">Next ›</a>
+</div>
+
+<!-- ══ BOTTOM RULE ════════════════════════════════════════════════════════ -->
+<div class="bottom-rule">
+  <p class="disclaimer">For informational and educational purposes only. Not financial advice. All figures are based on estimated month-end closing prices (Jan 2019 – Aug 2025 from known data; Sep 2025 – May 2026 projected). TSLA: split-adjusted for 5-for-1 (Aug 2020) and 3-for-1 (Aug 2022). AVGO: split-adjusted for 10-for-1 (Jul 2024) with backward dividend adjustment applied. AU: no splits in period. Dividends, transaction costs, and taxes are not modelled. Past performance does not guarantee future results. Consult a qualified financial adviser before making investment decisions.</p>
+  <div class="logo-text">PERSONAL RESEARCH · 2026 · TSLA / AVGO / AU</div>
+</div>
+
+</div><!-- /page -->
+
+<!-- ══ CHART SCRIPT ════════════════════════════════════════════════════════ -->
+<script>
+const DATES = "2019-01,2019-02,2019-03,2019-04,2019-05,2019-06,2019-07,2019-08,2019-09,2019-10,2019-11,2019-12,2020-01,2020-02,2020-03,2020-04,2020-05,2020-06,2020-07,2020-08,2020-09,2020-10,2020-11,2020-12,2021-01,2021-02,2021-03,2021-04,2021-05,2021-06,2021-07,2021-08,2021-09,2021-10,2021-11,2021-12,2022-01,2022-02,2022-03,2022-04,2022-05,2022-06,2022-07,2022-08,2022-09,2022-10,2022-11,2022-12,2023-01,2023-02,2023-03,2023-04,2023-05,2023-06,2023-07,2023-08,2023-09,2023-10,2023-11,2023-12,2024-01,2024-02,2024-03,2024-04,2024-05,2024-06,2024-07,2024-08,2024-09,2024-10,2024-11,2024-12,2025-01,2025-02,2025-03,2025-04,2025-05,2025-06,2025-07,2025-08,2025-09,2025-10,2025-11,2025-12,2026-01,2026-02,2026-03,2026-04,2026-05".split(",");
+
+const LS_T   = [10000.0,10767.3,7566.9,8450.3,8233.2,9530.5,7990.9,8379.6,8561.3,9732.5,10595.7,14098.9,14477.5,13629.5,12619.9,16784.5,17415.4,24533.1,28354.4,41635.5,37102.5,36829.9,83377.1,118738.0,123543.7,113563.9,98223.1,116163.6,98404.8,110944.0,115951.5,122438.2,125002.5,156461.4,204245.3,177819.3,155073.2,147435.6,165679.0,146516.9,108924.8,112130.2,144311.0,151352.9,109000.5,87072.2,89646.6,62180.7,82367.5,97819.3,104724.9,83240.8,89732.5,132140.3,132221.1,123614.3,125441.7,100933.9,118854.1,125431.6,94543.2,101908.1,90252.4,74230.2,89222.6,99611.3,108591.6,108096.9,126925.8,126123.2,177970.7,203856.6,197188.3,151499.2,141095.4,116077.7,176804.6,179202.4,186774.4,189803.1,184250.4,194346.3,200908.6,209490.2,216052.5,207975.8,223119.6,216052.5,223624.4];
+const LS_A   = [10000.0,10815.0,10616.7,11338.7,10796.5,11460.1,10986.5,11244.9,11952.1,12328.7,11632.0,12312.2,12837.2,12507.8,9880.7,12216.5,14062.7,15253.2,15690.5,17312.0,17645.8,18952.9,19512.4,21496.8,21341.0,20818.2,21385.7,21474.4,21194.2,21787.2,21697.6,21782.4,22844.7,23730.2,28182.5,29524.5,30528.8,27157.3,30150.3,26840.6,24073.5,23285.1,26502.9,28168.8,25230.0,24407.8,27970.3,30855.2,30935.6,32799.8,30971.8,32420.9,35856.5,43065.9,45007.9,44258.4,44513.8,46020.7,50052.2,53585.4,58805.5,66151.7,67694.1,65768.7,76393.1,85361.8,85997.0,85663.9,93479.5,95774.5,113552.7,120874.7,115973.2,101751.7,90574.8,81943.3,97700.1,99459.1,103310.5,106129.7,101624.5,104972.7,108858.1,113283.6,117196.4,112659.5,122941.3,118925.3,124466.6];
+const LS_G   = [10000.0,10234.4,10486.9,10919.7,11190.3,13561.8,15302.1,17349.0,19035.2,18097.4,16753.8,17853.9,18304.8,17610.5,14725.0,17294.9,20099.2,23092.9,26239.9,28214.6,24914.3,22795.3,21478.8,21154.2,20495.9,19314.7,17745.7,18268.7,18313.8,16492.3,17502.3,18304.8,18124.4,19269.6,17421.1,17240.8,18169.5,20586.1,19927.9,18981.1,17430.1,15257.0,15545.5,13805.2,12398.6,13255.2,12984.7,13886.4,15464.4,14860.2,16600.5,17096.5,16817.0,15419.3,15743.9,14770.1,15229.9,15635.7,17502.3,18124.4,18512.2,18999.1,21749.3,22930.6,22019.8,21677.2,23101.9,24716.0,27114.5,26284.9,24229.0,24887.3,26492.3,28863.8,32624.0,36266.9,34129.8,37872.0,39675.4,41028.0,42831.4,45987.4,48692.5,51848.5,55455.4,59062.2,62669.1,65374.2,67628.5];
+const VTA_P  = [2000.0,2500.0,3000.0,3500.0,4000.0,4504.6,5000.0,5500.0,6000.0,6612.3,7000.0,8742.9,9019.1,8560.4,9000.0,11927.9,12439.5,17315.9,19924.7,28996.6,25940.6,25815.5,57376.8,81424.3,84673.0,77887.9,67520.3,79679.1,67634.7,76157.0,79545.6,83944.1,85729.9,107083.6,139660.1,121817.6,106452.8,95321.6,106712.1,94520.2,72983.4,70953.6,81286.7,86331.9,76484.6,73347.5,79784.6,72551.0,73908.2,78832.5,74937.1,77499.2,85628.2,103716.8,108183.3,106152.7,106805.2,109391.9,119299.7,127656.2,111791.5,125494.1,127590.4,123166.0,143239.8,160051.4,161729.4,161098.7,176326.7,180424.0,215596.4,230350.4,221104.0,172284.0,160058.0,132378.1,199442.7,202182.6,210697.1,214206.2,207826.5,219034.9,226458.4,236113.1,243538.8,234422.0,251659.5,243678.5,252329.6];
+const VTA_I  = [2000.0,2343.7,3377.0,3577.9,4193.9,4193.9,5250.1,5548.3,5855.8,5855.8,5953.7,5953.7,5953.7,5953.7,7185.7,7185.7,7185.7,7185.7,7185.7,7185.7,7185.7,7185.7,7185.7,7185.7,7185.7,7185.7,7185.7,7185.7,7185.7,7185.7,7185.7,7185.7,7185.7,7185.7,7185.7,7185.7,7185.7,7185.7,7185.7,7185.7,7185.7,7185.7,7185.7,7185.7,7185.7,7185.7,7185.7,7185.7,7185.7,7185.7,7185.7,7185.7,7185.7,7185.7,7185.7,7185.7,7185.7,7185.7,7185.7,7185.7,7185.7,7185.7,7185.7,7185.7,7185.7,7185.7,7185.7,7185.7,7185.7,7185.7,7185.7,7185.7,7185.7,7185.7,7185.7,7185.7,7185.7,7185.7,7185.7,7185.7,7185.7,7185.7,7185.7,7185.7,7185.7,7185.7,7185.7,7185.7,7185.7];
+const VTG_P  = [2000.0,2500.0,3000.0,3500.0,4000.0,4703.6,5000.0,5500.0,6000.0,6500.0,7000.0,8669.3,8898.0,8526.8,9000.0,11513.8,12318.2,16452.2,18960.4,27176.5,24203.0,23931.1,52713.0,74610.8,77556.9,71315.0,61731.9,72875.2,61872.1,69554.3,72706.6,76765.4,78345.8,97896.9,127419.3,111034.0,96983.1,92367.4,103641.1,91720.1,68348.5,69833.3,80514.5,83796.2,60984.0,56956.5,57217.3,50171.5,61166.1,65708.6,72381.6,69014.7,69650.4,65797.0,65904.5,61817.3,63691.6,58318.3,66234.1,69244.1,58212.4,60334.0,68285.9,71375.3,69071.6,68345.4,72909.3,77764.0,85557.5,83031.0,78363.5,85127.0,86254.5,80030.7,82495.6,79787.8,94838.8,100271.0,104764.8,107360.3,108017.2,115205.4,121459.9,129198.1,137943.7,146246.7,155251.6,161448.4,167019.3];
+const VTG_I  = [2000.0,2378.5,3387.4,3616.3,4147.6,4147.6,4730.2,4815.2,5021.2,5184.3,5518.7,5518.7,5518.7,5518.7,7251.3,7251.3,7251.3,7251.3,7251.3,7251.3,7251.3,7251.3,7251.3,7251.3,7251.3,7251.3,7251.3,7251.3,7251.3,7251.3,7251.3,7251.3,7251.3,7251.3,7251.3,7251.3,7251.3,7251.3,7251.3,7251.3,7251.3,7251.3,7251.3,7251.3,7251.3,7251.3,7251.3,7251.3,7251.3,7251.3,7251.3,7251.3,7251.3,7251.3,7251.3,7251.3,7251.3,7251.3,7251.3,7251.3,7251.3,7251.3,7251.3,7251.3,7251.3,7251.3,7251.3,7251.3,7251.3,7251.3,7251.3,7251.3,7251.3,7251.3,7251.3,7251.3,7251.3,7251.3,7251.3,7251.3,7251.3,7251.3,7251.3,7251.3,7251.3,7251.3,7251.3,7251.3,7251.3];
+
+// Compute return multiples
+const mult = (vals, inv) => vals.map((v, i) => +(v / inv[i]).toFixed(3));
+const inv10k = Array(LS_T.length).fill(10000);
+const mT  = mult(LS_T,  inv10k);
+const mA  = mult(LS_A,  inv10k);
+const mG  = mult(LS_G,  inv10k);
+const mTA = mult(VTA_P, VTA_I);
+const mTG = mult(VTG_P, VTG_I);
+
+const CD = {
+  tooltip: { backgroundColor:'#1a1a1a', titleColor:'#f0ece4', bodyColor:'#ccc',
+             padding:12, cornerRadius:3 },
+  gridColor: 'rgba(0,0,0,0.06)',
+  tickColor: '#888',
+  tickFont: { size:11, family:"'Courier New', monospace" }
+};
+
+new Chart(document.getElementById('chartReturn'), {
+  type: 'line',
+  data: {
+    labels: DATES,
+    datasets: [
+      { label:'Lump Sum TSLA',
+        data: mT,
+        borderColor:'#00ACC1', borderWidth:2, borderDash:[6,4],
+        pointRadius:0, fill:false, tension:0.3 },
+      { label:'Lump Sum AVGO',
+        data: mA,
+        borderColor:'#C2185B', borderWidth:2, borderDash:[6,4],
+        pointRadius:0, fill:false, tension:0.3 },
+      { label:'Lump Sum AU',
+        data: mG,
+        borderColor:'#B87333', borderWidth:2, borderDash:[6,4],
+        pointRadius:0, fill:false, tension:0.3 },
+      { label:'VAA TSLA+AVGO',
+        data: mTA,
+        borderColor:'#1a5494', borderWidth:2.5,
+        pointRadius:0, fill:false, tension:0.3 },
+      { label:'VAA TSLA+AU',
+        data: mTG,
+        borderColor:'#2e7d32', borderWidth:2.5,
+        pointRadius:0, fill:false, tension:0.3 },
+      { label:'Break-even',
+        data: Array(DATES.length).fill(1),
+        borderColor:'rgba(0,0,0,0.18)', borderWidth:1, borderDash:[3,4],
+        pointRadius:0, fill:false }
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    interaction: { mode:'index', intersect:false },
+    plugins: {
+      legend: { display:false },
+      tooltip: {
+        ...CD.tooltip,
+        callbacks: {
+          title: items => items[0].label,
+          label: ctx => {
+            if (ctx.datasetIndex === 5) return null;
+            const v = ctx.raw;
+            return `  ${ctx.dataset.label}: ${v.toFixed(1)}×`;
+          }
+        }
+      }
+    },
+    scales: {
+      x: {
+        grid: { color: CD.gridColor },
+        ticks: { color: CD.tickColor, font: CD.tickFont,
+                 maxTicksLimit: 14, maxRotation: 0, autoSkip: true }
+      },
+      y: {
+        grid: { color: CD.gridColor },
+        ticks: {
+          color: CD.tickColor, font: CD.tickFont,
+          callback: v => v.toFixed(0) + '×'
+        },
+        title: {
+          display: true,
+          text: 'Return multiple (value ÷ cash deployed)',
+          color: CD.tickColor,
+          font: { size:11, family:"'Courier New', monospace" }
+        }
+      }
+    }
+  }
+});
+</script>
+
+</body>
+</html>
