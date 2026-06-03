@@ -6,138 +6,92 @@
 <title>Tesla — A Value Investor's Verdict · nwchun90 Research</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-:root {
-  --gold: #B87333; --ink: #1a1a1a; --paper: #faf9f6; --muted: #888;
-  --border: #e0ddd5; --cream: #f5f3ec;
-  --green: #2e7d32; --amber: #B87333; --red: #b71c1c; --blue: #1a5494; --teal: #1a7f6e;
-  --font-serif: 'Georgia', serif; --font-mono: 'Courier New', monospace;
-}
-body { font-family: var(--font-serif); background: var(--paper); color: var(--ink); font-size: 14px; line-height: 1.7; }
-.page { max-width: 900px; margin: 0 auto; padding: 40px 28px 60px; }
-
-/* MASTHEAD */
-.masthead { border-top: 3px solid var(--ink); border-bottom: 1px solid var(--ink); padding: 16px 0 14px; margin-bottom: 28px; display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
-.eyebrow { font-family: var(--font-mono); font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
-.headline { font-size: 28px; font-weight: 400; line-height: 1.15; letter-spacing: -0.5px; }
-.headline span { font-style: italic; color: var(--gold); }
-.author-line { font-family: var(--font-mono); font-size: 11px; color: var(--muted); margin-top: 6px; }
-.datestamp { font-family: var(--font-mono); font-size: 11px; color: var(--muted); text-align: right; line-height: 1.7; }
-
-/* DECK */
-.deck { font-size: 14.5px; color: #444; line-height: 1.8; max-width: 700px; margin-bottom: 24px; border-left: 3px solid var(--gold); padding-left: 16px; }
-
-/* SECTION LABELS */
-.sl { font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); margin: 24px 0 10px; display: flex; align-items: center; gap: 12px; }
-.sl::after { content: ''; flex: 1; height: 1px; background: var(--border); }
-
-/* PRICE BAND */
-.price-band { background: var(--ink); color: #f0ece4; padding: 16px 22px; margin-bottom: 20px; display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
-.pb-label { font-family: var(--font-mono); font-size: 10px; color: #666; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 4px; }
-.pb-price { font-family: var(--font-mono); font-size: 36px; font-weight: 400; color: #f0ece4; }
-.pb-change { font-family: var(--font-mono); font-size: 13px; margin-top: 3px; }
-.pb-meta { font-family: var(--font-mono); font-size: 11px; color: #888; line-height: 1.9; margin-top: 6px; }
-.pb-right { text-align: right; }
-.pb-right-label { font-family: var(--font-mono); font-size: 10px; color: #666; letter-spacing: 2px; text-transform: uppercase; }
-.pb-right-val { font-family: var(--font-mono); font-size: 15px; color: var(--gold); margin-top: 3px; }
-
-/* STAT CARDS */
-.stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 24px; }
-.stat-card { background: #fff; border: 1px solid var(--border); border-radius: 4px; padding: 14px 16px; }
-.stat-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: #999; font-family: var(--font-mono); margin-bottom: 4px; }
-.stat-value { font-size: 22px; font-weight: 400; font-family: var(--font-mono); line-height: 1.1; margin-bottom: 3px; }
-.stat-sub { font-size: 11px; color: var(--muted); font-style: italic; }
-.green { color: var(--green); } .amber { color: var(--amber); } .red { color: var(--red); } .blue { color: var(--blue); }
-
-/* CARDS */
-.card { background: #fff; border: 1px solid var(--border); padding: 14px 16px; margin-bottom: 12px; }
-.card.alert { border-left: 3px solid var(--red); padding-left: 12px; }
-.card.gold-l { border-left: 3px solid var(--gold); padding-left: 12px; }
-.card.dark { background: var(--ink); color: #f0ece4; border: none; padding: 20px 22px; }
-
-/* GRIDS */
-.g4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 12px; }
-.g3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 12px; }
-.g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
-.met { background: var(--cream); border: 1px solid var(--border); padding: 10px 12px; }
-.ml { font-family: var(--font-mono); font-size: 10px; color: var(--muted); margin-bottom: 2px; text-transform: uppercase; letter-spacing: .08em; }
-.mv { font-size: 16px; font-weight: 600; margin-bottom: 1px; }
-.ms { font-size: 11px; color: var(--muted); }
-
-/* ROWS */
-.row { display: flex; justify-content: space-between; align-items: center; padding: 7px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
-.row:last-child { border-bottom: none; }
-.rl { color: var(--muted); font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: .07em; }
-.rv { font-weight: 500; }
-.up { color: var(--green); } .dn { color: var(--red); } .am { color: var(--amber); }
-
-/* EV BULLETS */
-.ev { display: flex; gap: 10px; padding: 7px 0; border-bottom: 1px solid var(--border); font-size: 13px; line-height: 1.55; }
-.ev:last-child { border-bottom: none; }
-.dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
-
-/* TABLES */
-.dtable { width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 0; }
-.dtable th { font-family: var(--font-mono); font-size: 10px; text-transform: uppercase; letter-spacing: .1em; color: var(--muted); padding: 7px 10px; border-bottom: 2px solid var(--ink); text-align: right; }
-.dtable th:first-child { text-align: left; }
-.dtable td { padding: 8px 10px; border-bottom: 1px solid var(--border); text-align: right; font-family: var(--font-mono); font-size: 12px; }
-.dtable td:first-child { text-align: left; font-family: var(--font-serif); font-size: 13px; }
-.dtable tr:last-child td { border-bottom: none; }
-.dtable .hl { background: #fffdf5; }
-.w { color: var(--green); font-weight: 700; } .lo { color: var(--red); } .mi { color: var(--amber); }
-
-/* CHART */
-.chart-wrap { background: #fff; border: 1px solid var(--border); padding: 16px 14px 10px; margin-bottom: 18px; }
-.chart-canvas-wrap { position: relative; width: 100%; height: 240px; }
-.chart-note { font-size: 10px; color: #999; font-style: italic; margin-top: 8px; text-align: center; font-family: var(--font-mono); }
-
-/* BAR ROWS */
-.bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 9px; }
-.bar-lbl { font-family: var(--font-mono); font-size: 11px; color: var(--muted); width: 160px; flex-shrink: 0; text-transform: uppercase; letter-spacing: .05em; }
-.bar-track { flex: 1; background: var(--cream); border-radius: 4px; height: 8px; overflow: hidden; }
-.bar-fill { height: 100%; border-radius: 4px; }
-.bar-val { font-size: 12px; font-family: var(--font-mono); width: 60px; text-align: right; flex-shrink: 0; }
-
-/* CLIFFHANGER */
-.cliffhanger { background: var(--ink); color: #f0ece4; padding: 28px 30px; margin: 20px 0; position: relative; overflow: hidden; }
-.cliffhanger::before { content: '§'; position: absolute; right: 20px; top: 10px; font-size: 100px; color: rgba(184,115,51,0.08); font-family: var(--font-serif); }
-.ch-eyebrow { font-family: var(--font-mono); font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); margin-bottom: 10px; }
-.ch-text { font-size: 15px; color: #bbb; line-height: 1.8; max-width: 580px; }
-.ch-text strong { color: #f0ece4; }
-.ch-cta { font-family: var(--font-mono); font-size: 12px; color: var(--gold); margin-top: 16px; letter-spacing: 1px; border-top: 1px solid rgba(184,115,51,0.3); padding-top: 12px; }
-
-/* FRAMEWORK BADGES */
-.badge { display: inline-block; font-family: var(--font-mono); font-size: 10px; padding: 2px 8px; border-radius: 999px; font-weight: 600; }
-.b-up { background: #e1f5ee; color: #085041; }
-.b-dn { background: #fcebeb; color: #791f1f; }
-.b-am { background: #faeeda; color: #633806; }
-.b-gy { background: var(--cream); color: var(--muted); }
-
-/* VERDICT DARK */
-.verdict-dark { background: var(--ink); color: #bbb; padding: 20px 22px; margin-bottom: 12px; font-size: 13px; line-height: 1.8; }
-.verdict-dark strong { color: #f0ece4; }
-.verdict-dark h3 { font-family: var(--font-mono); font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); margin-bottom: 10px; font-weight: 400; }
-
-/* BOTTOM RULE */
-.bottom-rule { border-top: 1px solid var(--ink); padding-top: 12px; margin-top: 28px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
-.disclaimer { font-size: 10px; color: #aaa; font-style: italic; font-family: var(--font-mono); max-width: 600px; line-height: 1.6; }
-.logo-text { font-family: var(--font-mono); font-size: 10px; color: #bbb; letter-spacing: 1px; }
-
-@media (max-width: 650px) {
-  .g4 { grid-template-columns: repeat(2,1fr); }
-  .g3 { grid-template-columns: repeat(2,1fr); }
-  .g2 { grid-template-columns: 1fr; }
-  .price-band { flex-direction: column; }
-  .pb-right { text-align: left; }
-  .dtable th, .dtable td { padding: 5px 6px; font-size: 10px; }
-  .headline { font-size: 22px; }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{--gold:#B87333;--ink:#1a1a1a;--paper:#faf9f6;--muted:#888;--border:#e0ddd5;--cream:#f5f3ec;--green:#2e7d32;--amber:#B87333;--red:#b71c1c;--blue:#1a5494;--font-serif:'Georgia',serif;--font-mono:'Courier New',monospace;}
+body{font-family:var(--font-serif);background:var(--paper);color:var(--ink);font-size:14px;line-height:1.7;}
+.page{max-width:900px;margin:0 auto;padding:40px 28px 60px;}
+.masthead{border-top:3px solid var(--ink);border-bottom:1px solid var(--ink);padding:16px 0 14px;margin-bottom:28px;display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+.eyebrow{font-family:var(--font-mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
+.headline{font-size:28px;font-weight:400;line-height:1.15;letter-spacing:-0.5px;}
+.headline span{font-style:italic;color:var(--gold);}
+.author-line{font-family:var(--font-mono);font-size:11px;color:var(--muted);margin-top:6px;}
+.datestamp{font-family:var(--font-mono);font-size:11px;color:var(--muted);text-align:right;line-height:1.7;}
+.deck{font-size:14.5px;color:#444;line-height:1.8;max-width:700px;margin-bottom:24px;border-left:3px solid var(--gold);padding-left:16px;}
+.sl{font-family:var(--font-mono);font-size:10px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);margin:24px 0 10px;display:flex;align-items:center;gap:12px;}
+.sl::after{content:'';flex:1;height:1px;background:var(--border);}
+.price-band{background:var(--ink);color:#f0ece4;padding:16px 22px;margin-bottom:20px;display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:16px;}
+.pb-label{font-family:var(--font-mono);font-size:10px;color:#666;letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;}
+.pb-price{font-family:var(--font-mono);font-size:36px;font-weight:400;color:#f0ece4;}
+.pb-change{font-family:var(--font-mono);font-size:13px;margin-top:3px;}
+.pb-meta{font-family:var(--font-mono);font-size:11px;color:#888;line-height:1.9;margin-top:6px;}
+.pb-right{text-align:right;}
+.pb-right-label{font-family:var(--font-mono);font-size:10px;color:#666;letter-spacing:2px;text-transform:uppercase;}
+.pb-right-val{font-family:var(--font-mono);font-size:15px;color:var(--gold);margin-top:3px;}
+.stat-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:24px;}
+.stat-card{background:#fff;border:1px solid var(--border);border-radius:4px;padding:14px 16px;}
+.stat-label{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:#999;font-family:var(--font-mono);margin-bottom:4px;}
+.stat-value{font-size:22px;font-weight:400;font-family:var(--font-mono);line-height:1.1;margin-bottom:3px;}
+.stat-sub{font-size:11px;color:var(--muted);font-style:italic;}
+.green{color:var(--green);}.amber{color:var(--amber);}.red{color:var(--red);}.blue{color:var(--blue);}
+.card{background:#fff;border:1px solid var(--border);padding:14px 16px;margin-bottom:12px;}
+.card.alert{border-left:3px solid var(--red);padding-left:12px;}
+.card.gold-l{border-left:3px solid var(--gold);padding-left:12px;}
+.card.dark{background:var(--ink);color:#f0ece4;border:none;padding:20px 22px;}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px;}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+.met{background:var(--cream);border:1px solid var(--border);padding:10px 12px;}
+.ml{font-family:var(--font-mono);font-size:10px;color:var(--muted);margin-bottom:2px;text-transform:uppercase;letter-spacing:.08em;}
+.mv{font-size:16px;font-weight:600;margin-bottom:1px;}
+.ms{font-size:11px;color:var(--muted);}
+.row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px;}
+.row:last-child{border-bottom:none;}
+.rl{color:var(--muted);font-family:var(--font-mono);font-size:11px;text-transform:uppercase;letter-spacing:.07em;}
+.rv{font-weight:500;}
+.up{color:var(--green);}.dn{color:var(--red);}.am{color:var(--amber);}
+.ev{display:flex;gap:10px;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px;line-height:1.55;}
+.ev:last-child{border-bottom:none;}
+.dot{width:8px;height:8px;border-radius:50%;margin-top:5px;flex-shrink:0;}
+.dtable{width:100%;border-collapse:collapse;font-size:12px;}
+.dtable th{font-family:var(--font-mono);font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);padding:7px 10px;border-bottom:2px solid var(--ink);text-align:right;}
+.dtable th:first-child{text-align:left;}
+.dtable td{padding:8px 10px;border-bottom:1px solid var(--border);text-align:right;font-family:var(--font-mono);font-size:12px;}
+.dtable td:first-child{text-align:left;font-family:var(--font-serif);font-size:13px;}
+.dtable tr:last-child td{border-bottom:none;}
+.w{color:var(--green);font-weight:700;}.lo{color:var(--red);}.mi{color:var(--amber);}
+.chart-wrap{background:#fff;border:1px solid var(--border);padding:16px 14px 10px;margin-bottom:18px;}
+.chart-note{font-size:10px;color:#999;font-style:italic;margin-top:8px;text-align:center;font-family:var(--font-mono);}
+.bar-row{display:flex;align-items:center;gap:10px;margin-bottom:9px;}
+.bar-lbl{font-family:var(--font-mono);font-size:11px;color:var(--muted);width:160px;flex-shrink:0;text-transform:uppercase;letter-spacing:.05em;}
+.bar-track{flex:1;background:var(--cream);border-radius:4px;height:8px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:4px;}
+.bar-val{font-size:12px;font-family:var(--font-mono);width:60px;text-align:right;flex-shrink:0;}
+.cliffhanger{background:var(--ink);color:#f0ece4;padding:28px 30px;margin:20px 0;position:relative;overflow:hidden;}
+.cliffhanger::before{content:'§';position:absolute;right:20px;top:10px;font-size:100px;color:rgba(184,115,51,0.08);font-family:var(--font-serif);}
+.ch-eyebrow{font-family:var(--font-mono);font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:10px;}
+.ch-text{font-size:15px;color:#bbb;line-height:1.8;max-width:580px;}
+.ch-text strong{color:#f0ece4;}
+.ch-cta{font-family:var(--font-mono);font-size:12px;color:var(--gold);margin-top:16px;letter-spacing:1px;border-top:1px solid rgba(184,115,51,0.3);padding-top:12px;}
+.badge{display:inline-block;font-family:var(--font-mono);font-size:10px;padding:2px 8px;border-radius:999px;font-weight:600;}
+.b-dn{background:#fcebeb;color:#791f1f;}.b-am{background:#faeeda;color:#633806;}
+.verdict-dark{background:var(--ink);color:#bbb;padding:20px 22px;margin-bottom:12px;font-size:13px;line-height:1.8;}
+.verdict-dark strong{color:#f0ece4;}
+.verdict-dark h3{font-family:var(--font-mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:10px;font-weight:400;}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+.bottom-rule{border-top:1px solid var(--ink);padding-top:12px;margin-top:28px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;}
+.disclaimer{font-size:10px;color:#aaa;font-style:italic;font-family:var(--font-mono);max-width:600px;line-height:1.6;}
+.logo-text{font-family:var(--font-mono);font-size:10px;color:#bbb;letter-spacing:1px;}
+@media(max-width:650px){
+  .g3,.g2,.two-col{grid-template-columns:1fr;}
+  .price-band{flex-direction:column;}.pb-right{text-align:left;}
+  .dtable th,.dtable td{padding:5px 6px;font-size:10px;}
+  .headline{font-size:22px;}
 }
 </style>
 </head>
 <body>
 <div class="page">
 
-<!-- ── MASTHEAD ───────────────────────────────────────── -->
+<!-- MASTHEAD -->
 <div class="masthead">
   <div>
     <div class="eyebrow">Personal Investment Research &nbsp;·&nbsp; Company Series</div>
@@ -146,69 +100,66 @@ body { font-family: var(--font-serif); background: var(--paper); color: var(--in
   </div>
   <div class="datestamp">
     May 31, 2026<br>
-    Data: Tesla · Yahoo Finance · Public.com<br>
+    Data: Tesla · YFinance · Public.com<br>
   </div>
 </div>
 
-<!-- ── TOP NAVIGATION ─────────────────────────────────── -->
+<!-- NAV TOP -->
 <div style="margin:0 0 20px;display:flex;justify-content:center;gap:16px;">
-  <a href="spcx_ipo.html" style="font-family:var(--font-mono);font-size:12px;padding:6px 16px;border:1px solid var(--border);background:#fff;color:var(--ink);text-decoration:none;border-radius:3px;">‹ Previous</a>
+  <a href="spcx_ipo.html" style="font-family:var(--font-mono);font-size:12px;padding:6px 16px;border:1px solid var(--border);background:#fff;color:var(--ink);text-decoration:none;border-radius:3px;">&#8249; Previous</a>
   <a href="index.html" style="font-family:var(--font-mono);font-size:12px;padding:6px 16px;border:1px solid var(--border);background:#fff;color:var(--ink);text-decoration:none;border-radius:3px;">Home</a>
-  <a href="tsla_vaa-simulation.html" style="font-family:var(--font-mono);font-size:12px;padding:6px 16px;border:1px solid var(--border);background:#fff;color:var(--ink);text-decoration:none;border-radius:3px;opacity:.4;pointer-events:none;">Next ›</a>
+  <a href="tsla_vaa-simulation.html" style="font-family:var(--font-mono);font-size:12px;padding:6px 16px;border:1px solid var(--border);background:#fff;color:var(--ink);text-decoration:none;border-radius:3px;opacity:.4;pointer-events:none;">Next &#8250;</a>
 </div>
 
-<!-- ── SPACEX NARRATIVE DECK ─────────────────────────── -->
+<!-- DECK -->
 <div class="deck">
-  Tesla has been one of the most rewarding and most punishing stocks of the past decade. A $10,000 investment at the wrong moment barely moved; the same investment at the right moment turned 20× or more. This note examines Tesla through a value investor's lens — its fundamentals, its moat, and the narrow window when it genuinely qualified as a value opportunity. It also maps where Tesla sits in the current economic cycle, and what one person — Elon Musk — means for the stock as both a geopolitical variable and a fundamental risk. Coming next: a rule-based accumulation strategy — Value Averaging Accumulation — applied to TSLA.
+  Tesla has been both a dream and a nightmare for investors. A $10,000 buy at the wrong moment barely moved; at the right moment it turned into $200,000. This note looks at Tesla the way a value investor would: the fundamentals, the moat, where it sits in the macro cycle, and what it means when one person — Elon Musk — is both a geopolitical variable and a core business risk.
+
+Up next: a rule‑based Value Averaging strategy for TSLA that turns volatility into an advantage instead of a headache.
 </div>
 
-<!-- ── LIVE PRICE BAND ────────────────────────────────── -->
+<!-- LIVE PRICE BAND -->
 <div class="price-band">
   <div>
     <div class="pb-label">NASDAQ: TSLA &nbsp;·&nbsp; May 30, 2026</div>
     <div class="pb-price">$435.79</div>
-    <div class="pb-change" style="color:#4ade80;">▲ Up +5.1% on the week — continued recovery</div>
+    <div class="pb-change" style="color:#4ade80;">&#9650; +5.1% on the week &mdash; recovery from April delivery miss</div>
     <div class="pb-meta">
-      52-wk range: $273.21 – $498.83 &nbsp;|&nbsp; Beta: 1.79<br>
-      Market cap: $1.64T &nbsp;|&nbsp; Next earnings: Jul 21–29, 2026
+      52-wk range: $273.21 &ndash; $498.83 &nbsp;|&nbsp; Beta: 1.79<br>
+      Market cap: $1.64T &nbsp;|&nbsp; Next earnings: Jul 21&ndash;29, 2026
     </div>
   </div>
   <div class="pb-right">
     <div class="pb-right-label">Q1 2026 EPS surprise</div>
     <div class="pb-right-val">$0.41 vs $0.35 est.</div>
     <div style="font-family:var(--font-mono);font-size:11px;color:#666;margin-top:3px;">+15.87% beat</div>
-    <div style="margin-top:10px;"><span class="badge b-am">Hold consensus · 26 analysts</span></div>
+    <div style="margin-top:10px;"><span class="badge b-am">Hold consensus &nbsp;&middot;&nbsp; 26 analysts</span></div>
   </div>
 </div>
 
-<!-- ── SPACEX FACTOR — BRIEF ────────────────────────────── -->
-<div class="sl">the spacex factor — briefly</div>
+<!-- SPACEX BRIEFLY -->
+<div class="sl">the spacex factor &mdash; briefly</div>
 <div class="card gold-l" style="font-size:13px;color:#444;line-height:1.8;">
-  SpaceX filed its S-1 on May 20, 2026, targeting a $1.75 trillion valuation — the full breakdown of Starlink, voting structure, and IPO mechanics is covered in the previous note in this series. The Tesla-specific question is narrower: with Musk now simultaneously CEO of Tesla, CEO of SpaceX, founder of xAI, and recently exited from DOGE, how much of his bandwidth actually reaches Tesla? Dan Ives at Wedbush calls a 2027 SpaceX-Tesla merger "inevitable." Ron Baron is placing $1B at the SpaceX IPO price. Neither scenario is priced into Tesla's fundamentals — both are already priced into its multiple.
+  SpaceX filed its S-1 on May 20, 2026, targeting a $1.75 trillion valuation &mdash; the full breakdown of Starlink, voting structure, and IPO mechanics is covered in the previous note. The Tesla-specific question is narrower: with Musk simultaneously CEO of Tesla, CEO of SpaceX, founder of xAI, and recently exited from DOGE, how much of his bandwidth actually reaches Tesla? Dan Ives at Wedbush calls a 2027 SpaceX-Tesla merger &ldquo;inevitable.&rdquo; Ron Baron is placing $1B at the SpaceX IPO price. Neither scenario is priced into Tesla's fundamentals &mdash; both are already priced into its multiple.
 </div>
 
-<!-- ── KEY METRICS ─────────────────────────────────────── -->
-<div class="sl">key metrics — may 21, 2026</div>
+<!-- KEY METRICS -->
+<div class="sl">key metrics &mdash; may 30, 2026</div>
 <div class="stat-row">
   <div class="stat-card">
     <div class="stat-label">Fwd P/E</div>
-    <div class="stat-value red">207×</div>
-    <div class="stat-sub">Auto sector median: 13.7×</div>
+    <div class="stat-value red">207&times;</div>
+    <div class="stat-sub">Auto sector median: 13.7&times;</div>
   </div>
   <div class="stat-card">
     <div class="stat-label">Revenue TTM</div>
     <div class="stat-value">$97.9B</div>
-    <div class="stat-sub">+1% in FY2024 (stalling)</div>
-  </div>
-  <div class="stat-card">
-    <div class="stat-label">EBITDA TTM</div>
-    <div class="stat-value amber">$11.6B</div>
-    <div class="stat-sub">11.6% margin</div>
+    <div class="stat-sub">+1% YoY in FY2024 &mdash; stalling</div>
   </div>
   <div class="stat-card">
     <div class="stat-label">Gross margin TTM</div>
     <div class="stat-value amber">19.1%</div>
-    <div class="stat-sub">Peak was 25.6% (2022)</div>
+    <div class="stat-sub">Peak was 25.6% (FY2022)</div>
   </div>
   <div class="stat-card">
     <div class="stat-label">Net cash</div>
@@ -217,12 +168,17 @@ body { font-family: var(--font-serif); background: var(--paper); color: var(--in
   </div>
   <div class="stat-card">
     <div class="stat-label">DCF fair value</div>
-    <div class="stat-value red">$18–$286</div>
-    <div class="stat-sub">vs. $414 market price</div>
+    <div class="stat-value red">$18&ndash;$286</div>
+    <div class="stat-sub">vs. $436 market price</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">EBITDA TTM</div>
+    <div class="stat-value amber">$11.6B</div>
+    <div class="stat-sub">11.6% margin</div>
   </div>
 </div>
 
-<!-- ── SEGMENT REVENUE ─────────────────────────────────── -->
+<!-- THREE BUSINESSES -->
 <div class="sl">three businesses inside one stock</div>
 <div class="chart-wrap">
   <div style="display:flex;gap:20px;margin-bottom:12px;flex-wrap:wrap;">
@@ -230,341 +186,178 @@ body { font-family: var(--font-serif); background: var(--paper); color: var(--in
     <span style="display:flex;align-items:center;gap:6px;font-size:11px;color:#555;font-family:var(--font-mono);"><span style="width:16px;height:3px;background:#2e7d32;display:inline-block;"></span>Energy</span>
     <span style="display:flex;align-items:center;gap:6px;font-size:11px;color:#555;font-family:var(--font-mono);"><span style="width:16px;height:3px;background:#1a5494;display:inline-block;"></span>Services</span>
   </div>
-  <div class="chart-canvas-wrap" style="height:200px;"><canvas id="segChart"></canvas></div>
-  <p class="chart-note">Automotive fell -6% in FY2024. Energy +67%. Services +27%. The growth is not where the valuation premium is focused.</p>
+  <div style="position:relative;width:100%;height:200px;"><canvas id="segChart"></canvas></div>
+  <p class="chart-note">Automotive &minus;6% in FY2024 &nbsp;&middot;&nbsp; Energy +67% &nbsp;&middot;&nbsp; Services +27% &nbsp;&middot;&nbsp; The growth is not where the valuation premium is concentrated.</p>
 </div>
 
-<!-- ── PROFITABILITY COMPRESSION ──────────────────────── -->
-<div class="sl">margin compression — the profitability story</div>
+<!-- MARGIN COMPRESSION -->
+<div class="sl">margin compression &mdash; the profitability story</div>
 <div class="g2">
   <div class="card">
     <div style="font-size:11px;font-family:var(--font-mono);color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">Gross Margin %</div>
     <div class="bar-row"><span class="bar-lbl">2022 peak</span><div class="bar-track"><div class="bar-fill" style="width:100%;background:#2e7d32;"></div></div><span class="bar-val green">25.6%</span></div>
     <div class="bar-row"><span class="bar-lbl">2023</span><div class="bar-track"><div class="bar-fill" style="width:71%;background:#B87333;"></div></div><span class="bar-val amber">18.2%</span></div>
     <div class="bar-row"><span class="bar-lbl">FY2024</span><div class="bar-track"><div class="bar-fill" style="width:70%;background:#B87333;"></div></div><span class="bar-val amber">17.9%</span></div>
-    <div class="bar-row" style="margin-bottom:0;"><span class="bar-lbl">Q1 2026 Auto</span><div class="bar-track"><div class="bar-fill" style="width:82%;background:#1a5494;"></div></div><span class="bar-val blue">21.1%</span></div>
+    <div class="bar-row" style="margin-bottom:0;"><span class="bar-lbl">Q1 2026 (Auto)</span><div class="bar-track"><div class="bar-fill" style="width:82%;background:#1a5494;"></div></div><span class="bar-val blue">21.1%</span></div>
   </div>
   <div class="card">
     <div style="font-size:11px;font-family:var(--font-mono);color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">Operating Margin %</div>
     <div class="bar-row"><span class="bar-lbl">2022 peak</span><div class="bar-track"><div class="bar-fill" style="width:100%;background:#2e7d32;"></div></div><span class="bar-val green">16.0%</span></div>
     <div class="bar-row"><span class="bar-lbl">2023</span><div class="bar-track"><div class="bar-fill" style="width:56%;background:#B87333;"></div></div><span class="bar-val amber">8.9%</span></div>
     <div class="bar-row"><span class="bar-lbl">FY2024</span><div class="bar-track"><div class="bar-fill" style="width:45%;background:#B87333;"></div></div><span class="bar-val amber">7.2%</span></div>
-    <div class="bar-row" style="margin-bottom:0;"><span class="bar-lbl">Q1 2025 (low)</span><div class="bar-track"><div class="bar-fill" style="width:13%;background:#b71c1c;"></div></div><span class="bar-val red">2.1%</span></div>
+    <div class="bar-row" style="margin-bottom:0;"><span class="bar-lbl">Q1 2025 trough</span><div class="bar-track"><div class="bar-fill" style="width:13%;background:#b71c1c;"></div></div><span class="bar-val red">2.1%</span></div>
   </div>
 </div>
+<div class="card gold-l" style="font-size:12.5px;color:#555;line-height:1.75;">
+  The Q1 2026 automotive gross margin recovery to <strong>21.1%</strong> is genuine &mdash; but it follows the lowest operating margin (2.1%) since pre-profitability. Tesla's multi-year price cuts to defend volume against BYD have been structurally damaging. A business with <em>pricing power</em> raises prices over time. Tesla has done the opposite, and the margin chart reflects it.
+</div>
 
-<!-- ── MOAT ASSESSMENT ────────────────────────────────── -->
-<div class="sl">competitive moat — honest scorecard</div>
+<!-- COMPETITIVE MOAT -->
+<div class="sl">competitive moat &mdash; honest scorecard</div>
 <div class="card" style="padding:0;overflow:hidden;">
   <table class="dtable">
-    <thead><tr><th style="text-align:left;">Moat Source</th><th>Strength</th><th>Durability</th><th style="text-align:left;">Verdict</th></tr></thead>
+    <thead><tr><th style="text-align:left;">Moat source</th><th>Strength</th><th>Durability</th><th style="text-align:left;">Note</th></tr></thead>
     <tbody>
-      <tr><td>Supercharger network</td><td class="w">Strong</td><td class="w">Durable</td><td style="text-align:left;font-size:11px;color:var(--muted);">Now open to rivals — a revenue moat</td></tr>
-      <tr><td>Manufacturing efficiency</td><td class="w">Real</td><td class="w">Real</td><td style="text-align:left;font-size:11px;color:var(--muted);">COGS ~$35,100/vehicle — best-in-class</td></tr>
-      <tr><td>Energy storage (Megapack)</td><td class="w">Growing</td><td class="w">Structural</td><td style="text-align:left;font-size:11px;color:var(--muted);">Genuine long-term competitive advantage</td></tr>
-      <tr><td>Brand (premium EV)</td><td class="mi">Eroding</td><td class="mi">Uncertain</td><td style="text-align:left;font-size:11px;color:var(--muted);">Musk association damaged in key markets</td></tr>
-      <tr><td>FSD / Robotaxi</td><td class="mi">Speculative</td><td class="mi">Unproven</td><td style="text-align:left;font-size:11px;color:var(--muted);">High optionality; not yet a durable moat</td></tr>
-      <tr><td>Pricing power</td><td class="lo">Absent</td><td class="lo">Deteriorating</td><td style="text-align:left;font-size:11px;color:var(--muted);">Multi-year price cuts confirm limits of moat</td></tr>
+      <tr><td>Supercharger network</td><td class="w">Strong</td><td class="w">Durable</td><td style="text-align:left;font-size:11px;color:var(--muted);">Now open to rivals &mdash; a revenue moat, not just defensive</td></tr>
+      <tr><td>Manufacturing efficiency</td><td class="w">Real</td><td class="w">Real</td><td style="text-align:left;font-size:11px;color:var(--muted);">COGS ~$35,100/vehicle &mdash; best-in-class</td></tr>
+      <tr><td>Energy storage (Megapack)</td><td class="w">Growing</td><td class="w">Structural</td><td style="text-align:left;font-size:11px;color:var(--muted);">$10.1B revenue, +67% YoY &mdash; genuine long-run advantage</td></tr>
+      <tr><td>Brand (premium EV)</td><td class="mi">Eroding</td><td class="mi">Uncertain</td><td style="text-align:left;font-size:11px;color:var(--muted);">Brand value: $66.2B (2023) &rarr; $27.6B (2026) &mdash; Musk effect</td></tr>
+      <tr><td>FSD / Robotaxi</td><td class="mi">Speculative</td><td class="mi">Unproven</td><td style="text-align:left;font-size:11px;color:var(--muted);">High optionality; not yet a durable moat at scale</td></tr>
+      <tr><td>Pricing power</td><td class="lo">Absent</td><td class="lo">Deteriorating</td><td style="text-align:left;font-size:11px;color:var(--muted);">Multi-year price cuts confirm competitive pressure from BYD</td></tr>
     </tbody>
   </table>
 </div>
 
-<!-- ── VALUE FRAMEWORKS ───────────────────────────────── -->
+<!-- VALUE FRAMEWORKS -->
 <div class="sl">five value investing frameworks applied</div>
 <div class="card" style="padding:0;overflow:hidden;">
   <table class="dtable">
     <thead><tr><th style="text-align:left;">Framework</th><th style="text-align:left;">Verdict</th><th>Applicable?</th></tr></thead>
     <tbody>
-      <tr><td>Graham — Net-Net (asset value)</td><td style="text-align:left;font-size:11px;color:var(--muted);">Graham never would have bought TSLA at any price in history</td><td><span class="badge b-dn">Not applicable</span></td></tr>
-      <tr><td>Buffett — Owner's Earnings</td><td style="text-align:left;font-size:11px;color:var(--muted);">Energy + Supercharger interest him; no pricing power doesn't</td><td><span class="badge b-am">Partial</span></td></tr>
-      <tr><td>Munger — Wonderful Co. / Fair Price</td><td style="text-align:left;font-size:11px;color:var(--muted);">Business parts are interesting; $414 is not "fair"</td><td><span class="badge b-am">Partial</span></td></tr>
-      <tr><td>DCF / Intrinsic Value</td><td style="text-align:left;font-size:11px;color:var(--muted);">Fair value: $18–$286. Market price: $414. No DCF closes the gap</td><td><span class="badge b-dn">Overvalued</span></td></tr>
-      <tr><td>Margin of Safety</td><td style="text-align:left;font-size:11px;color:var(--muted);">40% correction → ~$250 → still ~130× forward earnings</td><td><span class="badge b-dn">None</span></td></tr>
+      <tr><td>Graham &mdash; Net-Net</td><td style="text-align:left;font-size:11px;color:var(--muted);">Graham would not have bought TSLA at any price in its history</td><td><span class="badge b-dn">No</span></td></tr>
+      <tr><td>Buffett &mdash; Owner&rsquo;s Earnings</td><td style="text-align:left;font-size:11px;color:var(--muted);">Energy + Supercharger interest him; absent pricing power does not</td><td><span class="badge b-am">Partial</span></td></tr>
+      <tr><td>Munger &mdash; Wonderful Co.</td><td style="text-align:left;font-size:11px;color:var(--muted);">Business parts are genuinely interesting; $436 is not &ldquo;fair&rdquo;</td><td><span class="badge b-am">Partial</span></td></tr>
+      <tr><td>DCF / Intrinsic value</td><td style="text-align:left;font-size:11px;color:var(--muted);">Fair value: $18&ndash;$286. Market: $436. No DCF closes the gap</td><td><span class="badge b-dn">Overvalued</span></td></tr>
+      <tr><td>Margin of safety</td><td style="text-align:left;font-size:11px;color:var(--muted);">40% correction &rarr; ~$262 &rarr; still ~130&times; forward earnings</td><td><span class="badge b-dn">None</span></td></tr>
     </tbody>
   </table>
 </div>
 
-<!-- ── THE VALUATION PROBLEM ──────────────────────────── -->
-<div class="sl">the valuation problem — in one chart</div>
+<!-- VALUATION CHART -->
+<div class="sl">the valuation problem &mdash; in one chart</div>
 <div class="chart-wrap">
-  <div style="font-size:11px;font-family:var(--font-mono);color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;">Forward P/E comparison — Tesla vs. auto sector</div>
-  <div class="chart-canvas-wrap" style="height:180px;"><canvas id="peChart"></canvas></div>
-  <p class="chart-note">207× forward P/E demands 25–30% EPS growth for 15+ consecutive years. No company of Tesla's size has sustained this. The premium priced in: FSD, Optimus, Robotaxi, and AI infrastructure — all speculative.</p>
+  <div style="font-size:11px;font-family:var(--font-mono);color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;">Forward P/E &mdash; Tesla vs. comparable benchmarks</div>
+  <div style="position:relative;width:100%;height:180px;"><canvas id="peChart"></canvas></div>
+  <p class="chart-note">207&times; forward P/E demands ~25&ndash;30% EPS growth for 15+ consecutive years. No company of Tesla&rsquo;s size has sustained this. The premium prices in FSD, Optimus, Robotaxi, and AI infrastructure &mdash; all still speculative.</p>
 </div>
 
-<!-- ── 52-WEEK PRICE CHART ─────────────────────────────── -->
-<div class="sl">52-week price action — june 2025 to may 2026</div>
+<!-- 52-WEEK PRICE CHART -->
+<div class="sl">52-week price &mdash; june 2025 to may 2026</div>
 <div class="chart-wrap">
-  <div class="chart-canvas-wrap" style="height:240px;"><canvas id="priceChart"></canvas></div>
-  <p class="chart-note">Low: $273.21 (Jun 5, 2025) → High: $498.83 (Dec 22, 2025) → Current: $435.79 · Q1 delivery miss dragged stock to $339 in April before recovering.</p>
+  <div style="position:relative;width:100%;height:220px;"><canvas id="priceChart"></canvas></div>
+  <p class="chart-note">Low: $273.21 (Jun 5, 2025) &nbsp;&middot;&nbsp; High: $498.83 (Dec 22, 2025) &nbsp;&middot;&nbsp; Q1 delivery miss &rarr; $339 (Apr) &nbsp;&middot;&nbsp; Recovery to $435.79 (May 30, 2026)</p>
 </div>
 
-<!-- ── TECHNICAL ANALYSIS ─────────────────────────────── -->
-<div class="sl">technical analysis — may 21, 2026</div>
-<div class="g2">
-  <div class="card">
-    <div class="row"><span class="rl">Current price</span><span class="rv am">$435.79</span></div>
-    <div class="row"><span class="rl">52-wk high</span><span class="rv">$498.83 · Dec 22, 2025</span></div>
-    <div class="row"><span class="rl">52-wk low</span><span class="rv dn">$273.21 · Jun 5, 2025</span></div>
-    <div class="row"><span class="rl">From ATH</span><span class="rv dn">-12.5%</span></div>
-    <div class="row"><span class="rl">From 52-wk low</span><span class="rv up">+60%</span></div>
-    <div class="row"><span class="rl">Bullish indicators</span><span class="rv up">23 of 26</span></div>
-  </div>
-  <div class="card">
-    <div class="row"><span class="rl">Moving averages</span><span class="rv up">Price above all MAs</span></div>
-    <div class="row"><span class="rl">RSI signal</span><span class="rv am">Overbought (short-term)</span></div>
-    <div class="row"><span class="rl">MACD</span><span class="rv up">Bullish — positive trend</span></div>
-    <div class="row"><span class="rl">5-session range</span><span class="rv">$420–$454</span></div>
-    <div class="row"><span class="rl">Pattern</span><span class="rv am">Death cross in Fib zone (TV)</span></div>
-    <div class="row"><span class="rl">Next earnings</span><span class="rv">Jul 21–29, 2026</span></div>
-  </div>
-</div>
-<div class="card" style="padding:0;overflow:hidden;">
-  <table class="dtable">
-    <thead><tr><th style="text-align:left;">Level</th><th>Price</th><th>Type</th><th style="text-align:left;">Note</th></tr></thead>
-    <tbody>
-      <tr><td>52-week high</td><td class="lo">$498.83</td><td class="lo">Resistance</td><td style="text-align:left;font-size:11px;color:var(--muted);">Dec 22, 2025 peak</td></tr>
-      <tr><td>Near resistance</td><td class="lo">$436–$454</td><td class="lo">Resistance</td><td style="text-align:left;font-size:11px;color:var(--muted);">Recent peak prior to CHoCH (change of character)</td></tr>
-      <tr class="hl"><td><strong>Current</strong></td><td class="am"><strong>$435.79</strong></td><td class="am">Recovery zone</td><td style="text-align:left;font-size:11px;color:var(--gold);">Above MAs · Overbought short-term</td></tr>
-      <tr><td>S1 support</td><td class="w">$407.95</td><td class="w">Support</td><td style="text-align:left;font-size:11px;color:var(--muted);">Near-term floor · watch closely</td></tr>
-      <tr><td>S2 support</td><td class="w">~$370</td><td class="w">Support</td><td style="text-align:left;font-size:11px;color:var(--muted);">Pre-Q1 delivery miss consolidation</td></tr>
-      <tr><td>52-week low</td><td class="w">$273.21</td><td class="w">Major support</td><td style="text-align:left;font-size:11px;color:var(--muted);">Jun 5, 2025 — structural floor</td></tr>
-    </tbody>
-  </table>
-</div>
-
-<!-- ── ANALYST VIEWS ───────────────────────────────────── -->
-<div class="sl">analyst consensus &amp; key headlines</div>
+<!-- ANALYST CONSENSUS -->
+<div class="sl">analyst consensus</div>
 <div class="g3">
   <div class="met"><div class="ml">Consensus (47 analysts)</div><div class="mv amber">Buy</div><div class="ms">Avg target $411.89</div></div>
   <div class="met"><div class="ml">Bull target</div><div class="mv green">$600</div><div class="ms">Wedbush / Dan Ives</div></div>
   <div class="met"><div class="ml">Bear target</div><div class="mv red">$24.86</div><div class="ms">Most bearish estimate</div></div>
 </div>
 <div class="card">
-  <div class="ev"><div class="dot" style="background:var(--blue);"></div><div><strong>Wedbush (Dan Ives) — Bull · $600 target:</strong> Claims SpaceX + Tesla will "eventually merge into one company in 2027." Sees AI, FSD, and Robotaxi as the fundamental re-rating catalyst. Street-high target; widely viewed as optimistic.</div></div>
-  <div class="ev"><div class="dot" style="background:var(--green);"></div><div><strong>Q1 2026 earnings beat:</strong> EPS $0.41 vs $0.35 estimated (+15.87%). Revenue $22.39B vs $22.10B. Automotive gross margin recovered to 21.1%. Global FSD expansion underway. Raised 2026 capex for AI/robotics.</div></div>
-  <div class="ev"><div class="dot" style="background:var(--amber);"></div><div><strong>Q1 delivery miss (April 2026):</strong> 358,023 units delivered — missed consensus by ~7,000. Fading US EV incentives and Chinese competition cited. Sentiment score: 38.46 (bearish), dragged stock to $339 before recovery.</div></div>
-  <div class="ev" style="border:none;"><div class="dot" style="background:var(--red);"></div><div><strong>Distribution (26 analysts):</strong> 27% Strong Buy, 23% Buy, 35% Hold, 8% Sell, 8% Strong Sell. Wider-than-normal dispersion reflects genuine valuation uncertainty — not a clean consensus picture.</div></div>
+  <div class="ev"><div class="dot" style="background:var(--green);"></div><div><strong>Q1 2026 beat:</strong> EPS $0.41 vs $0.35 est. (+15.87%). Revenue $22.39B vs $22.10B. Automotive gross margin recovered to 21.1%. Global FSD expansion underway.</div></div>
+  <div class="ev"><div class="dot" style="background:var(--amber);"></div><div><strong>Q1 delivery miss (April 2026):</strong> 358,023 units &mdash; missed consensus by ~7,000. US EV tax credit removal and Chinese competition cited. Stock fell to $339 before recovering.</div></div>
+  <div class="ev" style="border:none;"><div class="dot" style="background:var(--red);"></div><div><strong>Distribution (26 analysts):</strong> 27% Strong Buy &nbsp;&middot;&nbsp; 23% Buy &nbsp;&middot;&nbsp; 35% Hold &nbsp;&middot;&nbsp; 8% Sell &nbsp;&middot;&nbsp; 8% Strong Sell. Wide dispersion reflects genuine valuation uncertainty.</div></div>
 </div>
 
-<!-- ── SECTORAL CYCLE ───────────────────────────────────── -->
-<div class="sl">sectoral cycle — where tesla sits in 2026</div>
-<div class="card gold-l" style="font-size:13px;color:#444;line-height:1.8;margin-bottom:12px;">
-  Tesla is classified under <strong>Consumer Discretionary</strong> in the S&P 500 — the sector that is most sensitive to economic cycles. Discretionary outperforms in early recovery (falling rates, rising confidence, spending unlocked) and underperforms in late-cycle contraction (job losses, credit tightening, deferred purchases). Understanding the current macro position is therefore not optional for a Tesla investor — it is structural.
-</div>
+<!-- SECTORAL CYCLE -->
+<div class="sl">sectoral cycle &mdash; where tesla sits in 2026</div>
 <div class="g2">
   <div class="card">
-    <div style="font-size:11px;font-family:var(--font-mono);color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">Current Macro Backdrop (May 2026)</div>
-    <div class="row"><span class="rl">Fed funds rate</span><span class="rv am">3.50–3.75%</span></div>
-    <div class="row"><span class="rl">Fed posture</span><span class="rv am">Paused — 2 holds in 2026</span></div>
-    <div class="row"><span class="rl">Core PCE inflation</span><span class="rv am">~2.8% (above 2% target)</span></div>
-    <div class="row"><span class="rl">US GDP growth est.</span><span class="rv up">2.0–2.5% (2026)</span></div>
-    <div class="row"><span class="rl">Unemployment</span><span class="rv am">~4.3–4.4%</span></div>
-    <div class="row"><span class="rl">Cycle position</span><span class="rv am">Mid-to-late, soft landing</span></div>
+    <div style="font-size:11px;font-family:var(--font-mono);color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">Macro backdrop (May 2026)</div>
+    <div class="row"><span class="rl">Fed funds rate</span><span class="rv am">3.50&ndash;3.75%</span></div>
+    <div class="row"><span class="rl">Fed posture</span><span class="rv am">Paused &mdash; 2 holds in 2026</span></div>
+    <div class="row"><span class="rl">Core PCE inflation</span><span class="rv am">~2.8%</span></div>
+    <div class="row"><span class="rl">Cycle position</span><span class="rv am">Mid-to-late &nbsp;&middot;&nbsp; soft landing</span></div>
   </div>
   <div class="card">
-    <div style="font-size:11px;font-family:var(--font-mono);color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">What This Means for Tesla</div>
-    <div class="ev" style="padding:5px 0;"><div class="dot" style="background:var(--green);"></div><div style="font-size:12px;">Rate easing cycle (3 cuts since Sep 2025) reduces the discount rate on future earnings — directly benefits high-multiple growth stocks like TSLA through DCF re-rating.</div></div>
-    <div class="ev" style="padding:5px 0;"><div class="dot" style="background:var(--green);"></div><div style="font-size:12px;">Lower financing rates reduce monthly EV payments — direct demand tailwind for vehicle purchases, particularly the refreshed Model Y at European price points.</div></div>
-    <div class="ev" style="padding:5px 0;"><div class="dot" style="background:var(--amber);"></div><div style="font-size:12px;">Stubborn inflation (2.8% core PCE) has forced the Fed to pause. If inflation re-accelerates — especially from oil or tariff shocks — the easing cycle stalls, compressing Tesla's multiple.</div></div>
-    <div class="ev" style="padding:5px 0;border:none;"><div class="dot" style="background:var(--red);"></div><div style="font-size:12px;">Consumer Discretionary is structurally the first sector to be cut when household budgets tighten. A softening job market or credit deterioration hits EV demand before almost any other product category.</div></div>
+    <div style="font-size:11px;font-family:var(--font-mono);color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">Tesla is Consumer Discretionary (S&amp;P 500)</div>
+    <div class="ev" style="padding:4px 0;"><div class="dot" style="background:var(--green);margin-top:4px;"></div><div style="font-size:12px;">3 Fed cuts since Sep 2025 reduce discount rate &mdash; directly re-rates high-multiple growth stocks via DCF.</div></div>
+    <div class="ev" style="padding:4px 0;"><div class="dot" style="background:var(--green);margin-top:4px;"></div><div style="font-size:12px;">Lower financing rates reduce EV monthly payments &mdash; direct demand tailwind for vehicle purchases.</div></div>
+    <div class="ev" style="padding:4px 0;"><div class="dot" style="background:var(--red);margin-top:4px;"></div><div style="font-size:12px;">EV tax credit removed (Sep 2025, Big Beautiful Bill) &mdash; ~$1.2B in annual demand support eliminated.</div></div>
+    <div class="ev" style="padding:4px 0;border:none;"><div class="dot" style="background:var(--red);margin-top:4px;"></div><div style="font-size:12px;">Consumer Discretionary is first to be cut when household budgets tighten &mdash; not insulated from a hard landing.</div></div>
   </div>
-</div>
-<div class="card" style="background:var(--cream);border:1px solid var(--border);font-size:13px;color:#444;line-height:1.8;margin-bottom:0;">
-  <strong>The Cycle Verdict:</strong> Tesla is in a sector that should benefit from the current rate-cutting bias — and the refreshed Model Y product cycle is well-timed to capture the demand tailwind. But the cycle is mid-to-late, not early, and the Fed is navigating a genuine dilemma between inflation risk and employment. The EV tax credit elimination (Trump's Big Beautiful Bill, effective September 2025) removed up to $1.2B in annual demand support — a headwind that the macro tailwind only partially offsets. Tesla is <em>positioned correctly in the cycle</em>; it is <em>not insulated from it</em>.
 </div>
 
-<!-- ── THE MUSK VARIABLE ────────────────────────────────── -->
-<div class="sl">the musk variable — one person, two outcomes</div>
-<div class="verdict-dark" style="margin-bottom:12px;">
-  <h3>The Double-Edged Sword of Geopolitical Entanglement</h3>
-  Elon Musk is simultaneously Tesla's most valuable asset and its most consequential risk factor. No other major publicly traded company has a CEO whose personal political activity is this directly correlated with measurable revenue impact. The 2025–2026 data confirms both sides of this equation with unusual precision.
-</div>
-<div class="g2">
+<!-- THE MUSK VARIABLE -->
+<div class="sl">the musk variable &mdash; one person, two outcomes</div>
+<div class="two-col">
   <div class="card alert">
-    <div style="font-size:11px;font-family:var(--font-mono);color:var(--red);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">The Cost — Brand Destruction</div>
-    <div class="ev" style="padding:5px 0;"><div class="dot" style="background:var(--red);"></div><div style="font-size:12px;"><strong>Tesla's brand value fell from $43B (Jan 2025) to $27.6B (Jan 2026)</strong> — a $15.4B destruction in 12 months, per Brand Finance. Peak brand value was $66.2B in 2023.</div></div>
-    <div class="ev" style="padding:5px 0;"><div class="dot" style="background:var(--red);"></div><div style="font-size:12px;"><strong>Europe: -49% YoY sales</strong> (Apr 2025). Germany -50%, Sweden -81%, France -59%. BYD surpassed Tesla in EU monthly EV market share by July 2025. European market share: 12.6% → ~7% by mid-2025.</div></div>
-    <div class="ev" style="padding:5px 0;"><div class="dot" style="background:var(--red);"></div><div style="font-size:12px;"><strong>DOGE bandwidth concern</strong> — investors questioned Musk's commitment to Tesla during his 130-day DOGE tenure. He pledged a return of focus in May 2025 but committed to "1–2 days/week" for government work on an ongoing basis.</div></div>
-    <div class="ev" style="padding:5px 0;border:none;"><div class="dot" style="background:var(--amber);"></div><div style="font-size:12px;"><strong>China:</strong> Tesla's Shanghai factory supplies European deliveries. While Chinese buyers stayed largely indifferent to Musk's politics, they increasingly favour domestic brands (BYD, Nio) — a separate structural problem compounding the brand erosion.</div></div>
+    <div style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--red);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px;">The cost &mdash; brand destruction</div>
+    <div class="ev" style="padding:5px 0;"><div class="dot" style="background:var(--red);"></div><div style="font-size:12px;"><strong>Brand value: $66.2B (2023) &rarr; $27.6B (Jan 2026)</strong> &mdash; $38.6B destroyed in three years, per Brand Finance. $15.4B of that fell in 2025 alone.</div></div>
+    <div class="ev" style="padding:5px 0;"><div class="dot" style="background:var(--red);"></div><div style="font-size:12px;"><strong>Europe: &minus;49% YoY (Apr 2025)</strong>. Germany &minus;50%, Sweden &minus;81%, France &minus;59%. BYD surpassed Tesla in EU monthly EV market share by Jul 2025.</div></div>
+    <div class="ev" style="padding:5px 0;border:none;"><div class="dot" style="background:var(--amber);"></div><div style="font-size:12px;"><strong>DOGE bandwidth (130 days):</strong> Musk pledged return of focus in May 2025 but committed to ongoing &ldquo;1&ndash;2 days/week&rdquo; for government work.</div></div>
   </div>
   <div class="card" style="border-left:3px solid var(--green);padding-left:12px;">
-    <div style="font-size:11px;font-family:var(--font-mono);color:var(--green);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">The Upside — Political Capital as Moat</div>
-    <div class="ev" style="padding:5px 0;"><div class="dot" style="background:var(--green);"></div><div style="font-size:12px;"><strong>AV regulatory framework</strong> — Trump's DOT is building a federal framework for fully autonomous vehicles, directly enabling Tesla's Cybercab/Robotaxi deployment. Existing rules blocked pedal- and steering wheel-free vehicles at scale. Those barriers are being dismantled.</div></div>
-    <div class="ev" style="padding:5px 0;"><div class="dot" style="background:var(--green);"></div><div style="font-size:12px;"><strong>DOJ/DOT scrutiny dropped</strong> — multiple investigations and lawsuits against Tesla and SpaceX were dropped during Musk's DOGE tenure. Regulatory overhang removed without litigation cost.</div></div>
-    <div class="ev" style="padding:5px 0;"><div class="dot" style="background:var(--green);"></div><div style="font-size:12px;"><strong>Cybercab Austin launch (June 2026)</strong> — NHTSA approval pathway cleared. First real-world robotaxi revenue, even at small scale, reframes the fundamental earnings model and provides proof-of-concept data.</div></div>
-    <div class="ev" style="padding:5px 0;border:none;"><div class="dot" style="background:var(--amber);"></div><div style="font-size:12px;"><strong>The relationship is transactional, not unconditional.</strong> Trump and Musk experienced a public falling-out mid-2025 before reconciling in Jan 2026. The alliance holds as long as both sides benefit — but it is not a structural guarantee.</div></div>
+    <div style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px;">The upside &mdash; regulatory capital</div>
+    <div class="ev" style="padding:5px 0;"><div class="dot" style="background:var(--green);"></div><div style="font-size:12px;"><strong>Federal AV framework:</strong> Trump&rsquo;s DOT dismantling barriers to pedal- and steering wheel-free vehicles at scale &mdash; the Cybercab thesis depends on this clearance.</div></div>
+    <div class="ev" style="padding:5px 0;"><div class="dot" style="background:var(--green);"></div><div style="font-size:12px;"><strong>Cybercab Austin launch (June 2026):</strong> NHTSA pathway cleared. First real-world robotaxi revenue &mdash; even at small scale &mdash; reframes the earnings model.</div></div>
+    <div class="ev" style="padding:5px 0;border:none;"><div class="dot" style="background:var(--amber);"></div><div style="font-size:12px;"><strong>The Trump-Musk alliance is transactional</strong> &mdash; they fell out mid-2025, reconciled Jan 2026. Not a structural guarantee.</div></div>
   </div>
 </div>
 <div class="card dark" style="margin-bottom:0;">
-  <div style="font-family:var(--font-mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:10px;font-weight:400;">Musk Factor — Net Assessment for a Value Investor</div>
-  <div style="font-size:13px;color:#bbb;line-height:1.8;">
-    The brand damage is <strong style="color:#f0ece4;">real, measured, and partially permanent</strong> — particularly in Europe. Brand Finance does not construct qualitative indices; they build from revenue, margins, licensing rates, and consumer surveys. A $15.4B brand value erosion in a single year is not noise. However, the regulatory upside is equally real. A genuine federal AV framework — removing the legal obstacles to pedal-free, steering wheel-free vehicles — is the single most structurally significant thing that could happen to Tesla's long-term earnings quality. <strong style="color:#f0ece4;">The value investor's problem: both sides of the Musk equation are difficult to price.</strong> Brand damage flows through in quarterly revenue figures — it is already embedded in the 2025 sales decline. The regulatory upside remains hypothetical until Cybercab proves it can operate at margin-positive scale. Until that proof arrives, the Musk variable is a net negative on current fundamentals and an unpriced positive on forward optionality.
-  </div>
+  <div style="font-family:var(--font-mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:8px;">Net assessment for a value investor</div>
+  <div style="font-size:13px;color:#bbb;line-height:1.8;">The brand damage is <strong style="color:#f0ece4;">real, measured, and partially permanent</strong> in Europe. The regulatory upside (AV framework, Cybercab) is equally real but <strong style="color:#f0ece4;">hypothetical until proven at margin-positive scale</strong>. Brand damage is already in the quarterly revenue figures; regulatory optionality is not yet in the earnings. The Musk variable is a net negative on current fundamentals and an unpriced positive on forward optionality.</div>
 </div>
 
-<!-- ── PATH BACK TO VALUE ──────────────────────────────── -->
-<div class="sl">the five conditions for a value re-entry</div>
+<!-- PATH BACK TO VALUE -->
+<div class="sl">conditions for a value re-entry</div>
 <div class="card">
-  <div class="ev"><div class="dot" style="background:var(--red);"></div><div><strong>1. Share price correction to $80–$120.</strong> This would compress forward P/E to 40–60×, where energy and services segments alone justify the entry and automotive becomes a free option.</div></div>
-  <div class="ev"><div class="dot" style="background:var(--amber);"></div><div><strong>2. Sustained margin recovery to 12–15% operating margin</strong> for three consecutive years — proving the price-cut era is over and FSD licensing revenue is real.</div></div>
-  <div class="ev"><div class="dot" style="background:var(--amber);"></div><div><strong>3. FSD commercialisation at scale.</strong> Robotaxi with recurring subscription revenue would fundamentally re-rate the quality of earnings — the single most important near-term catalyst. Still speculative.</div></div>
-  <div class="ev"><div class="dot" style="background:var(--blue);"></div><div><strong>4. Musk headline risk normalises.</strong> A defined succession structure, reduced political involvement, or measurable brand recovery — particularly in Europe — would meaningfully improve the qualitative investment score. The variable is the man, not the company.</div></div>
-  <div class="ev" style="border:none;"><div class="dot" style="background:var(--blue);"></div><div><strong>5. Energy segment independence.</strong> A spinout or separate P&amp;L reporting for Energy would allow the market to price a $10B+ revenue, 67%-growth segment properly — potentially closing the valuation gap through sum-of-parts.</div></div>
+  <div class="ev"><div class="dot" style="background:var(--red);"></div><div><strong>1. Share price to $80&ndash;$120.</strong> Compresses forward P/E to 40&ndash;60&times;, where energy and services segments alone justify entry and automotive becomes a free option. A 40% correction from today still leaves TSLA at ~130&times; forward earnings.</div></div>
+  <div class="ev"><div class="dot" style="background:var(--amber);"></div><div><strong>2. Sustained margin recovery.</strong> Operating margin back to 12&ndash;15% for three consecutive years proves the price-cut era is over. Q1 2026&rsquo;s automotive gross margin (21.1%) is promising, but overall operating margin is not yet back above 10%.</div></div>
+  <div class="ev"><div class="dot" style="background:var(--amber);"></div><div><strong>3. FSD / Cybercab at scale.</strong> Margin-positive robotaxi revenue re-rates Tesla from automaker to software platform. Still speculative, but the Austin launch (June 2026) is the first real proof-of-concept data point.</div></div>
+  <div class="ev" style="border:none;"><div class="dot" style="background:var(--blue);"></div><div><strong>4. Energy segment recognition.</strong> A spinout or separate P&amp;L for Energy ($10.1B revenue, +67% YoY) could close part of the valuation gap through sum-of-parts analysis &mdash; the market currently prices it inside a 207&times; auto multiple.</div></div>
 </div>
 
-<!-- ── THE GOLDEN WINDOW ───────────────────────────────── -->
+<!-- THE GOLDEN WINDOW -->
 <div class="sl">the one time tesla was a value investment</div>
 <div class="verdict-dark">
-  <h3>The 2019–2021 Golden Window</h3>
-  There was a narrow window — <strong>mid-2019 through early 2021</strong> — when Tesla met enough value criteria to constitute a compelling risk-adjusted opportunity. Several simultaneous conditions converged that are rarely seen together in the same stock:<br><br>
-  <strong>Operational inflection, not story.</strong> Tesla's operating income turned positive on a sustained basis for the first time in 2020 ($1.99B). Q3 2019 marked the company's first profitable quarter in four years. Gross margins on the Model 3 crossed 20%, validating the mass-market manufacturing thesis rather than just the premium product thesis.<br><br>
-  <strong>Moat genuinely uncontested.</strong> In 2019, no Western automaker had a serious battery supply chain, a production-ready mass-market EV platform, or a charging network approaching Tesla's Supercharger footprint. GM, Ford, and Volkswagen were 3–5 years from anything competitive. That window of contestlessness allowed Tesla to capture a decade of EV-first consumer mindshare that has proven difficult to reverse.<br><br>
-  <strong>Short interest as a future catalyst.</strong> At various points in 2019, Tesla carried the largest short position of any US public company by dollar value. That structural imbalance — above 30% of float short — created the conditions for a mechanical short squeeze on any positive catalyst, amplifying upside disproportionately relative to fundamental improvement alone.<br><br>
-  <strong>FSD and energy optionality unpriced.</strong> A DCF in 2019 that excluded full self-driving and utility-scale energy storage still showed a plausible path to intrinsic value at the $11–$23 range. Any success on those long-dated bets was free. That asymmetry — capped downside, unpriced upside — is precisely the Graham-Buffett structure that justifies a position.<br><br>
-  <strong>The current picture is different.</strong> Today at $435.79, Tesla trades at 207× forward earnings — a multiple that already prices in years of FSD, Robotaxi, and energy dominance that have not yet materialised. The 2019 window offered a margin of safety; 2026 does not. That does not make Tesla uninvestable — it makes the accumulation strategy, rather than a lump-sum bet, the appropriate vehicle. Getting in cheap through systematic buying during the next dip matters far more than the entry price on the day you read this.
-
-  Tesla then rose <strong>~2,000%</strong> between March 2020 and November 2021 — driven not by equivalent business value creation, but by multiple expansion from retail enthusiasm, S&P 500 index inclusion (December 2020), and post-COVID growth narratives. The business was good. The stock became detached. <strong>By 2022, all of it was fully priced in — and then some.</strong>
+  <h3>The 2019&ndash;2021 Golden Window</h3>
+  There was a narrow window &mdash; <strong>mid-2019 through early 2021</strong> &mdash; when Tesla met enough value criteria to constitute a genuine risk-adjusted opportunity.<br><br>
+  <strong>Operational inflection, not story.</strong> Tesla&rsquo;s operating income turned positive on a sustained basis for the first time in 2020 ($1.99B). Q3 2019 was the first profitable quarter in four years. Model 3 gross margins crossed 20%. A strict DCF in 2019, excluding FSD and energy optionality, showed a plausible intrinsic value path in the $11&ndash;$23 range &mdash; meaning any success on those long-dated bets was free. That asymmetric structure &mdash; capped downside, unpriced upside &mdash; is precisely what Graham and Buffett require.<br><br>
+  <strong>Moat genuinely uncontested.</strong> In 2019, no Western automaker had a mass-market EV platform or a charging network approaching Tesla&rsquo;s. GM, Ford, and Volkswagen were 3&ndash;5 years from anything competitive. Above 30% of the float was short &mdash; creating mechanical short-squeeze conditions on any positive catalyst.<br><br>
+  <strong>The current picture is different.</strong> At $435.79 and 207&times; forward earnings, the multiple prices in years of FSD, Robotaxi, and energy dominance that have not yet materialised. The 2019 window offered margin of safety; 2026 does not. That does not make Tesla uninvestable &mdash; it makes the <em>accumulation strategy, not a lump-sum bet</em>, the appropriate vehicle. Tesla then rose <strong>~2,000%</strong> from March 2020 to November 2021 &mdash; not from equivalent business value creation, but from multiple expansion driven by retail enthusiasm, S&amp;P 500 index inclusion (December 2020), and post-COVID narratives. By 2022, all of it was fully priced in. <strong>What that history tells us is not that Tesla is uninvestable &mdash; it is that the method of entry matters as much as the company itself.</strong>
 </div>
 
-<!-- ── CLIFFHANGER ─────────────────────────────────────── -->
+<!-- CLIFFHANGER -->
 <div class="cliffhanger">
-  <div class="ch-eyebrow">Coming Next Week &nbsp;·&nbsp; Value Investing Series</div>
+  <div class="ch-eyebrow">Coming Next &nbsp;&middot;&nbsp; Systematic Investing</div>
   <div class="ch-text">
-    You've seen the valuation picture. Now see what a disciplined accumulation strategy does to that same stock. Starting with a $10,000 pool and a $2,000 initial investment, two dual-asset portfolios — <strong>TSLA + AVGO</strong> and <strong>TSLA + AU</strong> — were run through a systematic <strong>Value Averaging Accumulation (VAA)</strong> strategy with dynamic internal rebalancing from January 2019 to today. The lump-sum TSLA holder turned $10,000 into $223,600 — a 22.4× return. The VAA + rebalancing portfolio did something the lump-sum investor couldn't: it deployed only <strong>$7,186 of the available $10,000</strong> and turned it into <strong>$252,300 — a 35.1× return</strong>. The difference is the rebalancing premium: a mechanical, rule-based harvest of volatility between two growth assets. No forecasting. No market timing. No luck required. <strong>Next week: the full simulation, the methodology, and every number.</strong>
+    You&rsquo;ve seen the valuation picture. Now see what a disciplined accumulation strategy does to the same stock. Starting with a $10,000 pool and a $2,000 initial investment, two dual-asset portfolios &mdash; <strong>TSLA + AVGO</strong> and <strong>TSLA + AU</strong> &mdash; were run through a <strong>Value Averaging Accumulation (VAA)</strong> strategy with dynamic internal rebalancing from January 2019 to today. The lump-sum TSLA holder turned $10,000 into $212,900 &mdash; a 21.3&times; return. The VAA + rebalancing portfolio deployed only <strong>$9,242 of the available $10,000</strong> and turned it into <strong>$255,700 &mdash; a 27.7&times; return</strong>. The difference is the rebalancing premium: a mechanical harvest of volatility between two growth assets. No forecasting. No market timing. No luck required. <strong>Next: the full simulation, the methodology, and every number.</strong>
   </div>
-  <div class="ch-cta">→ TSLA + AVGO + AU: VAA, Internal Rebalancing &amp; the Rebalancing Premium — Next Week</div>
+  <div class="ch-cta">&rarr; TSLA + AVGO + AU: VAA, Internal Rebalancing &amp; the Rebalancing Premium &mdash; Next</div>
 </div>
 
-<!-- ── BOTTOM NAVIGATION ──────────────────────────────── -->
+<!-- NAV BOTTOM -->
 <div style="margin:24px 0 0;display:flex;justify-content:center;gap:16px;">
-  <a href="spcx_ipo.html" style="font-family:var(--font-mono);font-size:12px;padding:6px 16px;border:1px solid var(--border);background:#fff;color:var(--ink);text-decoration:none;border-radius:3px;">‹ Previous</a>
+  <a href="spcx_ipo.html" style="font-family:var(--font-mono);font-size:12px;padding:6px 16px;border:1px solid var(--border);background:#fff;color:var(--ink);text-decoration:none;border-radius:3px;">&#8249; Previous</a>
   <a href="index.html" style="font-family:var(--font-mono);font-size:12px;padding:6px 16px;border:1px solid var(--border);background:#fff;color:var(--ink);text-decoration:none;border-radius:3px;">Home</a>
-  <a href="tsla_vaa-simulation.html" style="font-family:var(--font-mono);font-size:12px;padding:6px 16px;border:1px solid var(--border);background:#fff;color:var(--ink);text-decoration:none;border-radius:3px;opacity:.4;pointer-events:none;">Next ›</a>
+  <a href="tsla_vaa-simulation.html" style="font-family:var(--font-mono);font-size:12px;padding:6px 16px;border:1px solid var(--border);background:#fff;color:var(--ink);text-decoration:none;border-radius:3px;opacity:.4;pointer-events:none;">Next &#8250;</a>
 </div>
 
-<!-- ── BOTTOM RULE ─────────────────────────────────────── -->
+<!-- BOTTOM RULE -->
 <div class="bottom-rule">
-  <p class="disclaimer">For informational purposes only. Not financial advice. Data as of May 30, 2026. Valuation frameworks from Graham, Buffett, and Munger applied for analytical context only. DCF range ($18–$286) sourced from multiple independent analyses; actual intrinsic value is assumption-dependent. Consult a qualified financial advisor before making investment decisions.</p>
-  <div class="logo-text">PERSONAL RESEARCH · 2026 · TSLA</div>
+  <p class="disclaimer">For informational purposes only. Not financial advice. Data as of May 30, 2026. Valuation frameworks from Graham, Buffett, and Munger applied for analytical context only. DCF range ($18&ndash;$286) sourced from multiple independent analyses; actual intrinsic value is assumption-dependent. Brand value data per Brand Finance. Consult a qualified financial advisor before making investment decisions.</p>
+  <div class="logo-text">PERSONAL RESEARCH &middot; 2026 &middot; TSLA</div>
 </div>
 
 </div><!-- /page -->
-
 <script>
-const C = {
-  gold: '#B87333', green: '#2e7d32', red: '#b71c1c', blue: '#1a5494',
-  gridColor: 'rgba(0,0,0,0.06)', tickColor: '#888',
-  tickFont: { size: 10, family: "'Courier New', monospace" },
-  tooltip: { backgroundColor: '#1a1a1a', titleColor: '#f0ece4', bodyColor: '#ccc', padding: 10, cornerRadius: 3 }
-};
-
-/* SEGMENT REVENUE CHART */
-new Chart(document.getElementById('segChart'), {
-  type: 'bar',
-  data: {
-    labels: ['FY2020', 'FY2022', 'FY2024'],
-    datasets: [
-      { label: 'Automotive', data: [27.2, 67.2, 77.1], backgroundColor: 'rgba(184,115,51,0.75)', borderRadius: 3 },
-      { label: 'Energy', data: [2.0, 3.9, 10.1], backgroundColor: 'rgba(46,125,50,0.75)', borderRadius: 3 },
-      { label: 'Services', data: [2.3, 6.1, 10.5], backgroundColor: 'rgba(26,84,148,0.65)', borderRadius: 3 }
-    ]
-  },
-  options: {
-    responsive: true, maintainAspectRatio: false,
-    plugins: { legend: { display: false }, tooltip: { ...C.tooltip, callbacks: { label: ctx => `  ${ctx.dataset.label}: $${ctx.raw}B` } } },
-    scales: {
-      x: { grid: { display: false }, ticks: { color: C.tickColor, font: C.tickFont } },
-      y: { grid: { color: C.gridColor }, ticks: { color: C.tickColor, font: C.tickFont, callback: v => '$' + v + 'B' } }
-    }
-  }
-});
-
-/* FORWARD P/E COMPARISON */
-new Chart(document.getElementById('peChart'), {
-  type: 'bar',
-  data: {
-    labels: ['Tesla (TSLA)', 'Auto Sector Median', 'S&P 500 Avg', 'Toyota (TM)', 'Ford (F)'],
-    datasets: [{
-      data: [207, 13.7, 21, 9, 7],
-      backgroundColor: ctx => ctx.dataIndex === 0 ? 'rgba(183,28,28,0.75)' : 'rgba(184,115,51,0.45)',
-      borderRadius: 3
-    }]
-  },
-  options: {
-    indexAxis: 'y',
-    responsive: true, maintainAspectRatio: false,
-    plugins: { legend: { display: false }, tooltip: { ...C.tooltip, callbacks: { label: ctx => `  Forward P/E: ${ctx.raw}×` } } },
-    scales: {
-      x: { grid: { color: C.gridColor }, ticks: { color: C.tickColor, font: C.tickFont, callback: v => v + '×' } },
-      y: { grid: { display: false }, ticks: { color: C.tickColor, font: C.tickFont } }
-    }
-  }
-});
-
-/* 52-WEEK PRICE CHART */
-const priceLabels = ['Jun\'25','Jul','Aug','Sep','Oct','Nov','Dec\'25','Jan\'26','Feb','Mar','Apr','May\'26'];
-const priceData   = [273, 295, 318, 348, 372, 415, 498, 455, 410, 380, 339, 436];
-new Chart(document.getElementById('priceChart'), {
-  type: 'line',
-  data: {
-    labels: priceLabels,
-    datasets: [{
-      data: priceData,
-      borderColor: C.gold,
-      backgroundColor: 'rgba(184,115,51,0.07)',
-      fill: true, tension: 0.35,
-      pointRadius: (ctx) => {
-        const i = ctx.dataIndex;
-        if (i === 0 || i === 6 || i === priceData.length - 1) return 6;
-        if (i === 10) return 5; /* April low */
-        return 3;
-      },
-      pointBackgroundColor: (ctx) => {
-        const i = ctx.dataIndex;
-        if (i === 6) return C.green;
-        if (i === 0 || i === 10) return C.red;
-        if (i === priceData.length - 1) return C.gold;
-        return C.gold;
-      },
-      pointBorderColor: '#fff', pointBorderWidth: 1.5, borderWidth: 2.5
-    }]
-  },
-  options: {
-    responsive: true, maintainAspectRatio: false,
-    plugins: {
-      legend: { display: false },
-      tooltip: { ...C.tooltip, callbacks: { label: ctx => `  TSLA: $${ctx.raw}` } }
-    },
-    scales: {
-      x: { grid: { color: C.gridColor }, ticks: { color: C.tickColor, font: C.tickFont } },
-      y: { grid: { color: C.gridColor }, ticks: { color: C.tickColor, font: C.tickFont, callback: v => '$' + v }, min: 220, max: 600 }
-    }
-  },
-  plugins: [{
-    afterDraw(chart) {
-      const ctx2 = chart.ctx;
-      const meta = chart.getDatasetMeta(0);
-      const annotations = [
-        { i: 0, label: '52-wk Low\n$273', color: C.red, above: false },
-        { i: 6, label: '52-wk High\n$498', color: C.green, above: true },
-        { i: 10, label: 'Delivery\nmiss $339', color: C.red, above: false }
-      ];
-      annotations.forEach(({ i, label, color, above }) => {
-        const pt = meta.data[i];
-        ctx2.save();
-        ctx2.fillStyle = color;
-        ctx2.font = "bold 9px 'Courier New', monospace";
-        ctx2.textAlign = 'center';
-        label.split('\n').forEach((line, li) => {
-          const y = above ? pt.y - 28 + li * 11 : pt.y + 16 + li * 11;
-          ctx2.fillText(line, pt.x, y);
-        });
-        ctx2.restore();
-      });
-    }
-  }]
-});
+const C={gold:'#B87333',green:'#2e7d32',red:'#b71c1c',blue:'#1a5494',gridColor:'rgba(0,0,0,0.06)',tickColor:'#888',tickFont:{size:10,family:"'Courier New', monospace"},tooltip:{backgroundColor:'#1a1a1a',titleColor:'#f0ece4',bodyColor:'#ccc',padding:10,cornerRadius:3}};
+new Chart(document.getElementById('segChart'),{type:'bar',data:{labels:['FY2020','FY2022','FY2024'],datasets:[{label:'Automotive',data:[27.2,67.2,77.1],backgroundColor:'rgba(184,115,51,0.75)',borderRadius:3},{label:'Energy',data:[2.0,3.9,10.1],backgroundColor:'rgba(46,125,50,0.75)',borderRadius:3},{label:'Services',data:[2.3,6.1,10.5],backgroundColor:'rgba(26,84,148,0.65)',borderRadius:3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{...C.tooltip,callbacks:{label:ctx=>`  ${ctx.dataset.label}: $${ctx.raw}B`}}},scales:{x:{grid:{display:false},ticks:{color:C.tickColor,font:C.tickFont}},y:{grid:{color:C.gridColor},ticks:{color:C.tickColor,font:C.tickFont,callback:v=>'$'+v+'B'}}}}});
+new Chart(document.getElementById('peChart'),{type:'bar',data:{labels:['Tesla (TSLA)','Auto Sector Median','S&P 500 Avg','Toyota (TM)','Ford (F)'],datasets:[{data:[207,13.7,21,9,7],backgroundColor:ctx=>ctx.dataIndex===0?'rgba(183,28,28,0.75)':'rgba(184,115,51,0.45)',borderRadius:3}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{...C.tooltip,callbacks:{label:ctx=>`  Forward P/E: ${ctx.raw}×`}}},scales:{x:{grid:{color:C.gridColor},ticks:{color:C.tickColor,font:C.tickFont,callback:v=>v+'×'}},y:{grid:{display:false},ticks:{color:C.tickColor,font:C.tickFont}}}}});
+new Chart(document.getElementById('priceChart'),{type:'line',data:{labels:["Jun'25","Jul","Aug","Sep","Oct","Nov","Dec'25","Jan'26","Feb","Mar","Apr","May'26"],datasets:[{data:[273,295,318,348,372,415,498,455,410,380,339,436],borderColor:C.gold,backgroundColor:'rgba(184,115,51,0.07)',fill:true,tension:0.35,borderWidth:2.5,pointRadius:ctx=>{const i=ctx.dataIndex;return[0,6,10,11].includes(i)?5:3;},pointBackgroundColor:ctx=>{const i=ctx.dataIndex;return i===6?C.green:(i===0||i===10)?C.red:C.gold;},pointBorderColor:'#fff',pointBorderWidth:1.5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{...C.tooltip,callbacks:{label:ctx=>`  TSLA: $${ctx.raw}`}}},scales:{x:{grid:{color:C.gridColor},ticks:{color:C.tickColor,font:C.tickFont}},y:{grid:{color:C.gridColor},ticks:{color:C.tickColor,font:C.tickFont,callback:v=>'$'+v},min:220,max:600}}},plugins:[{afterDraw(chart){const ctx2=chart.ctx,meta=chart.getDatasetMeta(0);[{i:0,label:'52-wk Low\n$273',color:C.red,above:false},{i:6,label:'52-wk High\n$498',color:C.green,above:true},{i:10,label:'Delivery miss\n$339',color:C.red,above:false}].forEach(({i,label,color,above})=>{const pt=meta.data[i];ctx2.save();ctx2.fillStyle=color;ctx2.font="bold 9px 'Courier New', monospace";ctx2.textAlign='center';label.split('\n').forEach((line,li)=>{ctx2.fillText(line,pt.x,above?pt.y-28+li*11:pt.y+16+li*11);});ctx2.restore();});}}]});
 </script>
 </body>
 </html>
