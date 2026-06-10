@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nasdaq-100 & The AI IPO Wave — nwchun90 Research</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --gold:#B87333;--ink:#1a1a1a;--paper:#faf9f6;--muted:#888;
+  --border:#e0ddd5;--cream:#f5f3ec;
+  --green:#2e7d32;--amber:#B87333;--red:#b71c1c;--blue:#1a5494;--teal:#1a7f6e;
+  --font-serif:'Georgia',serif;--font-mono:'Courier New',monospace;
+}
+body{font-family:var(--font-serif);background:var(--paper);color:var(--ink);font-size:14px;line-height:1.7;}
+.page{max-width:900px;margin:0 auto;padding:40px 28px 60px;}
+.masthead{border-top:3px solid var(--ink);border-bottom:1px solid var(--ink);padding:16px 0 14px;margin-bottom:32px;display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+.eyebrow{font-family:var(--font-mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
+.headline{font-size:26px;font-weight:400;line-height:1.2;letter-spacing:-0.5px;}
+.headline span{font-style:italic;color:var(--gold);}
+.author-line{font-family:var(--font-mono);font-size:11px;color:var(--muted);margin-top:6px;}
+.datestamp{font-family:var(--font-mono);font-size:11px;color:var(--muted);text-align:right;line-height:1.7;}
+.nav-bar{margin:0 0 24px;display:flex;justify-content:center;gap:20px;}
+.nav-btn{font-family:var(--font-mono);font-size:12px;padding:6px 14px;border:1px solid var(--border);background:#fff;color:var(--ink);text-decoration:none;border-radius:4px;transition:.15s;}
+.nav-btn:hover{background:var(--gold);color:#fff;border-color:var(--gold);}
+.nav-btn.disabled{opacity:.4;pointer-events:none;}
+.deck{font-size:15px;color:#444;line-height:1.75;max-width:680px;margin-bottom:28px;border-left:3px solid var(--gold);padding-left:16px;}
+.sl{font-family:var(--font-mono);font-size:10px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin:26px 0 12px;display:flex;align-items:center;gap:12px;}
+.sl::after{content:'';flex:1;height:1px;background:var(--border);}
+.stat-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:28px;}
+.stat-card{background:#fff;border:1px solid var(--border);border-radius:4px;padding:14px 16px;}
+.stat-label{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:#999;font-family:var(--font-mono);margin-bottom:4px;}
+.stat-value{font-size:26px;font-weight:400;font-family:var(--font-mono);line-height:1.1;margin-bottom:3px;}
+.stat-sub{font-size:11px;color:var(--muted);font-style:italic;}
+.green{color:var(--green);}.amber{color:var(--amber);}.red{color:var(--red);}.blue{color:var(--blue);}
+.card{background:#fff;border:1px solid var(--border);padding:16px 18px;margin-bottom:14px;}
+.card.dark{background:var(--ink);color:#f0ece4;border:none;padding:22px 24px;}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:14px;}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px;}
+.met{background:var(--cream);border:1px solid var(--border);padding:12px 14px;}
+.ml{font-family:var(--font-mono);font-size:10px;color:var(--muted);margin-bottom:3px;text-transform:uppercase;letter-spacing:.08em;}
+.mv{font-size:17px;font-weight:600;margin-bottom:2px;}
+.ms{font-size:11px;color:var(--muted);}
+.row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px;}
+.row:last-child{border-bottom:none;}
+.rl{color:var(--muted);font-family:var(--font-mono);font-size:11px;text-transform:uppercase;letter-spacing:.08em;}
+.rv{font-weight:500;}
+.up{color:var(--green);}.dn{color:var(--red);}.am{color:var(--amber);}
+.ev{display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;line-height:1.6;}
+.ev:last-child{border-bottom:none;}
+.dot{width:8px;height:8px;border-radius:50%;margin-top:5px;flex-shrink:0;}
+.bar-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.bar-lbl{font-family:var(--font-mono);font-size:11px;color:var(--muted);width:80px;flex-shrink:0;text-transform:uppercase;letter-spacing:.06em;}
+.bar-track{flex:1;background:var(--cream);border-radius:4px;height:10px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:4px;}
+.badge{font-size:11px;padding:2px 8px;border-radius:999px;font-weight:600;display:inline-block;font-family:var(--font-mono);}
+.b-up{background:#e1f5ee;color:#085041;}.b-dn{background:#fcebeb;color:#791f1f;}
+.b-am{background:#faeeda;color:#633806;}.b-bl{background:#e6f1fb;color:#0c447c;}
+.understanding{background:var(--ink);color:#f0ece4;border-radius:4px;padding:22px 24px;margin-bottom:28px;}
+.understanding h3{font-size:13px;font-family:var(--font-mono);letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:14px;font-weight:400;}
+.understanding p{font-size:12px;color:#bbb;line-height:1.75;}
+.understanding strong{color:#f0ece4;font-weight:600;}
+.chart-wrap{background:#fff;border:1px solid var(--border);border-radius:4px;padding:20px 16px 14px;margin-bottom:24px;}
+.chart-note{font-size:11px;color:#999;font-style:italic;margin-top:10px;text-align:center;font-family:var(--font-mono);}
+.bottom-rule{border-top:1px solid var(--ink);padding-top:12px;margin-top:2rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;}
+.disclaimer{font-size:10px;color:#aaa;font-style:italic;font-family:var(--font-mono);max-width:560px;line-height:1.6;}
+.logo-text{font-family:var(--font-mono);font-size:10px;color:#bbb;letter-spacing:1px;}
+
+/* ── IPO TIMELINE ───────────────────────────── */
+.timeline{display:flex;align-items:flex-start;gap:0;margin:20px 0 8px;position:relative;}
+.timeline::before{content:'';position:absolute;top:22px;left:24px;right:24px;height:2px;background:linear-gradient(90deg,var(--gold),var(--blue));z-index:0;}
+.tl-step{flex:1;display:flex;flex-direction:column;align-items:center;position:relative;z-index:1;}
+.tl-dot{width:16px;height:16px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 2px var(--gold);background:var(--gold);margin-bottom:10px;flex-shrink:0;}
+.tl-dot.blue{box-shadow:0 0 0 2px var(--blue);background:var(--blue);}
+.tl-dot.green{box-shadow:0 0 0 2px var(--green);background:var(--green);}
+.tl-dot.pulse{animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 2px var(--gold),0 0 0 5px rgba(184,115,51,.2);}50%{box-shadow:0 0 0 2px var(--gold),0 0 0 9px rgba(184,115,51,.05);}}
+.tl-label{font-family:var(--font-mono);font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:3px;text-align:center;}
+.tl-date{font-family:var(--font-mono);font-size:12px;font-weight:700;color:var(--ink);text-align:center;line-height:1.3;}
+.tl-note{font-size:10px;color:var(--muted);text-align:center;margin-top:3px;font-style:italic;max-width:90px;}
+
+/* ── ETF FEATURE CARDS ───────────────────────── */
+.etf-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;}
+.etf-card{border:1px solid var(--border);background:#fff;padding:0;overflow:hidden;}
+.etf-header{padding:18px 20px 14px;color:#fff;position:relative;overflow:hidden;}
+.etf-header::after{content:'';position:absolute;right:-10px;top:-10px;width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,.07);}
+.etf-ticker{font-family:var(--font-mono);font-size:32px;font-weight:700;letter-spacing:-1px;line-height:1;}
+.etf-name{font-size:11px;opacity:.8;margin-top:4px;font-family:var(--font-mono);}
+.etf-exchange{font-family:var(--font-mono);font-size:10px;opacity:.6;margin-top:2px;letter-spacing:.1em;text-transform:uppercase;}
+.etf-body{padding:14px 18px;}
+.etf-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border);font-size:12px;}
+.etf-row:last-child{border-bottom:none;}
+.etf-key{font-family:var(--font-mono);font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;}
+.etf-val{font-weight:600;font-size:13px;}
+.etf-badge{display:inline-block;font-family:var(--font-mono);font-size:10px;padding:2px 10px;border-radius:999px;font-weight:700;margin-top:10px;}
+
+/* ── ACCOUNT PLACEMENT ───────────────────────── */
+.account-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px;}
+.acc-card{border:1px solid var(--border);padding:14px 16px;text-align:center;background:#fff;position:relative;}
+.acc-label{font-family:var(--font-mono);font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin-bottom:8px;}
+.acc-name{font-size:18px;font-weight:700;margin-bottom:6px;}
+.acc-etf{font-family:var(--font-mono);font-size:22px;font-weight:700;margin:8px 0 4px;}
+.acc-why{font-size:11px;color:#555;line-height:1.5;}
+.acc-check{font-size:11px;margin-top:6px;font-family:var(--font-mono);}
+
+/* ── COMPANY WAVE CARDS ──────────────────────── */
+.wave-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px;}
+.wave-card{border-top:3px solid var(--border);padding:14px 16px;background:#fff;border:1px solid var(--border);border-top-width:3px;}
+.wave-num{font-family:var(--font-mono);font-size:10px;color:#aaa;letter-spacing:2px;margin-bottom:6px;}
+.wave-co{font-size:15px;font-weight:700;margin-bottom:4px;}
+.wave-val{font-family:var(--font-mono);font-size:13px;margin-bottom:6px;}
+.wave-note{font-size:11px;color:#555;line-height:1.5;}
+
+/* ── CAPTURE TABLE ───────────────────────────── */
+.cap-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
+.cap-card{padding:16px 18px;border:1px solid var(--border);}
+.cap-head{font-family:var(--font-mono);font-size:10px;text-transform:uppercase;letter-spacing:.15em;margin-bottom:12px;font-weight:700;}
+.cap-item{display:flex;gap:8px;padding:5px 0;font-size:12px;line-height:1.5;border-bottom:1px solid var(--border);}
+.cap-item:last-child{border:none;}
+
+/* ── RISK TABLE ──────────────────────────────── */
+.risk-table{width:100%;border-collapse:collapse;font-size:12px;}
+.risk-table th{font-family:var(--font-mono);font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);padding:8px 12px;border-bottom:2px solid var(--ink);text-align:left;}
+.risk-table td{padding:9px 12px;border-bottom:1px solid var(--border);vertical-align:top;}
+.risk-table tr:last-child td{border-bottom:none;}
+.risk-table td:first-child{font-weight:600;width:30%;color:var(--ink);}
+.risk-table td:last-child{color:#555;}
+
+@media(max-width:650px){
+  .etf-grid,.cap-grid{grid-template-columns:1fr;}
+  .wave-grid,.account-grid,.g2,.g3,.g4{grid-template-columns:1fr 1fr;}
+  .timeline::before{top:18px;}
+  .tl-date{font-size:10px;}
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- MASTHEAD -->
+<div class="masthead">
+  <div class="masthead-left">
+    <div class="eyebrow">Personal Investment Research &nbsp;·&nbsp; Systematic Investing &nbsp;·&nbsp; Index ETF</div>
+    <div class="headline">Nasdaq-100 &amp; the <span>AI IPO Wave</span></div>
+    <div class="author-line">by nwchun90</div>
+  </div>
+  <div class="datestamp">
+    June 9, 2026<br>
+    Data: Investopedia · Nasdaq<br>
+  </div>
+</div>
+
+<!-- DECK -->
+<div class="deck">
+  <a href="https://nwchun90.github.io/invest.github.io/spcx_ipo.html" target="_blank" style="color:var(--gold);text-decoration:none;font-weight:600;">SpaceX is set to begin trading on Nasdaq within days</a> — the largest IPO in history at a $1.75T valuation. Most investors won't get an allocation at the IPO price. But two ETFs — <strong>QQQM</strong> and <strong>HXQ</strong> — will automatically own it within 15 trading days, with no action required from you. <a href="https://nwchun90.github.io/invest.github.io/" target="_blank" style="color:var(--gold);text-decoration:none;">Full series index →</a>
+</div>
+
+<!-- NAV TOP -->
+<div class="nav-bar">
+  <a class="nav-btn" id="nav-back" href="#">&#8249; Previous</a>
+  <a class="nav-btn" id="nav-home" href="index.html">Home</a>
+  <a class="nav-btn" id="nav-next" href="#">Next &#8250;</a>
+</div>
+
+<!-- THE AI IPO WAVE -->
+<div class="sl">the ai ipo wave — three companies, three trillion-dollar moments</div>
+<div class="wave-grid">
+  <div class="wave-card" style="border-top-color:var(--gold);">
+    <div class="wave-num">WAVE 01 &nbsp;·&nbsp; IMMINENT</div>
+    <div class="wave-co">SpaceX</div>
+    <div class="wave-val amber">$1.75T valuation &nbsp;<span class="badge b-am">SPCX</span></div>
+    <div class="wave-note">Expected to price mid-June 2026 on Nasdaq. 80%+ of global rocket launches. Starlink at 7–8M subscribers. Largest IPO ever, surpassing Saudi Aramco.</div>
+  </div>
+  <div class="wave-card" style="border-top-color:var(--blue);">
+    <div class="wave-num">WAVE 02 &nbsp;·&nbsp; LATE 2026</div>
+    <div class="wave-co">Anthropic</div>
+    <div class="wave-val blue">$965B valuation &nbsp;<span class="badge b-bl">S-1 FILED</span></div>
+    <div class="wave-note">Confidential S-1 filed. Revenue: $1B run rate (late 2024) → $45B annualised by May 2026. Q2 2026 expected to be its first profitable quarter.</div>
+  </div>
+  <div class="wave-card" style="border-top-color:var(--muted);">
+    <div class="wave-num">WAVE 03 &nbsp;·&nbsp; TBD</div>
+    <div class="wave-co">OpenAI</div>
+    <div class="wave-val" style="color:var(--muted);">$1T+ est. valuation &nbsp;<span class="badge" style="background:#eee;color:#666;">RUMOURED</span></div>
+    <div class="wave-note">Preparing for public listing — no firm date set. GPT ecosystem revenue growing rapidly. Regulatory and governance concerns remain key unknowns.</div>
+  </div>
+</div>
+
+<!-- THE PROBLEM -->
+<div class="understanding">
+  <h3>The Rule That Changed Everything — March 30, 2026</h3>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:16px;">
+    <div>
+      <div style="font-family:var(--font-mono);font-size:10px;color:#666;text-transform:uppercase;letter-spacing:.12em;margin-bottom:6px;">Old Rule — Before May 1, 2026</div>
+      <p><strong style="color:#f0ece4;">3-month minimum seasoning.</strong> Even a trillion-dollar company had to sit on the sidelines after its IPO before it could be evaluated for Nasdaq-100 inclusion. In practice, this often stretched closer to a year. Index ETFs — and every investor holding them — simply couldn't own a new listing until well after the excitement had settled.</p>
+    </div>
+    <div>
+      <div style="font-family:var(--font-mono);font-size:10px;color:#666;text-transform:uppercase;letter-spacing:.12em;margin-bottom:6px;">New Rule — Effective May 1, 2026</div>
+      <p><strong style="color:#f0ece4;">15 trading days.</strong> Nasdaq adopted a Fast Entry provision on March 30, 2026, specifically designed for mega-cap IPOs. If a newly listed company ranks within the top 40 constituents by full market cap, it is added to the Nasdaq-100 within 15 trading days — no seasoning, no liquidity test, no waiting for December reconstitution. SpaceX reportedly made rapid inclusion a <em>condition</em> of listing on Nasdaq.</p>
+    </div>
+  </div>
+  <div style="border-top:1px solid rgba(255,255,255,.1);padding-top:14px;font-size:12px;color:#bbb;line-height:1.75;">
+    <strong style="color:#f0ece4;">Why this matters for passive investors:</strong> Before this rule, holding a Nasdaq-100 ETF meant waiting months before any new AI giant appeared in your portfolio. Now, the index — and every ETF tracking it — absorbs these companies automatically within three weeks. You don't need to predict IPO dates, negotiate allocations, or trade anything. The index mechanism does it for you.
+  </div>
+</div>
+
+<!-- FAST-ENTRY TIMELINE -->
+<div class="sl">the fast-entry timeline — spacex example</div>
+<div class="card" style="padding:20px 24px 16px;">
+  <div class="timeline">
+    <div class="tl-step">
+      <div class="tl-dot pulse"></div>
+      <div class="tl-label">IPO Day</div>
+      <div class="tl-date">~Jun 12<br>2026</div>
+      <div class="tl-note">Shares begin trading on Nasdaq</div>
+    </div>
+    <div class="tl-step">
+      <div class="tl-dot blue"></div>
+      <div class="tl-label">Day +7</div>
+      <div class="tl-date">~Jun 23<br>2026</div>
+      <div class="tl-note">Assessment day — market cap ranked vs top-40 threshold</div>
+    </div>
+    <div class="tl-step">
+      <div class="tl-dot blue"></div>
+      <div class="tl-label">+5 Notice</div>
+      <div class="tl-date">~Jun 30<br>2026</div>
+      <div class="tl-note">Nasdaq announces inclusion with 5 trading days notice</div>
+    </div>
+    <div class="tl-step">
+      <div class="tl-dot green"></div>
+      <div class="tl-label">Day +15</div>
+      <div class="tl-date">~Jul 7<br>2026</div>
+      <div class="tl-note">SpaceX enters Nasdaq-100. QQQM &amp; HXQ automatically hold it.</div>
+    </div>
+  </div>
+  <p style="font-size:11px;color:var(--muted);font-style:italic;font-family:var(--font-mono);text-align:center;margin-top:6px;">Under old rules, inclusion would have required 3+ calendar months &amp; waited until December reconstitution. Fast entry cuts this to 15 trading days.</p>
+</div>
+
+<!-- BUFFERED EXPOSURE SECTION -->
+<div class="sl">etf exposure — buffered, not risk-free</div>
+<div class="g2">
+  <div class="card" style="border-top:3px solid var(--green);">
+    <div style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px;">What the ETF protects you from</div>
+    <div class="ev" style="padding:5px 0;"><div class="dot" style="background:var(--green);"></div><div style="font-size:12px;"><strong>Day-one chaos.</strong> You skip the first 15 trading days — the most volatile window. IPO-day swings of ±20% are common. You enter after some price discovery has already occurred.</div></div>
+    <div class="ev" style="padding:5px 0;"><div class="dot" style="background:var(--green);"></div><div style="font-size:12px;"><strong>Allocation uncertainty.</strong> No broker access needed, no waitlists, no minimum investment. Once SpaceX is in the index, you hold it proportionally — automatically.</div></div>
+    <div class="ev" style="padding:5px 0;border:none;"><div class="dot" style="background:var(--green);"></div><div style="font-size:12px;"><strong>Concentration risk.</strong> SpaceX enters at ~0.5% index weight (limited free float). Even if the IPO craters, 99 other holdings absorb the impact. You are not betting the portfolio on a single debut.</div></div>
+  </div>
+  <div class="card" style="border-top:3px solid var(--amber);">
+    <div style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--amber);text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px;">Risks that remain — be honest about them</div>
+    <div class="ev" style="padding:5px 0;"><div class="dot" style="background:var(--amber);"></div><div style="font-size:12px;"><strong>Forced buying.</strong> When SpaceX enters the index, every Nasdaq-100 ETF must buy it at whatever market price exists that day. If the stock is overvalued at inclusion, the ETF buys it anyway — at that price.</div></div>
+    <div class="ev" style="padding:5px 0;"><div class="dot" style="background:var(--amber);"></div><div style="font-size:12px;"><strong>Lock-up expiry.</strong> 90–180 days after IPO, insiders can sell. This happens <em>after</em> ETF inclusion — and large insider sales can drag the stock and, modestly, the index.</div></div>
+    <div class="ev" style="padding:5px 0;border:none;"><div class="dot" style="background:var(--red);"></div><div style="font-size:12px;"><strong>You miss the pop.</strong> If SpaceX doubles in its first 15 trading days, the ETF captures none of it. The buffered entry cuts both ways — less chaos, but also less first-mover upside.</div></div>
+  </div>
+</div>
+<div class="card" style="background:var(--cream);border-left:3px solid var(--gold);padding-left:16px;font-size:12.5px;line-height:1.8;color:#444;">
+  <strong>The honest summary:</strong> A Nasdaq-100 ETF gives you <em>passive, automatic, diversified</em> exposure to SpaceX — and every AI giant that follows — without needing to predict IPO dates or fight for allocations. It is not a risk-free structure; it is a <em>risk-buffered</em> one. The volatility is muted by diversification, the entry is delayed by 15 days, and the long-run compounding of the index does the work. For most investors, that trade-off is the point.
+</div>
+
+
+<div class="sl">spacex ipo at a glance</div>
+<div class="stat-row">
+  <div class="stat-card">
+    <div class="stat-label">Target valuation</div>
+    <div class="stat-value amber">$1.75T</div>
+    <div class="stat-sub">Surpasses Saudi Aramco's $1.7T record IPO</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Estimated free float</div>
+    <div class="stat-value blue">~4%</div>
+    <div class="stat-sub">Initial index weight ≈ 0.5% of Nasdaq-100</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Fast-entry threshold</div>
+    <div class="stat-value green">Top 40</div>
+    <div class="stat-sub">By full market cap. SpaceX qualifies easily.</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Days to inclusion</div>
+    <div class="stat-value">15</div>
+    <div class="stat-sub">Trading days from IPO date. Was 90+ days.</div>
+  </div>
+</div>
+
+<!-- TWO ETFs TO CONSIDER -->
+<div class="sl">two etfs to consider</div>
+<div class="etf-grid">
+
+  <!-- QQQM -->
+  <div class="etf-card">
+    <div class="etf-header" style="background:linear-gradient(135deg,#1a3a6e,#1a5494);">
+      <div class="etf-ticker">QQQM</div>
+      <div class="etf-name">Invesco Nasdaq-100 ETF</div>
+      <div class="etf-exchange">Nasdaq &nbsp;·&nbsp; USD &nbsp;·&nbsp; Est. 2020</div>
+    </div>
+    <div class="etf-body">
+      <div class="etf-row"><span class="etf-key">Expense ratio</span><span class="etf-val green">0.15%</span></div>
+      <div class="etf-row"><span class="etf-key">Currency</span><span class="etf-val">USD</span></div>
+      <div class="etf-row"><span class="etf-key">Dividends</span><span class="etf-val">Paid out quarterly</span></div>
+      <div class="etf-row"><span class="etf-key">AUM</span><span class="etf-val">$40B+</span></div>
+      <div class="etf-row"><span class="etf-key">Best account</span><span class="etf-val blue">Retirement acct.</span></div>
+      <div class="etf-row"><span class="etf-key">Withholding (ret. acct)</span><span class="etf-val green">0%</span></div>
+      <span class="etf-badge" style="background:#e6f1fb;color:#0c447c;">Cheapest · Treaty-protected in retirement</span>
+    </div>
+  </div>
+
+  <!-- HXQ -->
+  <div class="etf-card">
+    <div class="etf-header" style="background:linear-gradient(135deg,#1a4f30,#2e7d32);">
+      <div class="etf-ticker">HXQ</div>
+      <div class="etf-name">Horizons Nasdaq-100 Index ETF</div>
+      <div class="etf-exchange">TSX &nbsp;·&nbsp; CAD &nbsp;·&nbsp; Unhedged</div>
+    </div>
+    <div class="etf-body">
+      <div class="etf-row"><span class="etf-key">Expense ratio</span><span class="etf-val am">0.28%</span></div>
+      <div class="etf-row"><span class="etf-key">Currency</span><span class="etf-val">CAD</span></div>
+      <div class="etf-row"><span class="etf-key">Dividends</span><span class="etf-val">Reinvested (total return)</span></div>
+      <div class="etf-row"><span class="etf-key">AUM</span><span class="etf-val">$1B+</span></div>
+      <div class="etf-row"><span class="etf-key">Best account</span><span class="etf-val green">Tax-free or Taxable</span></div>
+      <div class="etf-row"><span class="etf-key">Distributions</span><span class="etf-val green">None — swap structure</span></div>
+      <span class="etf-badge" style="background:#e1f5ee;color:#085041;">Local currency · No dividend tax drag</span>
+    </div>
+  </div>
+
+</div>
+
+<!-- FEE COMPARISON CHART -->
+<div class="sl">expense ratio — qqqm &amp; hxq vs alternatives</div>
+<div class="chart-wrap">
+  <div style="position:relative;width:100%;height:180px;"><canvas id="feeChart"></canvas></div>
+  <p class="chart-note">QQQM and HXQ are the lowest-cost options in their respective currency categories. QQQ is largely identical to QQQM but 33% more expensive — there is no reason for a retail investor to choose it over QQQM. XQQ hedges CAD/USD risk at a significant cost premium.</p>
+</div>
+
+<!-- ACCOUNT PLACEMENT -->
+<div class="sl">where each etf belongs</div>
+<div class="account-grid">
+  <div class="acc-card" style="border-top:3px solid var(--blue);">
+    <div class="acc-label">Retirement Account</div>
+    <div class="acc-name blue">RRSP / IRA</div>
+    <div class="acc-etf blue">QQQM</div>
+    <div class="acc-why">Most tax treaties exempt registered retirement accounts from US dividend withholding entirely. QQQM's lower 0.15% fee compounds efficiently over a long horizon — best home for the USD-denominated position.</div>
+    <div class="acc-check green">✓ 0% withholding &nbsp;·&nbsp; 0.15% fee</div>
+  </div>
+  <div class="acc-card" style="border-top:3px solid var(--green);">
+    <div class="acc-label">Tax-Free Account</div>
+    <div class="acc-name green">Tax-Free / ISA</div>
+    <div class="acc-etf green">HXQ</div>
+    <div class="acc-why">HXQ pays no distributions — all return is capital growth via swap structure. No foreign dividend to withhold. Holds local currency. Ideal for tax-free accounts where dividend drag is a permanent, unrecoverable loss.</div>
+    <div class="acc-check green">✓ No distributions &nbsp;·&nbsp; Local currency</div>
+  </div>
+  <div class="acc-card" style="border-top:3px solid var(--amber);">
+    <div class="acc-label">Non-Registered</div>
+    <div class="acc-name amber">Taxable</div>
+    <div class="acc-etf amber">HXQ</div>
+    <div class="acc-why">HXQ's total-return swap structure generates no annual dividend distributions. All gains defer as capital gains until you sell — far more tax-efficient than receiving quarterly dividends that create an annual tax event.</div>
+    <div class="acc-check green">✓ Deferred capital gains only</div>
+  </div>
+</div>
+
+<!-- THE 15% WITHHOLDING NOTE -->
+<div class="card dark" style="margin-bottom:20px;">
+  <div style="font-family:var(--font-mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:10px;">The dividend withholding note</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+    <div style="font-size:12px;color:#bbb;line-height:1.75;">US-listed ETFs like QQQM pay quarterly dividends. Held outside a qualifying retirement account, <strong style="color:#f0ece4;">the IRS withholds 15%</strong> of every dividend at source — a drag that compounds silently over decades. Inside a treaty-protected retirement account, this withholding drops to zero.</div>
+    <div style="font-size:12px;color:#bbb;line-height:1.75;">HXQ sidesteps this entirely through its swap structure. Because it pays no distributions, there is no dividend event for any tax authority to withhold on. The cost is embedded in the fund's economics — not deducted from yours. This is the core reason HXQ suits tax-free and taxable accounts while QQQM suits retirement accounts.</div>
+  </div>
+</div>
+
+<!-- WHAT YOU CAPTURE / MISS -->
+<div class="sl">what you capture — and what you don't</div>
+<div class="cap-grid">
+  <div class="cap-card" style="border-top:3px solid var(--green);background:#fff;">
+    <div class="cap-head" style="color:var(--green);">&#10003; &nbsp;What you capture</div>
+    <div class="cap-item"><span style="color:var(--green);font-weight:700;flex-shrink:0;">✓</span><span>SpaceX enters the Nasdaq-100 ~15 trading days after IPO — both ETFs automatically begin holding it.</span></div>
+    <div class="cap-item"><span style="color:var(--green);font-weight:700;flex-shrink:0;">✓</span><span>Full Nasdaq-100 participation: Nvidia, Apple, Microsoft, Meta, plus every future AI entrant.</span></div>
+    <div class="cap-item"><span style="color:var(--green);font-weight:700;flex-shrink:0;">✓</span><span>Anthropic and OpenAI follow the same fast-entry path when they eventually list.</span></div>
+    <div class="cap-item"><span style="color:var(--green);font-weight:700;flex-shrink:0;">✓</span><span>No action required — the index rebalances automatically. You just hold.</span></div>
+  </div>
+  <div class="cap-card" style="border-top:3px solid var(--red);background:#fff;">
+    <div class="cap-head" style="color:var(--red);">✗ &nbsp;What you don't capture</div>
+    <div class="cap-item"><span style="color:var(--red);font-weight:700;flex-shrink:0;">✗</span><span>The day-one IPO pop. If SpaceX doubles on its first trading day, you miss that move entirely.</span></div>
+    <div class="cap-item"><span style="color:var(--red);font-weight:700;flex-shrink:0;">✗</span><span>Pre-IPO private shares. Those require access to specialist private funds — options unavailable to most retail investors.</span></div>
+    <div class="cap-item"><span style="color:var(--red);font-weight:700;flex-shrink:0;">✗</span><span>Direct IPO price allocation. Retail investors almost never receive hot IPO shares at offer price.</span></div>
+    <div class="cap-item"><span style="color:var(--red);font-weight:700;flex-shrink:0;">✗</span><span>Large initial weight. SpaceX's ~4% free float → only ~0.5% initial index weight. Exposure is modest at first.</span></div>
+  </div>
+</div>
+
+<!-- RISK TABLE -->
+<div class="sl">risks to understand</div>
+<div class="card" style="padding:0;overflow:hidden;">
+  <table class="risk-table">
+    <thead><tr><th>Risk</th><th>Detail</th></tr></thead>
+    <tbody>
+      <tr><td><span class="badge b-dn">Timing gap</span><br><span style="font-size:11px;font-weight:400;color:#555;">15-day lag</span></td><td>Fast entry adds SpaceX 15 trading days after IPO — the most explosive gains may happen in that window before the index owns it.</td></tr>
+      <tr><td><span class="badge b-am">Not guaranteed</span><br><span style="font-size:11px;font-weight:400;color:#555;">Fast entry criteria</span></td><td>A company must rank in the top 40 by full market cap. SpaceX at $1.75T clearly qualifies — smaller IPOs may not.</td></tr>
+      <tr><td><span class="badge b-am">Currency risk</span><br><span style="font-size:11px;font-weight:400;color:#555;">HXQ (unhedged)</span></td><td>HXQ is unhedged to USD. If your local currency strengthens against the US dollar, local-currency returns will be reduced even if the underlying index rises in USD terms.</td></tr>
+      <tr><td><span class="badge b-dn">Fee differential</span><br><span style="font-size:11px;font-weight:400;color:#555;">HXQ vs QQQM</span></td><td>HXQ (0.28%) costs nearly double QQQM (0.15%). Over decades this compounds to a meaningful return gap — keep the larger position in QQQM if possible.</td></tr>
+      <tr><td><span class="badge b-dn">Withholding drag</span><br><span style="font-size:11px;font-weight:400;color:#555;">Outside retirement accounts</span></td><td>QQQM held outside a treaty-protected retirement account permanently loses 15% of every dividend to US withholding. HXQ avoids this entirely through its swap structure.</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- SUMMARY CARD -->
+<div class="sl">verdict</div>
+<div class="card" style="background:var(--cream);border-left:3px solid var(--gold);padding-left:18px;">
+  <div style="font-size:13px;line-height:1.85;">
+    If you are not in the SpaceX IPO — and most investors won't be — the Nasdaq-100 is the cleanest available path to owning it. The Fast Entry rule (May 2026) means the index will hold SpaceX within 15 trading days of its debut, automatically, in both QQQM and HXQ. Neither approach requires you to predict an IPO date, fight for an allocation, or time a volatile post-IPO trade. <strong>QQQM in a retirement account eliminates dividend withholding.</strong> <strong>HXQ in a tax-free or taxable account eliminates dividend complexity entirely.</strong> The choice between them is structural — not a view on which ETF will perform better. Both track the same index.
+  </div>
+</div>
+
+<!-- NAV BOTTOM -->
+<div class="nav-bar">
+  <a class="nav-btn" id="nav-back-2" href="#">&#8249; Previous</a>
+  <a class="nav-btn" id="nav-home-2" href="index.html">Home</a>
+  <a class="nav-btn" id="nav-next-2" href="#">Next &#8250;</a>
+</div>
+
+<!-- BOTTOM RULE -->
+<div class="bottom-rule">
+  <p class="disclaimer">For informational purposes only. Not financial, legal, or tax advice. ETF expense ratios and brokerage fees subject to change. Withholding tax treatments vary by account type and individual circumstances. Fast-entry inclusion is subject to Nasdaq eligibility criteria. IPO dates and valuations are estimates based on public filings and news reports as of June 9, 2026. Consult a qualified tax professional and investment advisor before making any investment decisions.</p>
+  <div class="logo-text">PERSONAL RESEARCH &middot; 2026 &middot; QQQM &middot; HXQ</div>
+</div>
+
+</div><!-- /page -->
+
+<script>
+const CD = {
+  tooltip:{ backgroundColor:'#1a1a1a', titleColor:'#f0ece4', bodyColor:'#ccc', padding:12, cornerRadius:4 },
+  gridColor:'rgba(0,0,0,0.06)', tickColor:'#888',
+  tickFont:{ size:11, family:"'Courier New', monospace" }
+};
+
+/* FEE COMPARISON — horizontal bar */
+new Chart(document.getElementById('feeChart'), {
+  type: 'bar',
+  data: {
+    labels: ['QQQM', 'QQQ', 'HXQ', 'XQQ (hedged)'],
+    datasets: [{
+      data: [0.15, 0.20, 0.28, 0.39],
+      backgroundColor: ['#1a5494','rgba(26,84,148,0.35)','#2e7d32','rgba(46,125,50,0.35)'],
+      borderRadius: 4,
+      borderSkipped: false,
+    }]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        ...CD.tooltip,
+        callbacks: {
+          label: ctx => `  Expense ratio: ${ctx.raw}% p.a.`
+        }
+      }
+    },
+    scales: {
+      x: {
+        grid: { color: CD.gridColor },
+        ticks: { color: CD.tickColor, font: CD.tickFont, callback: v => v + '%' },
+        max: 0.50
+      },
+      y: {
+        grid: { display: false },
+        ticks: {
+          color: CD.tickColor,
+          font: { size: 13, family: "'Courier New', monospace", weight: '700' }
+        }
+      }
+    }
+  }
+});
+
+/* NAV — auto-wire from index.html */
+(function() {
+  function wireNav(backId, nextId) {
+    const back = document.getElementById(backId);
+    const next = document.getElementById(nextId);
+    if (!back || !next) return;
+    const cur = window.location.pathname.split('/').pop();
+    fetch('index.html')
+      .then(r => r.text())
+      .then(html => {
+        const doc = new DOMParser().parseFromString(html, 'text/html');
+        const items = Array.from(doc.querySelectorAll('.content-list .item'))
+          .map(el => ({ href: el.querySelector('a').getAttribute('href'), date: el.getAttribute('data-date') }))
+          .filter(x => x.href)
+          .sort((a,b) => new Date(a.date) - new Date(b.date));
+        const idx = items.findIndex(x => x.href.endsWith(cur));
+        if (idx < 0) { back.classList.add('disabled'); next.classList.add('disabled'); return; }
+        if (items[idx-1]) back.href = items[idx-1].href; else back.classList.add('disabled');
+        if (items[idx+1]) next.href = items[idx+1].href; else next.classList.add('disabled');
+      })
+      .catch(() => { back.classList.add('disabled'); next.classList.add('disabled'); });
+  }
+  wireNav('nav-back','nav-next');
+  wireNav('nav-back-2','nav-next-2');
+})();
+</script>
+</body>
+</html>
