@@ -76,7 +76,7 @@
     }
     #searchBox:focus { border-color: var(--gold); }
 
-    /* ── MIDDLE: list + badge panel (fills remaining height) ── */
+    /* ── MIDDLE: scrollable list (fills remaining height) ── */
     .middle {
       flex: 1;
       overflow: hidden;
@@ -138,85 +138,6 @@
       font-family: var(--mono);
     }
 
-    /* ── BADGE / CREDENTIAL PANEL (fixed right column) ── */
-    .badge-col {
-      flex-shrink: 0;
-      width: 200px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding-left: 20px;
-      border-left: 1px solid var(--border);
-    }
-
-    .badge-panel {
-      background: var(--white);
-      border: 1px solid var(--border);
-      border-top: 3px solid var(--gold);
-      border-radius: var(--radius);
-      padding: 18px 14px 16px;
-      text-align: center;
-      width: 100%;
-    }
-
-    .badge-label {
-      font-family: var(--mono);
-      font-size: 9px;
-      text-transform: uppercase;
-      letter-spacing: .15em;
-      color: var(--muted);
-      margin-bottom: 12px;
-    }
-
-    .badge-panel a.badge-img-link {
-      display: inline-block;
-      line-height: 0;
-      margin-bottom: 14px;
-      transition: opacity .15s;
-    }
-    .badge-panel a.badge-img-link:hover { opacity: .85; }
-    .badge-panel img {
-      width: 90px;
-      height: 90px;
-      object-fit: contain;
-    }
-
-    .badge-title {
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--ink);
-      line-height: 1.35;
-      margin-bottom: 4px;
-    }
-    .badge-issuer {
-      font-family: var(--mono);
-      font-size: 9px;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: .08em;
-      margin-bottom: 12px;
-      line-height: 1.5;
-    }
-
-    .badge-verify {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      font-family: var(--mono);
-      font-size: 10px;
-      color: var(--gold);
-      text-decoration: none;
-      border: 1px solid var(--gold);
-      border-radius: 4px;
-      padding: 5px 10px;
-      transition: background .15s, color .15s;
-      white-space: nowrap;
-    }
-    .badge-verify:hover {
-      background: var(--gold);
-      color: var(--white);
-    }
-
     /* ── FOOTER (frozen) ── */
     .site-footer {
       flex-shrink: 0;
@@ -254,30 +175,6 @@
       html, body { overflow: auto; height: auto; }
       .middle { flex-direction: column; padding: 16px; }
       .list-col { overflow-y: visible; padding-right: 0; }
-      .badge-col {
-        width: 100%;
-        border-left: none;
-        border-top: 1px solid var(--border);
-        padding-left: 0;
-        padding-top: 20px;
-        flex-direction: row;
-        align-items: flex-start;
-        gap: 16px;
-      }
-      .badge-panel {
-        display: flex;
-        align-items: center;
-        text-align: left;
-        gap: 14px;
-        padding: 14px;
-        flex-direction: row;
-        width: 100%;
-        border-top: none;
-        border-left: 3px solid var(--gold);
-      }
-      .badge-label { display: none; }
-      .badge-panel a.badge-img-link { margin-bottom: 0; }
-      .badge-panel img { width: 60px; height: 60px; }
     }
   </style>
 </head>
@@ -298,11 +195,6 @@
     <!-- Article list -->
     <div class="list-col">
       <ul class="content-list" id="contentList">
-
-        <li class="item" data-date="2026-06-12">
-          <a href="btcusd_visual_v4.html">Bitcoin &amp; the Macro Storm — BTC/USD</a>
-          <span class="date"></span>
-        </li>
 
         <li class="item" data-date="2026-06-10">
           <a href="ai-ipo_nasdaq.html">Hot AI IPOs in Nasdaq</a>
@@ -387,28 +279,6 @@
       </ul>
       <div id="noResults">No matching topics found.</div>
     </div>
-
-    <!-- Credential badge — stays fixed on right while list scrolls -->
-    <aside class="badge-col">
-      <div class="badge-panel">
-        <div class="badge-label">Credential</div>
-        <a class="badge-img-link"
-           href="https://www.credly.com/badges/7198873f-de2c-47bc-9309-644053387e1c/public_url"
-           target="_blank" rel="noopener"
-           title="Verify on Credly">
-          <img
-            src="https://images.credly.com/images/94a1e650-e428-4465-95df-12eb37dda3f9/linkedin_thumb_InvestmentFundsInCanada-DigitalBadge.png"
-            alt="Investment Funds in Canada – CSI Badge" />
-        </a>
-        <div class="badge-title">Investment Funds in Canada (IFC)</div>
-        <div class="badge-issuer">Canadian Securities<br>Institute · CSI</div>
-        <a class="badge-verify"
-           href="https://www.credly.com/badges/7198873f-de2c-47bc-9309-644053387e1c/public_url"
-           target="_blank" rel="noopener">
-          ↗ Verify credential
-        </a>
-      </div>
-    </aside>
 
   </div>
 
