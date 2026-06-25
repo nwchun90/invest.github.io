@@ -6,228 +6,448 @@
   <title>Personal Investment Research · Index</title>
 
   <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --gold: #b8860b;
+      --gold-light: #fff7e0;
+      --gold-mid: #f5e9c8;
+      --ink: #222;
+      --muted: #888;
+      --border: #e0e0e0;
+      --paper: #fafafa;
+      --white: #ffffff;
+      --radius: 8px;
+      --mono: 'Courier New', monospace;
+      --sans: "Segoe UI", Arial, sans-serif;
+    }
+
+    /* ── FULL-PAGE LAYOUT: fixed header, fixed footer, scrollable middle ── */
+    html, body { height: 100%; overflow: hidden; }
+
     body {
-      font-family: "Segoe UI", Arial, sans-serif;
-      background: #fafafa;
-      margin: 0;
-      padding: 40px 20px;
-      color: #333;
+      font-family: var(--sans);
+      background: var(--paper);
+      color: var(--ink);
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── HEADER (frozen) ── */
+    .site-header {
+      flex-shrink: 0;
+      background: var(--paper);
+      padding: 32px 24px 0;
+      border-bottom: 1px solid var(--border);
+      z-index: 10;
     }
 
     h1 {
       text-align: center;
-      color: #b8860b;
-      margin-bottom: 5px;
+      color: var(--gold);
       font-size: 2.2em;
       letter-spacing: 0.5px;
+      margin-bottom: 4px;
     }
-
     .author {
       text-align: center;
-      color: #777;
+      color: var(--muted);
       font-size: 0.95em;
-      margin-bottom: 30px;
+      margin-bottom: 6px;
     }
-
     .subtitle {
       text-align: center;
       color: #666;
-      margin-bottom: 30px;
       font-size: 1.05em;
+      margin-bottom: 18px;
     }
-
     #searchBox {
       display: block;
-      margin: 0 auto 30px;
+      margin: 0 auto 20px;
       padding: 10px 14px;
       width: 80%;
       max-width: 500px;
       font-size: 1em;
       border: 1px solid #ccc;
       border-radius: 6px;
+      background: var(--white);
+      outline: none;
+      transition: border-color .2s;
     }
+    #searchBox:focus { border-color: var(--gold); }
+
+    /* ── MIDDLE: list + badge panel (fills remaining height) ── */
+    .middle {
+      flex: 1;
+      overflow: hidden;
+      display: flex;
+      gap: 0;
+      padding: 20px 24px;
+      max-width: 1100px;
+      width: 100%;
+      margin: 0 auto;
+      align-self: stretch;
+    }
+
+    /* ── SCROLLABLE ARTICLE LIST ── */
+    .list-col {
+      flex: 1;
+      overflow-y: auto;
+      padding-right: 20px;
+      /* subtle scrollbar */
+      scrollbar-width: thin;
+      scrollbar-color: #ddd transparent;
+    }
+    .list-col::-webkit-scrollbar { width: 5px; }
+    .list-col::-webkit-scrollbar-track { background: transparent; }
+    .list-col::-webkit-scrollbar-thumb { background: #ddd; border-radius: 3px; }
 
     .content-list {
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 0;
       list-style: none;
+      padding: 0;
+      margin: 0;
     }
-
     .item {
-      background: #fff;
-      margin: 14px 0;
-      padding: 18px 22px;
-      border-radius: 8px;
-      border: 1px solid #e0e0e0;
+      background: var(--white);
+      margin: 0 0 10px;
+      padding: 16px 20px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      transition: background 0.2s, transform 0.15s;
+      transition: background .2s, transform .15s, box-shadow .15s;
     }
-
     .item:hover {
-      background: #fff7e0;
+      background: var(--gold-light);
       transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(184,134,11,.08);
     }
-
     .item a {
       text-decoration: none;
-      color: #333;
-      font-size: 1.12em;
+      color: var(--ink);
+      font-size: 1.05em;
       font-weight: 600;
     }
-
+    .item a:hover { color: var(--gold); }
     .date {
-      color: #999;
-      font-size: 0.9em;
+      color: var(--muted);
+      font-size: 0.85em;
       margin-left: 20px;
       white-space: nowrap;
+      font-family: var(--mono);
     }
 
-    .disclaimer {
-      max-width: 800px;
-      margin: 60px auto 0;
-      font-size: 0.85em;
-      color: #777;
+    /* ── BADGE / CREDENTIAL PANEL (fixed right column) ── */
+    .badge-col {
+      flex-shrink: 0;
+      width: 200px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-left: 20px;
+      border-left: 1px solid var(--border);
+    }
+
+    .badge-panel {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-top: 3px solid var(--gold);
+      border-radius: var(--radius);
+      padding: 18px 14px 16px;
+      text-align: center;
+      width: 100%;
+    }
+
+    .badge-label {
+      font-family: var(--mono);
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: .15em;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+
+    .badge-panel a.badge-img-link {
+      display: inline-block;
+      line-height: 0;
+      margin-bottom: 14px;
+      transition: opacity .15s;
+    }
+    .badge-panel a.badge-img-link:hover { opacity: .85; }
+    .badge-panel img {
+      width: 90px;
+      height: 90px;
+      object-fit: contain;
+    }
+
+    .badge-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--ink);
+      line-height: 1.35;
+      margin-bottom: 4px;
+    }
+    .badge-issuer {
+      font-family: var(--mono);
+      font-size: 9px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      margin-bottom: 12px;
       line-height: 1.5;
-      text-align: center;
     }
 
-    footer {
-      margin-top: 40px;
-      text-align: center;
+    .badge-verify {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--gold);
+      text-decoration: none;
+      border: 1px solid var(--gold);
+      border-radius: 4px;
+      padding: 5px 10px;
+      transition: background .15s, color .15s;
+      white-space: nowrap;
+    }
+    .badge-verify:hover {
+      background: var(--gold);
+      color: var(--white);
+    }
+
+    /* ── FOOTER (frozen) ── */
+    .site-footer {
+      flex-shrink: 0;
+      border-top: 1px solid var(--border);
+      padding: 14px 24px;
+      background: var(--paper);
+    }
+    .disclaimer {
+      max-width: 1100px;
+      margin: 0 auto;
+      font-size: 0.78em;
       color: #aaa;
-      font-size: 0.85em;
+      line-height: 1.55;
+      text-align: center;
+    }
+    .disclaimer strong { color: #999; }
+    .copyright {
+      text-align: center;
+      color: #bbb;
+      font-size: 0.78em;
+      margin-top: 5px;
+    }
+
+    /* ── NO RESULTS ── */
+    #noResults {
+      display: none;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.95em;
+      padding: 32px 0;
+    }
+
+    /* ── RESPONSIVE: stack on narrow screens ── */
+    @media (max-width: 640px) {
+      html, body { overflow: auto; height: auto; }
+      .middle { flex-direction: column; padding: 16px; }
+      .list-col { overflow-y: visible; padding-right: 0; }
+      .badge-col {
+        width: 100%;
+        border-left: none;
+        border-top: 1px solid var(--border);
+        padding-left: 0;
+        padding-top: 20px;
+        flex-direction: row;
+        align-items: flex-start;
+        gap: 16px;
+      }
+      .badge-panel {
+        display: flex;
+        align-items: center;
+        text-align: left;
+        gap: 14px;
+        padding: 14px;
+        flex-direction: row;
+        width: 100%;
+        border-top: none;
+        border-left: 3px solid var(--gold);
+      }
+      .badge-label { display: none; }
+      .badge-panel a.badge-img-link { margin-bottom: 0; }
+      .badge-panel img { width: 60px; height: 60px; }
     }
   </style>
 </head>
 
 <body>
 
-  <h1>Signals & Coffee</h1>
-  <div class="author">by nwchun90</div>
-  <div class="subtitle">Index of topics and visualizations</div>
+  <!-- ── FROZEN HEADER ── -->
+  <header class="site-header">
+    <h1>Signals &amp; Coffee</h1>
+    <div class="author">by nwchun90</div>
+    <div class="subtitle">Index of topics and visualizations</div>
+    <input type="text" id="searchBox" placeholder="Search topics…" autocomplete="off" />
+  </header>
 
-  <input type="text" id="searchBox" placeholder="Search topics...">
+  <!-- ── SCROLLABLE MIDDLE ── -->
+  <div class="middle">
 
-  <ul class="content-list">
+    <!-- Article list -->
+    <div class="list-col">
+      <ul class="content-list" id="contentList">
 
-    <li class="item" data-date="2026-06-10">
-      <a href="ai-ipo_nasdaq.html">Hot AI IPOs in Nasdaq</a>
-      <span class="date"></span>
-    </li>
-    
-    <li class="item" data-date="2026-06-04">
-      <a href="tsla_vaa-simulation.html">Tesla (TSLA), The Volatility Premium</a>
-      <span class="date"></span>
-    </li>
-    
-    <li class="item" data-date="2026-06-01">
-      <a href="tsla_value-investing.html">Tesla (TSLA), The Value Case</a>
-      <span class="date"></span>
-    </li>
-    
-    <li class="item" data-date="2026-05-30">
-      <a href="spcx_ipo.html">SpaceX IPO: SPCX</a>
-      <span class="date"></span>
-    </li>
-    
-    <li class="item" data-date="2026-05-08">
-      <a href="harness_stack.html">Harness Engineering Stack: NVDA, CLS, ORCL</a>
-      <span class="date"></span>
-    </li>
-    
-    <li class="item" data-date="2026-05-03">
-      <a href="goldspot_timeline.html">Gold Spot, XAU/USD</a>
-      <span class="date"></span>
-    </li>
-    
-    <li class="item" data-date="2026-04-27">
-      <a href="amd_timing.html">Advanced Micro Devices (AMD) Timing</a>
-      <span class="date"></span>
-    </li>
+        <li class="item" data-date="2026-06-12">
+          <a href="btcusd_visual_v4.html">Bitcoin &amp; the Macro Storm — BTC/USD</a>
+          <span class="date"></span>
+        </li>
 
-    
-    <li class="item" data-date="2026-04-19">
-      <a href="business_health.html">Wealth Creation vs. Conventional Health</a>
-      <span class="date"></span>
-    </li>
-    
-    <li class="item" data-date="2026-04-17">
-      <a href="crwd_deepdive.html">CrowdStrike (CRWD) Cybersecurity: Deep Dive Research</a>
-      <span class="date"></span>
-    </li>
-    
-    <li class="item" data-date="2026-04-16">
-      <a href="shopify_deepdive.html">Shopify (SHOP) E-Commerce: Deep Dive Research</a>
-      <span class="date"></span>
-    </li>
-    
-    <li class="item" data-date="2026-04-15">
-      <a href="zgd_systematic_investing.html">Systematic Cost Averaging: A Case Study on ZGD</a>
-      <span class="date"></span>
-    </li>
-    
-    <li class="item" data-date="2026-04-12">
-      <a href="stock_insights_cls_pltr_atz.html">Valuation Regime Shapes the Chart: CLS, PLTR, ATZ</a>
-      <span class="date"></span>
-    </li>
+        <li class="item" data-date="2026-06-10">
+          <a href="ai-ipo_nasdaq.html">Hot AI IPOs in Nasdaq</a>
+          <span class="date"></span>
+        </li>
 
-    <li class="item" data-date="2026-04-04">
-      <a href="vdy_drip_study.html">VDY Saving Plan: Five-Year DRIP Study</a>
-      <span class="date"></span>
-    </li>
+        <li class="item" data-date="2026-06-04">
+          <a href="tsla_vaa-simulation.html">Tesla (TSLA), The Volatility Premium</a>
+          <span class="date"></span>
+        </li>
 
-    <li class="item" data-date="2026-04-07">
-      <a href="gddy_dashboard.html">GoDaddy (GDDY) Fundamental: Deep Dive Research</a>
-      <span class="date"></span>
-    </li>
+        <li class="item" data-date="2026-06-01">
+          <a href="tsla_value-investing.html">Tesla (TSLA), The Value Case</a>
+          <span class="date"></span>
+        </li>
 
-    <li class="item" data-date="2026-03-08">
-      <a href="drip_projection.html">Dividend Reinvestment Plan (DRIP): JPM, GS, RY, TD</a>
-      <span class="date"></span>
-    </li>
+        <li class="item" data-date="2026-05-30">
+          <a href="spcx_ipo.html">SpaceX IPO: SPCX</a>
+          <span class="date"></span>
+        </li>
 
-    <li class="item" data-date="2026-04-03">
-      <a href="gold_vs_AU_1year.html">When Gold Rises, AngloGold Ashanti (AU) Rises Faster</a>
-      <span class="date"></span>
-    </li>
+        <li class="item" data-date="2026-05-08">
+          <a href="harness_stack.html">Harness Engineering Stack: NVDA, CLS, ORCL</a>
+          <span class="date"></span>
+        </li>
 
-  </ul>
+        <li class="item" data-date="2026-05-03">
+          <a href="goldspot_timeline.html">Gold Spot, XAU/USD</a>
+          <span class="date"></span>
+        </li>
 
-  <div class="disclaimer">
-    <strong>Disclaimer:</strong> This site contains personal investment research and visualization projects for educational and exploratory purposes only. Nothing here should be interpreted as financial advice. All data and calculations are based on publicly available sources and may contain errors or omissions. Please conduct your own due diligence before making any investment decisions.
+        <li class="item" data-date="2026-04-27">
+          <a href="amd_timing.html">Advanced Micro Devices (AMD) Timing</a>
+          <span class="date"></span>
+        </li>
+
+        <li class="item" data-date="2026-04-19">
+          <a href="business_health.html">Wealth Creation vs. Conventional Health</a>
+          <span class="date"></span>
+        </li>
+
+        <li class="item" data-date="2026-04-17">
+          <a href="crwd_deepdive.html">CrowdStrike (CRWD) Cybersecurity: Deep Dive Research</a>
+          <span class="date"></span>
+        </li>
+
+        <li class="item" data-date="2026-04-16">
+          <a href="shopify_deepdive.html">Shopify (SHOP) E-Commerce: Deep Dive Research</a>
+          <span class="date"></span>
+        </li>
+
+        <li class="item" data-date="2026-04-15">
+          <a href="zgd_systematic_investing.html">Systematic Cost Averaging: A Case Study on ZGD</a>
+          <span class="date"></span>
+        </li>
+
+        <li class="item" data-date="2026-04-12">
+          <a href="stock_insights_cls_pltr_atz.html">Valuation Regime Shapes the Chart: CLS, PLTR, ATZ</a>
+          <span class="date"></span>
+        </li>
+
+        <li class="item" data-date="2026-04-07">
+          <a href="gddy_dashboard.html">GoDaddy (GDDY) Fundamental: Deep Dive Research</a>
+          <span class="date"></span>
+        </li>
+
+        <li class="item" data-date="2026-04-04">
+          <a href="vdy_drip_study.html">VDY Saving Plan: Five-Year DRIP Study</a>
+          <span class="date"></span>
+        </li>
+
+        <li class="item" data-date="2026-04-03">
+          <a href="gold_vs_AU_1year.html">When Gold Rises, AngloGold Ashanti (AU) Rises Faster</a>
+          <span class="date"></span>
+        </li>
+
+        <li class="item" data-date="2026-03-08">
+          <a href="drip_projection.html">Dividend Reinvestment Plan (DRIP): JPM, GS, RY, TD</a>
+          <span class="date"></span>
+        </li>
+
+      </ul>
+      <div id="noResults">No matching topics found.</div>
+    </div>
+
+    <!-- Credential badge — stays fixed on right while list scrolls -->
+    <aside class="badge-col">
+      <div class="badge-panel">
+        <div class="badge-label">Credential</div>
+        <a class="badge-img-link"
+           href="https://www.credly.com/badges/7198873f-de2c-47bc-9309-644053387e1c/public_url"
+           target="_blank" rel="noopener"
+           title="Verify on Credly">
+          <img
+            src="https://images.credly.com/images/94a1e650-e428-4465-95df-12eb37dda3f9/linkedin_thumb_InvestmentFundsInCanada-DigitalBadge.png"
+            alt="Investment Funds in Canada – CSI Badge" />
+        </a>
+        <div class="badge-title">Investment Funds in Canada (IFC)</div>
+        <div class="badge-issuer">Canadian Securities<br>Institute · CSI</div>
+        <a class="badge-verify"
+           href="https://www.credly.com/badges/7198873f-de2c-47bc-9309-644053387e1c/public_url"
+           target="_blank" rel="noopener">
+          ↗ Verify credential
+        </a>
+      </div>
+    </aside>
+
   </div>
 
-  <footer>
-    © 2026 · Personal Investment Research
+  <!-- ── FROZEN FOOTER ── -->
+  <footer class="site-footer">
+    <p class="disclaimer">
+      <strong>Disclaimer:</strong> This site contains personal investment research and visualization projects for educational and exploratory purposes only. Nothing here should be interpreted as financial advice. All data and calculations are based on publicly available sources and may contain errors or omissions. Please conduct your own due diligence before making any investment decisions.
+    </p>
+    <p class="copyright">© 2026 · Personal Investment Research</p>
   </footer>
 
   <script>
+    // ── Date formatting + sort ──
     document.addEventListener("DOMContentLoaded", () => {
-      const list = document.querySelector(".content-list");
+      const list = document.getElementById("contentList");
       const items = Array.from(list.querySelectorAll(".item"));
 
       items.forEach(item => {
-        const raw = item.dataset.date;
-        const d = new Date(raw);
-        const options = { year: "numeric", month: "short", day: "numeric" };
-        const formatted = d.toLocaleDateString("en-US", options);
-        item.querySelector(".date").textContent = formatted;
+        const d = new Date(item.dataset.date);
+        item.querySelector(".date").textContent =
+          d.toLocaleDateString("en-US", { year:"numeric", month:"short", day:"numeric" });
       });
 
+      // Sort newest first
       items.sort((a, b) => new Date(b.dataset.date) - new Date(a.dataset.date));
       items.forEach(item => list.appendChild(item));
     });
 
+    // ── Search ──
     document.getElementById("searchBox").addEventListener("input", function () {
-      const query = this.value.toLowerCase();
+      const q = this.value.toLowerCase();
       const items = document.querySelectorAll(".item");
+      let visible = 0;
       items.forEach(item => {
-        const text = item.innerText.toLowerCase();
-        item.style.display = text.includes(query) ? "" : "none";
+        const match = item.innerText.toLowerCase().includes(q);
+        item.style.display = match ? "" : "none";
+        if (match) visible++;
       });
+      document.getElementById("noResults").style.display = visible === 0 ? "block" : "none";
     });
   </script>
 
