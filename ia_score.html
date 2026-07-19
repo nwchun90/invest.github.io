@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Institutional Accumulation — nwchun90 Research</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --gold:      #B87333;
+  --ink:       #1a1a1a;
+  --paper:     #faf9f6;
+  --muted:     #888;
+  --border:    #e0ddd5;
+  --cream:     #f5f3ec;
+  --green:     #2e7d32;
+  --amber:     #B87333;
+  --red:       #b71c1c;
+  --blue:      #1a5494;
+  --teal:      #1a7f6e;
+  --font-serif:'Georgia', serif;
+  --font-mono: 'Courier New', monospace;
+}
+
+body { font-family: var(--font-serif); background: var(--paper); color: var(--ink); font-size: 14px; line-height: 1.7; }
+
+.nav-bar { margin: 40px 0 20px; display: flex; justify-content: center; gap: 20px; }
+.nav-btn { font-family: var(--font-mono); font-size: 12px; padding: 6px 14px; border: 1px solid var(--border); background: #fff; color: var(--ink); text-decoration: none; border-radius: 4px; transition: 0.15s; }
+.nav-btn:hover { background: var(--gold); color: #fff; border-color: var(--gold); }
+.nav-btn.disabled { opacity: 0.4; pointer-events: none; }
+
+.page { max-width: 900px; margin: 0 auto; padding: 40px 28px 60px; }
+
+/* ── Masthead: datestamp always top-right, never wraps below ── */
+.masthead {
+  border-top: 3px solid var(--ink);
+  border-bottom: 1px solid var(--ink);
+  padding: 16px 0 14px;
+  margin-bottom: 32px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+.masthead-left { flex: 1; min-width: 0; }
+.eyebrow { font-family: var(--font-mono); font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+.headline { font-size: 26px; font-weight: 400; line-height: 1.2; letter-spacing: -0.5px; }
+.headline span { font-style: italic; color: var(--gold); }
+.author-line { font-family: var(--font-mono); font-size: 11px; color: var(--muted); margin-top: 6px; }
+.datestamp {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted);
+  text-align: right;
+  line-height: 1.7;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.deck { font-size: 15px; color: #444; line-height: 1.75; max-width: 680px; margin-bottom: 28px; border-left: 3px solid var(--gold); padding-left: 16px; }
+
+.sl { font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); margin: 26px 0 12px; display: flex; align-items: center; gap: 12px; }
+.sl::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+.stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 16px; }
+.stat-card { background: #fff; border: 1px solid var(--border); border-radius: 4px; padding: 14px 16px; }
+.stat-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: #999; font-family: var(--font-mono); margin-bottom: 4px; }
+.stat-value { font-size: 22px; font-weight: 400; font-family: var(--font-mono); line-height: 1.1; margin-bottom: 3px; }
+.stat-sub { font-size: 11px; color: var(--muted); font-style: italic; }
+
+.green { color: var(--green); } .amber { color: var(--amber); } .red { color: var(--red); } .blue { color: var(--blue); } .teal { color: var(--teal); }
+
+.card { background: #fff; border: 1px solid var(--border); padding: 16px 18px; margin-bottom: 14px; }
+.card.alert { border-left: 3px solid var(--red); padding-left: 14px; }
+.card.dark { background: var(--ink); color: #f0ece4; border: none; }
+
+.story-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin-bottom: 28px; }
+.story-card { border: 1px solid var(--border); border-top-width: 2px; padding: 14px 16px; background: #fff; }
+.story-number { font-family: var(--font-mono); font-size: 10px; color: #aaa; letter-spacing: 2px; margin-bottom: 6px; }
+.story-title { font-size: 13px; font-weight: 700; margin-bottom: 6px; line-height: 1.3; }
+.story-body { font-size: 12px; color: #555; line-height: 1.7; }
+
+.ev { display: flex; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px; line-height: 1.6; }
+.ev:last-child { border-bottom: none; }
+.dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
+
+.row { display: flex; justify-content: space-between; align-items: center; padding: 7px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+.row:last-child { border-bottom: none; }
+.rl { color: var(--muted); font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; }
+.rv { font-weight: 500; }
+.up { color: var(--green); } .dn { color: var(--red); } .am { color: var(--amber); }
+
+.g4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 14px; }
+.g3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 14px; }
+.g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+
+.met { background: var(--cream); border: 1px solid var(--border); padding: 12px 14px; }
+.ml { font-family: var(--font-mono); font-size: 10px; color: var(--muted); margin-bottom: 3px; text-transform: uppercase; letter-spacing: 0.08em; }
+.mv { font-size: 17px; font-weight: 600; margin-bottom: 2px; }
+.ms { font-size: 11px; color: var(--muted); }
+
+.badge { font-size: 11px; padding: 2px 8px; border-radius: 999px; font-weight: 600; display: inline-block; font-family: var(--font-mono); }
+.b-up { background: #e1f5ee; color: #085041; }
+.b-dn { background: #fcebeb; color: #791f1f; }
+.b-am { background: #faeeda; color: #633806; }
+.b-bl { background: #e6f1fb; color: #0c447c; }
+
+.understanding { background: var(--ink); color: #f0ece4; border-radius: 4px; padding: 22px 24px; margin-bottom: 28px; }
+.understanding h3 { font-size: 13px; font-family: var(--font-mono); letter-spacing: 2px; text-transform: uppercase; color: var(--gold); margin-bottom: 14px; font-weight: 400; }
+.understanding-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.understanding p { font-size: 12px; color: #bbb; line-height: 1.75; }
+.understanding strong { color: #f0ece4; font-weight: 600; }
+
+.bottom-rule { border-top: 1px solid var(--ink); padding-top: 12px; margin-top: 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+.disclaimer { font-size: 10px; color: #aaa; font-style: italic; font-family: var(--font-mono); max-width: 560px; line-height: 1.6; }
+.logo-text { font-family: var(--font-mono); font-size: 10px; color: #bbb; letter-spacing: 1px; }
+
+/* ── Page-specific ── */
+.reading-note {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted);
+  margin-bottom: 24px;
+  padding: 8px 14px;
+  border: 1px dashed var(--border);
+  background: #fff;
+  border-radius: 4px;
+  line-height: 1.65;
+}
+.reading-note strong { color: var(--ink); }
+
+.svg-stage { background: #fff; border: 1px solid var(--border); border-radius: 4px; padding: 6px 0 0; margin-bottom: 10px; overflow: hidden; }
+.svg-caption { font-family: var(--font-mono); font-size: 11px; color: var(--muted); font-style: italic; text-align: center; padding: 8px 0 12px; border-top: 1px solid var(--border); margin-top: 4px; }
+
+.legend-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 14px; }
+.legend-table th { font-family: var(--font-mono); font-size: 10px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); border-bottom: 1px solid var(--border); padding: 5px 10px; text-align: left; font-weight: 500; }
+.legend-table td { padding: 8px 10px; border-bottom: 1px solid var(--border); vertical-align: top; line-height: 1.6; }
+.legend-table tr:last-child td { border-bottom: none; }
+.swatch { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: middle; flex-shrink: 0; }
+
+.signal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+.sig-card { padding: 14px 16px; border-radius: 4px; }
+.sig-card.bull { background: #f0faf4; border: 1px solid #a7d9b0; }
+.sig-card.bear { background: #fef7f7; border: 1px solid #f0b4b4; }
+.sig-head { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; font-family: var(--font-mono); margin-bottom: 8px; }
+.sig-head.bull { color: var(--green); }
+.sig-head.bear { color: var(--red); }
+.sig-item { font-size: 12px; color: #444; line-height: 1.65; padding: 3px 0; border-bottom: 1px dashed #ddd; }
+.sig-item:last-child { border-bottom: none; }
+.sig-item b { font-weight: 600; }
+
+/* ── Divider for the two reading levels ── */
+.level-divider {
+  margin: 36px 0;
+  border: none;
+  border-top: 2px solid var(--ink);
+  position: relative;
+}
+.level-divider-label {
+  position: absolute;
+  top: -11px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--paper);
+  padding: 0 14px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  white-space: nowrap;
+}
+.continue-card {
+  background: var(--cream);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--gold);
+  padding: 16px 20px;
+  margin: 24px 0 32px;
+  font-size: 13px;
+  line-height: 1.75;
+  color: #444;
+}
+.continue-card strong { color: var(--ink); }
+
+.bridge-box { background: var(--ink); color: #f0ece4; border-radius: 4px; padding: 24px 26px; margin-bottom: 28px; }
+.bridge-eyebrow { font-family: var(--font-mono); font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); margin-bottom: 10px; }
+.bridge-headline { font-size: 19px; line-height: 1.35; margin-bottom: 12px; font-family: var(--font-serif); }
+.bridge-headline em { font-style: italic; color: var(--gold); }
+.bridge-body { font-size: 13px; color: #bbb; line-height: 1.8; }
+
+.interp-band { display: flex; align-items: flex-start; gap: 12px; padding: 8px 12px; border-radius: 3px; margin-bottom: 6px; }
+.band-range { font-family: var(--font-mono); font-size: 12px; font-weight: 600; width: 90px; flex-shrink: 0; padding-top: 2px; }
+.band-label { font-size: 12px; font-weight: 600; margin-right: 6px; }
+.band-desc { font-size: 11px; color: #555; }
+.band-1 { background: #f0faf4; border-left: 3px solid var(--green); }
+.band-2 { background: #fefcf0; border-left: 3px solid #c8a52a; }
+.band-3 { background: #fdf5ec; border-left: 3px solid var(--amber); }
+.band-4 { background: #fef7f7; border-left: 3px solid var(--red); }
+
+.formula-block { background: #0f1520; border-radius: 4px; padding: 16px 18px; margin-bottom: 12px; }
+.formula-label { font-family: var(--font-mono); font-size: 10px; color: var(--gold); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; }
+.formula-math { font-family: var(--font-mono); font-size: 12px; color: #d0d8e8; line-height: 2; }
+.formula-math .var { color: #f0d080; }
+.formula-note { font-size: 10.5px; color: #666; font-style: italic; margin-top: 6px; font-family: var(--font-mono); }
+
+.download-box { background: var(--cream); border: 1px solid var(--border); border-radius: 4px; padding: 20px 22px; margin-bottom: 14px; }
+.download-title { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+.download-sub { font-size: 12px; color: var(--muted); margin-bottom: 14px; }
+.btn-row { display: flex; gap: 10px; flex-wrap: wrap; }
+.btn-primary { font-family: var(--font-mono); font-size: 12px; padding: 8px 18px; background: var(--ink); color: #f0ece4; border: none; border-radius: 4px; cursor: pointer; text-decoration: none; display: inline-block; transition: .15s; }
+.btn-primary:hover { background: var(--gold); }
+.btn-secondary { font-family: var(--font-mono); font-size: 12px; padding: 8px 18px; background: #fff; color: var(--ink); border: 1px solid var(--border); border-radius: 4px; cursor: pointer; text-decoration: none; display: inline-block; transition: .15s; }
+.btn-secondary:hover { border-color: var(--gold); color: var(--gold); }
+.btn-note { font-size: 10.5px; color: var(--muted); font-family: var(--font-mono); margin-top: 10px; font-style: italic; }
+
+@media (max-width: 700px) {
+  .masthead { flex-direction: column; gap: 10px; }
+  .datestamp { text-align: left; white-space: normal; }
+  .headline { font-size: 20px; }
+  .stat-value { font-size: 18px; }
+  .g4 { grid-template-columns: repeat(2, 1fr); }
+  .g3 { grid-template-columns: 1fr 1fr; }
+  .g2 { grid-template-columns: 1fr; }
+  .understanding-grid { grid-template-columns: 1fr; }
+  .signal-grid { grid-template-columns: 1fr; }
+  .level-divider-label { font-size: 9px; white-space: normal; text-align: center; width: 80%; transform: translateX(-50%); }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- ══ MASTHEAD ══ -->
+<div class="masthead">
+  <div class="masthead-left">
+    <div class="eyebrow">Personal Investment Research &nbsp;·&nbsp; Economy Series &nbsp;·&nbsp; Systematic Investing</div>
+    <div class="headline">Institutional Accumulation — How <span>Smart Money</span> Moves</div>
+    <div class="author-line">by nwchun90</div>
+  </div>
+  <div class="datestamp">
+    July 2026<br>
+    Data: Yahoo Finance<br>
+    TradingView
+  </div>
+</div>
+
+<!-- ══ NAV ══ -->
+<div class="nav-bar">
+  <a class="nav-btn" id="nav-back" href="#">‹ Previous</a>
+  <a class="nav-btn" id="nav-home" href="index.html">Home</a>
+  <a class="nav-btn" id="nav-next" href="#">Next ›</a>
+</div>
+
+<!-- ══ DECK ══ -->
+<div class="deck">
+  By the time good news hits your screen, institutions have already made their move. This guide unfolds in two layers — the first gives you the intuition, the second gives you the formula. Read as far as your curiosity takes you.
+</div>
+
+<!-- ══ READING NOTE ══ -->
+<div class="reading-note">
+  <strong>Beginner?</strong> Read through the animated chart and the three practical filters — that is the core lesson. &nbsp;|&nbsp;
+  <strong>Want to go further?</strong> Continue past the divider below to see how 65–70% of those signals can be turned into a single measurable number.
+</div>
+
+<!-- ══ FOUR CORE CONCEPTS ══ -->
+<div class="sl">four things to know before you trade</div>
+<div class="stat-row">
+  <div class="stat-card">
+    <div class="stat-label">Rule 01</div>
+    <div class="stat-value amber">Position</div>
+    <div class="stat-sub">Institutions build positions quietly before the move — they never chase price</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Rule 02</div>
+    <div class="stat-value blue">Volume</div>
+    <div class="stat-sub">Down days on low volume signal strength. Up days on low volume signal danger</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Rule 03</div>
+    <div class="stat-value red">Crowd</div>
+    <div class="stat-sub">If everyone is talking about it, institutions are already selling it to them</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Rule 04</div>
+    <div class="stat-value green">Timing</div>
+    <div class="stat-sub">Your edge is spotting accumulation before the announcement — not reacting after</div>
+  </div>
+</div>
+
+<!-- ══ SVG ANIMATION ══ -->
+<div class="sl">watch how they move — the full market cycle</div>
+
+<div class="svg-stage">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 320" width="100%" height="auto"
+     role="img" aria-label="Animation showing institutions moving from accumulation zone to distribution area while retail investors follow too late and get trapped">
+  <style>
+    .big-funds-group { animation: fundLoop 9s cubic-bezier(0.3,0.8,0.2,1) infinite; }
+    @keyframes fundLoop {
+      0%   { transform: translate(580px,120px); }
+      35%  { transform: translate(140px,120px); }
+      45%  { transform: translate(140px,120px); }
+      80%  { transform: translate(580px,120px); }
+      100% { transform: translate(580px,120px); }
+    }
+    .person-a { animation: personSlow1 9s linear infinite; }
+    @keyframes personSlow1 {
+      0%,20%  { transform: translate(550px,210px); }
+      60%     { transform: translate(220px,230px); }
+      68%     { transform: translate(220px,230px); }
+      100%    { transform: translate(550px,210px); }
+    }
+    .person-b { animation: personSlow2 9s linear infinite; }
+    @keyframes personSlow2 {
+      0%,40%  { transform: translate(510px,230px); }
+      52%     { transform: translate(320px,165px); }
+      60%     { transform: translate(320px,165px); }
+      100%    { transform: translate(510px,230px); }
+    }
+    .fomo-arrow { animation: fomoPulse 9s ease-in-out infinite; transform-origin: 5px 0px; }
+    @keyframes fomoPulse {
+      0%,57%  { opacity:0; transform:translate(0px,0px) scale(0.6); }
+      60%,66% { opacity:1; transform:translate(0px,-12px) scale(1.2); }
+      70%,100%{ opacity:0; transform:translate(0px,-5px) scale(0.8); }
+    }
+    .bag-holder { animation: bagPulse 9s ease-in-out infinite; transform-origin: 5px 0px; }
+    @keyframes bagPulse {
+      0%,48%  { opacity:0; transform:translate(0px,0px) rotate(0deg); }
+      52%,60% { opacity:1; transform:translate(0px,-12px) rotate(-8deg); }
+      64%,100%{ opacity:0; transform:translate(0px,-5px) rotate(8deg); }
+    }
+    .liq-spark-left  { animation: sparkLeft  9s ease-in-out infinite; transform-origin:140px 120px; }
+    @keyframes sparkLeft  { 0%,30%{opacity:0;transform:scale(0.5);} 35%,45%{opacity:0.8;transform:scale(1.2);} 50%,100%{opacity:0;transform:scale(0.6);} }
+    .liq-spark-right { animation: sparkRight 9s ease-in-out infinite; transform-origin:580px 120px; }
+    @keyframes sparkRight { 0%,70%{opacity:0;transform:scale(0.5);} 80%,90%{opacity:0.8;transform:scale(1.2);} 96%,100%{opacity:0;transform:scale(0.6);} }
+    .inst-leg-f { animation: cycleLegF 0.5s ease-in-out infinite; transform-origin:15px 23px; }
+    .inst-leg-b { animation: cycleLegB 0.5s ease-in-out infinite; transform-origin:15px 23px; }
+    .inst-arm-f { animation: cycleArmF 0.5s ease-in-out infinite; transform-origin:15px 15px; }
+    .inst-arm-b { animation: cycleArmB 0.5s ease-in-out infinite; transform-origin:15px 15px; }
+    .ret-leg-f  { animation: cycleLegF 2.0s ease-in-out infinite; transform-origin:5px 11px; }
+    .ret-leg-b  { animation: cycleLegB 2.0s ease-in-out infinite; transform-origin:5px 11px; }
+    .ret-arm-f  { animation: cycleArmF 2.0s ease-in-out infinite; transform-origin:5px 7px; }
+    .ret-arm-b  { animation: cycleArmB 2.0s ease-in-out infinite; transform-origin:5px 7px; }
+    @keyframes cycleLegF { 0%,100%{transform:rotate(-25deg);} 50%{transform:rotate(18deg);} }
+    @keyframes cycleLegB { 0%,100%{transform:rotate(18deg);}  50%{transform:rotate(-25deg);} }
+    @keyframes cycleArmF { 0%,100%{transform:rotate(20deg);}  50%{transform:rotate(-20deg);} }
+    @keyframes cycleArmB { 0%,100%{transform:rotate(-20deg);} 50%{transform:rotate(20deg);} }
+    .sub-text    { font-family:system-ui,sans-serif; font-size:13px; font-weight:800; fill:#475569; letter-spacing:2px; text-anchor:middle; }
+    .zone-label  { font-family:system-ui,sans-serif; font-size:13px; font-weight:800; fill:#475569; letter-spacing:2px; text-anchor:middle; }
+    .fig-label   { font-family:system-ui,sans-serif; font-size:10px; font-weight:700; fill:#0f172a; letter-spacing:1px; }
+    .micro-label { font-family:system-ui,sans-serif; font-size:6px;  font-weight:700; fill:#dc2626; letter-spacing:0.5px; }
+  </style>
+
+  <rect width="800" height="320" fill="#faf9f6"/>
+  <line x1="50"  y1="180" x2="750" y2="180" stroke="#cbd5e1" stroke-width="1.5"/>
+  <line x1="400" y1="20"  x2="400" y2="300" stroke="#cbd5e1" stroke-dasharray="6 4"/>
+  <text class="zone-label" x="160" y="45">DISTRIBUTION AREA</text>
+  <text class="zone-label" x="640" y="45">ACCUMULATION ZONE</text>
+  <rect x="50"  y="55" width="350" height="120" fill="#fef2f2" opacity=".35" rx="4"/>
+  <rect x="400" y="55" width="350" height="120" fill="#f0fdf4" opacity=".35" rx="4"/>
+
+  <g class="liq-spark-left">
+    <circle cx="140" cy="120" r="25" fill="none" stroke="#94a3b8" stroke-width="2.5"/>
+    <circle cx="140" cy="120" r="45" fill="none" stroke="#94a3b8" stroke-width="1.5"/>
+    <circle cx="140" cy="120" r="65" fill="none" stroke="#94a3b8" stroke-width=".8" opacity=".5"/>
+  </g>
+  <g class="liq-spark-right">
+    <circle cx="580" cy="120" r="25" fill="none" stroke="#94a3b8" stroke-width="2.5"/>
+    <circle cx="580" cy="120" r="45" fill="none" stroke="#94a3b8" stroke-width="1.5"/>
+    <circle cx="580" cy="120" r="65" fill="none" stroke="#94a3b8" stroke-width=".8" opacity=".5"/>
+  </g>
+
+  <!-- BIG FUNDS -->
+  <g class="big-funds-group">
+    <text x="-15" y="-12" class="fig-label">BIG FUNDS</text>
+    <g stroke="#0f172a" stroke-width="3.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <g transform="translate(30,0)"><circle cx="15" cy="8" r="4.5" fill="#0f172a" stroke="none"/><line x1="15" y1="12.5" x2="15" y2="23"/><line x1="15" y1="15" x2="10" y2="24" class="inst-arm-f"/><line x1="15" y1="15" x2="20" y2="24" class="inst-arm-b"/><line x1="15" y1="23" x2="11" y2="36" class="inst-leg-f"/><line x1="15" y1="23" x2="19" y2="36" class="inst-leg-b"/></g>
+      <g transform="translate(10,-10)"><circle cx="15" cy="8" r="4.5" fill="#0f172a" stroke="none"/><line x1="15" y1="12.5" x2="15" y2="23"/><line x1="15" y1="15" x2="10" y2="24" class="inst-arm-b"/><line x1="15" y1="15" x2="20" y2="24" class="inst-arm-f"/><line x1="15" y1="23" x2="11" y2="36" class="inst-leg-b"/><line x1="15" y1="23" x2="19" y2="36" class="inst-leg-f"/></g>
+      <g transform="translate(-10,10)"><circle cx="15" cy="8" r="4.5" fill="#0f172a" stroke="none"/><line x1="15" y1="12.5" x2="15" y2="23"/><line x1="15" y1="15" x2="10" y2="24" class="inst-arm-f"/><line x1="15" y1="15" x2="20" y2="24" class="inst-arm-b"/><line x1="15" y1="23" x2="11" y2="36" class="inst-leg-f"/><line x1="15" y1="23" x2="19" y2="36" class="inst-leg-b"/></g>
+      <g transform="translate(-25,-5)"><circle cx="15" cy="8" r="4.5" fill="#0f172a" stroke="none"/><line x1="15" y1="12.5" x2="15" y2="23"/><line x1="15" y1="15" x2="10" y2="24" class="inst-arm-b"/><line x1="15" y1="15" x2="20" y2="24" class="inst-arm-f"/><line x1="15" y1="23" x2="11" y2="36" class="inst-leg-b"/><line x1="15" y1="23" x2="19" y2="36" class="inst-leg-f"/></g>
+      <g transform="translate(-45,12)"><circle cx="15" cy="8" r="4.5" fill="#0f172a" stroke="none"/><line x1="15" y1="12.5" x2="15" y2="23"/><line x1="15" y1="15" x2="10" y2="24" class="inst-arm-f"/><line x1="15" y1="15" x2="20" y2="24" class="inst-arm-b"/><line x1="15" y1="23" x2="11" y2="36" class="inst-leg-f"/><line x1="15" y1="23" x2="19" y2="36" class="inst-leg-b"/></g>
+      <g transform="translate(-60,-12)"><circle cx="15" cy="8" r="4.5" fill="#0f172a" stroke="none"/><line x1="15" y1="12.5" x2="15" y2="23"/><line x1="15" y1="15" x2="10" y2="24" class="inst-arm-b"/><line x1="15" y1="15" x2="20" y2="24" class="inst-arm-f"/><line x1="15" y1="23" x2="11" y2="36" class="inst-leg-b"/><line x1="15" y1="23" x2="19" y2="36" class="inst-leg-f"/></g>
+    </g>
+  </g>
+
+  <!-- PERSON A -->
+  <g class="person-a">
+    <text x="-12" y="-6" class="fig-label" fill="#dc2626" font-size="8px">PERSON A</text>
+    <g class="fomo-arrow" transform="translate(5,-15)">
+      <path d="M-8,0 L0,-14 L8,0 Z" fill="#22c55e" stroke="#15803d" stroke-width="1.5" stroke-linejoin="round"/>
+      <text x="0" y="10" class="micro-label" fill="#15803d" font-weight="900" text-anchor="middle">FOMO</text>
+    </g>
+    <g stroke="#dc2626" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="5" cy="3.5" r="1.8" fill="#dc2626" stroke="none"/>
+      <line x1="5" y1="5.5" x2="5" y2="11"/>
+      <line x1="5" y1="7" x2="1.5" y2="11.5" class="ret-arm-f"/>
+      <line x1="5" y1="7" x2="8.5" y2="11.5" class="ret-arm-b"/>
+      <line x1="5" y1="11" x2="2" y2="17.5" class="ret-leg-f"/>
+      <line x1="5" y1="11" x2="8" y2="17.5" class="ret-leg-b"/>
+    </g>
+  </g>
+
+  <!-- PERSON B -->
+  <g class="person-b">
+    <text x="-12" y="-6" class="fig-label" fill="#dc2626" font-size="8px">PERSON B</text>
+    <g class="bag-holder" transform="translate(5,-18)">
+      <path d="M0,-14 L-10,6 L10,6 Z" fill="#fef08a" stroke="#ca8a04" stroke-width="1.5" stroke-linejoin="round"/>
+      <circle cx="0" cy="-2" r="1.5" fill="#ca8a04"/>
+      <rect x="-1.5" y="2" width="3" height="3" rx=".5" fill="#ca8a04"/>
+      <text x="0" y="16" class="micro-label" fill="#ca8a04" font-weight="900" text-anchor="middle">BAG</text>
+    </g>
+    <g stroke="#dc2626" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="5" cy="3.5" r="1.8" fill="#dc2626" stroke="none"/>
+      <line x1="5" y1="5.5" x2="5" y2="11"/>
+      <line x1="5" y1="7" x2="1.5" y2="11.5" class="ret-arm-b"/>
+      <line x1="5" y1="7" x2="8.5" y2="11.5" class="ret-arm-f"/>
+      <line x1="5" y1="11" x2="2" y2="17.5" class="ret-leg-b"/>
+      <line x1="5" y1="11" x2="8" y2="17.5" class="ret-leg-f"/>
+    </g>
+  </g>
+</svg>
+  <p class="svg-caption">Watch the full cycle repeat. Institutions complete their entire round-trip before retail investors even arrive at the destination.</p>
+</div>
+
+<!-- ══ ANIMATION LEGEND ══ -->
+<table class="legend-table" style="margin-bottom:22px;">
+  <thead><tr><th style="width:22%">Character</th><th style="width:18%">Represents</th><th>What happens</th></tr></thead>
+  <tbody>
+    <tr>
+      <td><span class="swatch" style="background:#0f172a;"></span><strong>Big Funds (Black)</strong></td>
+      <td>Institutional investors</td>
+      <td>Move with speed and intention. They accumulate quietly while the crowd is unaware, then distribute loudly into the excitement — and are already gone before most people notice the ride started.</td>
+    </tr>
+    <tr>
+      <td><span class="swatch" style="background:#dc2626;"></span><strong>Person A (Red)</strong></td>
+      <td>The late follower</td>
+      <td>Only starts moving after the price trend is already visibly underway. Driven by FOMO, rushes toward the distribution area — arriving just as the institutions are finishing their sale. Chased the move, not the opportunity.</td>
+    </tr>
+    <tr>
+      <td><span class="swatch" style="background:#ca8a04;"></span><strong>Person B (Amber)</strong></td>
+      <td>The hesitant observer</td>
+      <td>Saw the price move, sensed the moment — but couldn't commit. Waited for more certainty that never came. By the time a decision was made, neither the accumulation zone nor the distribution area was reachable. Ends up stranded in the middle, holding assets nobody else wants to buy.</td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- ══ THE TWO SIGNATURES ══ -->
+<div class="sl">what accumulation and distribution actually look like</div>
+<p style="font-size:13px;color:#555;margin-bottom:14px;line-height:1.75;">
+  The market hides institutional intent in plain sight. Two volume patterns reveal it — and they run opposite to what feels natural.
+</p>
+<div class="signal-grid">
+  <div class="sig-card bull">
+    <div class="sig-head bull">✓ Accumulation — Bullish</div>
+    <div class="sig-item"><b>Down days:</b> Low volume — weak sellers, no real panic</div>
+    <div class="sig-item"><b>Up days:</b> High volume — strong buyers stepping in</div>
+    <div class="sig-item"><b>Price:</b> Sideways or mild downtrend — looks unremarkable</div>
+    <div class="sig-item"><b>Headlines:</b> Quiet. Nothing to get excited about.</div>
+    <div class="sig-item" style="padding-top:6px;color:var(--green);font-style:italic;">This is where the next move begins.</div>
+  </div>
+  <div class="sig-card bear">
+    <div class="sig-head bear">✗ Distribution — Bearish</div>
+    <div class="sig-item"><b>Down days:</b> High volume — institutions selling into strength</div>
+    <div class="sig-item"><b>Up days:</b> Low volume — retail buying, no real conviction</div>
+    <div class="sig-item"><b>Price:</b> Near recent highs — looks exciting</div>
+    <div class="sig-item"><b>Headlines:</b> Positive news, analyst upgrades, social buzz</div>
+    <div class="sig-item" style="padding-top:6px;color:var(--red);font-style:italic;">This is where the last buyer is found.</div>
+  </div>
+</div>
+
+<!-- ══ THREE PRACTICAL FILTERS ══ -->
+<div class="sl">three quick filters before any trade</div>
+<div class="card">
+  <div class="ev">
+    <div class="dot" style="background:var(--green);"></div>
+    <div><strong>Check the sector first.</strong> Institutions rarely buy one stock — they rotate into sectors. If the broader sector is under distribution, an individual name is unlikely to run regardless of how cheap it looks. The tide always matters more than the fish.</div>
+  </div>
+  <div class="ev">
+    <div class="dot" style="background:var(--amber);"></div>
+    <div><strong>Test the pullback.</strong> A healthy dip in an uptrend comes on shrinking volume and finds support near the 20- or 50-day moving average. A breakdown comes on swelling volume and keeps going. Volume tells you which one you are in — price alone does not.</div>
+  </div>
+  <div class="ev">
+    <div class="dot" style="background:var(--red);"></div>
+    <div><strong>Good news + flat or falling price = red flag.</strong> When an earnings beat or major announcement fails to push the price higher, institutions are using the excitement to sell into retail demand. If everyone in your group chat is talking about it, distribution is already underway.</div>
+  </div>
+</div>
+
+<!-- ══ LEVEL DIVIDER ══ -->
+<hr class="level-divider"><span class="level-divider-label">For readers who want to go deeper</span>
+
+<div class="continue-card">
+  Everything above is intuition — pattern recognition built from observing how money moves. <strong>The next section translates roughly 65–70% of those same signals into a single measurable number.</strong> You don't need to read further to use the lessons above. But if you want a systematic, repeatable way to check whether institutional accumulation conditions are in place before any trade — read on.
+</div>
+
+<!-- ══ BRIDGE ══ -->
+<div class="bridge-box">
+  <div class="bridge-eyebrow">From intuition to numbers</div>
+  <div class="bridge-headline">About <em>65–70%</em> of what you just read can be turned into a formula.</div>
+  <div class="bridge-body">
+    Volume flow, price relative to its own weighted average, how tightly a stock tracks its sector, whether price dips attract buying volume — all of these are mechanically measurable from publicly available daily data. The remaining 30–35% is judgment: reading macro context, weighing news quality, sensing whether a rotation is structural or temporary.<br><br>
+    The five components below — together called the <strong>IA_Score</strong> — capture the quantifiable portion. Think of it not as a buy signal, but as a pre-filter that tells you whether the technical conditions for institutional accumulation are currently in place. The formula removes the emotion. You still supply the conviction.
+  </div>
+</div>
+
+<!-- ══ IA_SCORE COMPONENTS ══ -->
+<div class="sl">the ia_score — five signals, one number</div>
+<p style="font-size:13px;color:#555;margin-bottom:16px;line-height:1.75;">
+  Each component is normalised to a value between 0 and 1. The IA_Score is their simple average. A score near 1.0 means all five signals confirm institutional buying. A score near 0 means the opposite.
+</p>
+
+<div class="g4" style="margin-bottom:18px;">
+  <div class="met">
+    <div class="ml">CMF</div>
+    <div class="mv amber">Money Flow</div>
+    <div class="ms">Chaikin Money Flow — measures whether volume is flowing into or out of the asset over a 20-period rolling window</div>
+  </div>
+  <div class="met">
+    <div class="ml">OBV</div>
+    <div class="mv amber">Volume Trend</div>
+    <div class="ms">On-Balance Volume ratio — whether cumulative buying volume is running above its own 50-period moving average</div>
+  </div>
+  <div class="met">
+    <div class="ml">VWAP</div>
+    <div class="mv amber">Price Level</div>
+    <div class="ms">Price relative to its 20-period volume-weighted average — confirms that price strength is backed by real participation</div>
+  </div>
+  <div class="met">
+    <div class="ml">Alignment</div>
+    <div class="mv amber">Sector Sync</div>
+    <div class="ms">20-period rolling correlation with the sector benchmark — confirms the stock is moving with institutional rotation, not against it</div>
+  </div>
+</div>
+
+<div class="card" style="margin-bottom:22px;">
+  <div style="margin-bottom:8px;">
+    <span class="badge b-up" style="margin-right:8px;">⑤ Dip Recovery</span>
+    <span style="font-size:13px;color:#555;">Whether a recent price trough was met with genuine buying — measured as the ratio of bounce volume to sell-off volume in the 10-period window surrounding the most recent low.</span>
+  </div>
+  <div style="font-size:12.5px;color:#444;line-height:1.75;padding-top:10px;border-top:1px solid var(--border);">
+    <strong>Final score:</strong> &nbsp; IA_Score = (CMF + OBV + VWAP + Alignment + Dip Recovery) ÷ 5
+  </div>
+</div>
+
+<!-- ══ SCORE INTERPRETATION ══ -->
+<div class="sl">how to read the score</div>
+
+<div class="interp-band band-1">
+  <div class="band-range green">&gt; 0.75</div>
+  <div><span class="band-label green">Very Strong Accumulation &nbsp;</span><span class="band-desc">All five signals confirm institutional buying. Technical conditions are as favourable as they get.</span></div>
+</div>
+<div class="interp-band band-2">
+  <div class="band-range" style="color:#a07d10;">0.50 – 0.75</div>
+  <div><span class="band-label" style="color:#a07d10;">Moderate Accumulation &nbsp;</span><span class="band-desc">Good signals overall but one or two components are lagging. Combine with a subjective check before acting.</span></div>
+</div>
+<div class="interp-band band-3">
+  <div class="band-range am">0.25 – 0.50</div>
+  <div><span class="band-label am">Neutral / Mixed &nbsp;</span><span class="band-desc">No clear institutional direction. Signals conflict. Best to wait — deploying here relies on judgment, not data.</span></div>
+</div>
+<div class="interp-band band-4" style="margin-bottom:28px;">
+  <div class="band-range red">&lt; 0.25</div>
+  <div><span class="band-label red">Distribution / Weakness &nbsp;</span><span class="band-desc">The technical picture favours selling. Avoid new positions until conditions improve.</span></div>
+</div>
+
+<!-- ══ DEEP DIVE MATHS ══ -->
+<div class="sl">the mathematics — for those who want to verify every component</div>
+
+<div class="understanding">
+  <h3>How Each Component Is Calculated</h3>
+  <div class="understanding-grid">
+    <div>
+      <div class="formula-block">
+        <div class="formula-label">① CMF — Chaikin Money Flow (20 periods)</div>
+        <div class="formula-math">
+          <span class="var">MF</span> = [(Close − Low) − (High − Close)] / (High − Low)<br>
+          <span class="var">CMF</span> = Σ(MF × Volume, 20) / Σ(Volume, 20)<br>
+          <span class="var">CMF_N</span> = (CMF + 1) / 2
+        </div>
+        <div class="formula-note">Maps native range [−1, +1] to [0, 1]. +1 = all capital flowing in.</div>
+      </div>
+      <div class="formula-block">
+        <div class="formula-label">② OBV — On-Balance Volume (vs SMA 50)</div>
+        <div class="formula-math">
+          <span class="var">OBV</span> = cumulative signed volume<br>
+          &nbsp;&nbsp;&nbsp;(+Volume if Close ↑ · −Volume if Close ↓)<br>
+          <span class="var">OBV_N</span> = min(1, OBV / SMA(OBV, 50))
+        </div>
+        <div class="formula-note">Capped at 1.0 — penalises weakness, never punishes strength.</div>
+      </div>
+      <div class="formula-block">
+        <div class="formula-label">③ VWAP — Volume-Weighted Price (20 periods)</div>
+        <div class="formula-math">
+          <span class="var">Typical</span> = (High + Low + Close) / 3<br>
+          <span class="var">VWAP</span> = Σ(Typical × Volume, 20) / Σ(Volume, 20)<br>
+          <span class="var">VWAP_N</span> = min(1, Close / VWAP)
+        </div>
+        <div class="formula-note">Price at or above VWAP signals buyers are in control.</div>
+      </div>
+    </div>
+    <div>
+      <div class="formula-block">
+        <div class="formula-label">④ Alignment — Sector Correlation (20 periods)</div>
+        <div class="formula-math">
+          <span class="var">R_asset</span>  = Close / Close_prev − 1<br>
+          <span class="var">R_sector</span> = Sector_Close / Sector_prev − 1<br>
+          <span class="var">Align_N</span>  = max(0, CORREL(R_asset, R_sector, 20))
+        </div>
+        <div class="formula-note">Floors at 0 — negative correlation treated as no signal, not a penalty.</div>
+      </div>
+      <div class="formula-block">
+        <div class="formula-label">⑤ Dip Recovery — Bounce vs Sell-off Volume</div>
+        <div class="formula-math">
+          <span class="var">Trough</span>      = lowest close in last 10 periods<br>
+          <span class="var">Selloff_Vol</span> = total volume · 5 bars before trough<br>
+          <span class="var">Bounce_Vol</span>  = total volume · 5 bars after trough<br>
+          <span class="var">Recovery_N</span>  = min(1, Bounce_Vol / Selloff_Vol)
+        </div>
+        <div class="formula-note">= 1 when bounce volume fully matched or exceeded the sell-off. Returns 0.5 when no prior sell-off is detected.</div>
+      </div>
+      <div class="formula-block" style="border:1px solid #B87333;background:#1a130a;">
+        <div class="formula-label" style="color:#f0d080;">Final Score</div>
+        <div class="formula-math" style="font-size:14px;color:#f0ece4;">
+          <span class="var">IA_Score</span> = (CMF_N + OBV_N + VWAP_N<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ Align_N + Recovery_N) / 5
+        </div>
+        <div class="formula-note" style="color:#888;">Range: 0.0 (all weak) to 1.0 (all strong). Simple unweighted average.</div>
+      </div>
+    </div>
+  </div>
+  <p style="color:#666;font-size:11px;margin-top:16px;border-top:1px solid #333;padding-top:10px;">
+    All lookback counts are in bars. The default implementation fetches hourly (1h) OHLCV data for a daily analysis cadence — so a "20-period" window covers approximately 20 trading hours. Data source: Yahoo Finance via <code style="color:#f0d080;">yfinance</code>. A sector benchmark (e.g. an ETF tracking the relevant industry) is required for the Alignment component.
+  </p>
+</div>
+
+<!-- ══ CALCULATOR ══ -->
+<div class="sl">try it yourself — ia_score calculator</div>
+
+<div class="download-box">
+  <div class="download-title">IA_Score Calculator · Python Notebook</div>
+  <div class="download-sub">Enter any stock ticker and its sector benchmark ETF. The script fetches the last 60 days of hourly data, computes all five components, and returns a score with interpretation in under 30 seconds.</div>
+  <div class="btn-row">
+    <a class="btn-primary"
+       href="https://colab.research.google.com/github/nwchun90/invest.github.io/blob/main/ia_calculator_base.ipynb"
+       target="_blank" rel="noopener">
+      ▶ &nbsp;Open in Google Colab
+    </a>
+    <a class="btn-secondary"
+       href="https://github.com/nwchun90/invest.github.io/raw/main/ia_calculator_base.ipynb"
+       download="ia_calculator_base.ipynb">
+      ↓ &nbsp;Download .ipynb
+    </a>
+  </div>
+  <div class="btn-note">
+    The Colab link opens a personal copy in your own Google Drive — you are not editing the source file in the repository.<br>
+    No API key required. Run all cells in order. The only dependency (<code>yfinance</code>) installs automatically on first run.
+  </div>
+</div>
+
+<div class="card" style="background:var(--cream);">
+  <div class="ev">
+    <div class="dot" style="background:var(--blue);"></div>
+    <div><strong>Step 1:</strong> Click "Open in Google Colab." Sign in with any Google account when prompted. A private editable copy opens in your own environment.</div>
+  </div>
+  <div class="ev">
+    <div class="dot" style="background:var(--blue);"></div>
+    <div><strong>Step 2:</strong> Click <em>Runtime → Run all</em> (or press Ctrl+F9). The notebook installs its only dependency automatically.</div>
+  </div>
+  <div class="ev">
+    <div class="dot" style="background:var(--blue);"></div>
+    <div><strong>Step 3:</strong> When prompted, enter the ticker of the stock you want to analyse, and the ticker of a relevant sector ETF as the benchmark (e.g. an index ETF for the industry the stock belongs to).</div>
+  </div>
+  <div class="ev">
+    <div class="dot" style="background:var(--green);"></div>
+    <div><strong>Output:</strong> Each component score, the composite IA_Score (0 to 1), and a plain-English interpretation of what the reading means.</div>
+  </div>
+</div>
+
+<!-- ══ ONE RULE ══ -->
+<div class="sl">the one rule that changes everything</div>
+<div class="card dark" style="border-radius:4px;padding:24px 26px;">
+  <p style="font-size:17px;line-height:1.6;color:#f0ece4;font-family:var(--font-serif);font-style:italic;margin-bottom:14px;">
+    "Institutions don't chase. They position. By the time the news reaches you, the trade is over."
+  </p>
+  <p style="font-size:12.5px;color:#aaa;line-height:1.8;">
+    The IA_Score does not predict the future. It answers a narrower question: <em>are the technical conditions for institutional accumulation present right now?</em> A high score tells you who is holding the ball. It does not tell you when they will throw it. Use it as a pre-filter — one more lens before your own judgment makes the final call.
+  </p>
+</div>
+
+<!-- ══ NAV ══ -->
+<div class="nav-bar">
+  <a class="nav-btn" id="nav-back2" href="#">‹ Previous</a>
+  <a class="nav-btn" href="index.html">Home</a>
+  <a class="nav-btn" id="nav-next2" href="#">Next ›</a>
+</div>
+
+<!-- ══ BOTTOM RULE ══ -->
+<div class="bottom-rule">
+  <p class="disclaimer">For educational and informational purposes only. Not financial advice. The IA_Score is a technical indicator derived from publicly available market data and does not guarantee any future price movement. All investments carry risk. Past signals do not predict future results. Consult a qualified financial advisor before making investment decisions.</p>
+  <div class="logo-text">PERSONAL RESEARCH · 2026 · INSTITUTIONAL ACCUMULATION</div>
+</div>
+
+</div><!-- /page -->
+
+<script>
+(function () {
+  const ids = ['nav-back','nav-next','nav-back2','nav-next2'];
+  const btns = ids.map(id => document.getElementById(id));
+  const currentFile = window.location.pathname.split('/').pop();
+  fetch('index.html')
+    .then(r => r.text())
+    .then(html => {
+      const doc = new DOMParser().parseFromString(html, 'text/html');
+      const items = Array.from(doc.querySelectorAll('.content-list .item'))
+        .map(el => ({ href: el.querySelector('a')?.getAttribute('href'), date: el.getAttribute('data-date') }))
+        .filter(x => x.href);
+      items.sort((a, b) => new Date(a.date) - new Date(b.date));
+      const idx = items.findIndex(x => x.href.endsWith(currentFile));
+      if (idx === -1) { btns.forEach(b => b?.classList.add('disabled')); return; }
+      const prev = items[idx - 1], next = items[idx + 1];
+      [btns[0], btns[2]].forEach(b => { if (prev && b) b.href = prev.href; else b?.classList.add('disabled'); });
+      [btns[1], btns[3]].forEach(b => { if (next && b) b.href = next.href; else b?.classList.add('disabled'); });
+    })
+    .catch(() => btns.forEach(b => b?.classList.add('disabled')));
+})();
+</script>
+</body>
+</html>
