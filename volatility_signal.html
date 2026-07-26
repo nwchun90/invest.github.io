@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Volatility Is a Signal — nwchun90 Research</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --gold:        #B87333;
+  --ink:         #1a1a1a;
+  --paper:       #faf9f6;
+  --muted:       #888;
+  --border:      #e0ddd5;
+  --cream:       #f5f3ec;
+
+  --green:       #2e7d32;
+  --amber:       #B87333;
+  --red:         #b71c1c;
+  --blue:        #1a5494;
+  --teal:        #1a7f6e;
+
+  --font-serif:  'Georgia', serif;
+  --font-mono:   'Courier New', monospace;
+}
+
+body {
+  font-family: var(--font-serif);
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.nav-bar { margin: 40px 0 20px; display: flex; justify-content: center; gap: 20px; }
+.nav-btn {
+  font-family: var(--font-mono); font-size: 12px; padding: 6px 14px;
+  border: 1px solid var(--border); background: #fff; color: var(--ink);
+  text-decoration: none; border-radius: 4px; transition: 0.15s;
+}
+.nav-btn:hover { background: var(--gold); color: #fff; border-color: var(--gold); }
+.nav-btn.disabled { opacity: 0.4; pointer-events: none; }
+
+.page { max-width: 900px; margin: 0 auto; padding: 40px 28px 60px; }
+
+.masthead {
+  border-top: 3px solid var(--ink); border-bottom: 1px solid var(--ink);
+  padding: 16px 0 14px; margin-bottom: 32px;
+  display: flex; align-items: flex-start; justify-content: space-between;
+  flex-wrap: wrap; gap: 10px;
+}
+.eyebrow {
+  font-family: var(--font-mono); font-size: 10px; letter-spacing: 2px;
+  text-transform: uppercase; color: var(--muted); margin-bottom: 6px;
+}
+.headline {
+  font-size: 26px; font-weight: 400; line-height: 1.2;
+  letter-spacing: -0.5px; font-family: var(--font-serif);
+}
+.headline span { font-style: italic; color: var(--gold); }
+.author-line { font-family: var(--font-mono); font-size: 11px; color: var(--muted); margin-top: 6px; }
+.datestamp { font-family: var(--font-mono); font-size: 11px; color: var(--muted); text-align: right; line-height: 1.7; }
+
+.deck {
+  font-size: 15px; color: #444; line-height: 1.75; max-width: 680px;
+  margin-bottom: 28px; border-left: 3px solid var(--gold); padding-left: 16px;
+}
+
+.sl {
+  font-family: var(--font-mono); font-size: 10px; font-weight: 600;
+  letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted);
+  margin: 26px 0 12px; display: flex; align-items: center; gap: 12px;
+}
+.sl::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+.stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 28px; }
+.stat-card { background: #fff; border: 1px solid var(--border); border-radius: 4px; padding: 14px 16px; }
+.stat-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: #999; font-family: var(--font-mono); margin-bottom: 4px; }
+.stat-value { font-size: 26px; font-weight: 400; font-family: var(--font-mono); line-height: 1.1; margin-bottom: 3px; }
+.stat-sub { font-size: 11px; color: var(--muted); font-style: italic; }
+
+.green { color: var(--green); } .amber { color: var(--amber); } .red { color: var(--red); } .blue { color: var(--blue); } .teal { color: var(--teal); }
+
+.card { background: #fff; border: 1px solid var(--border); padding: 16px 18px; margin-bottom: 14px; }
+.card.alert { border-left: 3px solid var(--red); padding-left: 14px; }
+.card.dark { background: var(--ink); color: #f0ece4; border: none; }
+.card.dark .stat-label { color: #888; } .card.dark .stat-sub { color: #888; }
+
+.story-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; margin-bottom: 32px; }
+.story-card { border-top: 2px solid var(--border); padding: 14px 16px; background: #fff; border: 1px solid var(--border); border-top-width: 2px; }
+.story-number { font-family: var(--font-mono); font-size: 10px; color: #aaa; letter-spacing: 2px; margin-bottom: 6px; }
+.story-title { font-size: 14px; font-weight: 700; margin-bottom: 6px; line-height: 1.3; }
+.story-body { font-size: 12px; color: #555; line-height: 1.7; }
+
+.chart-wrap { background: #fff; border: 1px solid var(--border); border-radius: 4px; padding: 20px 16px 14px; margin-bottom: 24px; }
+.chart-legend { display: flex; gap: 20px; margin-bottom: 14px; flex-wrap: wrap; }
+.leg-item { display: flex; align-items: center; gap: 8px; font-size: 12px; color: #555; font-family: var(--font-mono); }
+.leg-swatch { width: 24px; height: 3px; border-radius: 2px; }
+.chart-canvas-wrap { position: relative; width: 100%; height: 300px; }
+.chart-note { font-size: 11px; color: #999; font-style: italic; margin-top: 10px; text-align: center; font-family: var(--font-mono); }
+
+.row { display: flex; justify-content: space-between; align-items: center; padding: 7px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+.row:last-child { border-bottom: none; }
+.rl { color: var(--muted); font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; }
+.rv { font-weight: 500; }
+.up { color: var(--green); } .dn { color: var(--red); } .am { color: var(--amber); }
+
+.g4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 14px; }
+.g3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 14px; }
+.g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+.met { background: var(--cream); border: 1px solid var(--border); padding: 12px 14px; }
+.ml { font-family: var(--font-mono); font-size: 10px; color: var(--muted); margin-bottom: 3px; text-transform: uppercase; letter-spacing: 0.08em; }
+.mv { font-size: 17px; font-weight: 600; margin-bottom: 2px; }
+.ms { font-size: 11px; color: var(--muted); }
+
+.ev { display: flex; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px; line-height: 1.6; }
+.ev:last-child { border-bottom: none; }
+.dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
+
+.bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.bar-lbl { font-family: var(--font-mono); font-size: 11px; color: var(--muted); width: 130px; flex-shrink: 0; text-transform: uppercase; letter-spacing: 0.08em; }
+.bar-track { flex: 1; background: var(--cream); border-radius: 4px; height: 8px; overflow: hidden; }
+.bar-fill { height: 100%; border-radius: 4px; }
+
+.badge { font-size: 11px; padding: 2px 8px; border-radius: 999px; font-weight: 600; display: inline-block; font-family: var(--font-mono); }
+.b-up { background: #e1f5ee; color: #085041; } .b-dn { background: #fcebeb; color: #791f1f; }
+.b-am { background: #faeeda; color: #633806; } .b-bl { background: #e6f1fb; color: #0c447c; }
+
+.understanding { background: var(--ink); color: #f0ece4; border-radius: 4px; padding: 22px 24px; margin-bottom: 28px; }
+.understanding h3 { font-size: 13px; font-family: var(--font-mono); letter-spacing: 2px; text-transform: uppercase; color: var(--gold); margin-bottom: 14px; font-weight: 400; }
+.understanding-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.understanding p { font-size: 12px; color: #bbb; line-height: 1.75; }
+.understanding strong { color: #f0ece4; font-weight: 600; }
+
+.bottom-rule { border-top: 1px solid var(--ink); padding-top: 12px; margin-top: 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+.disclaimer { font-size: 10px; color: #aaa; font-style: italic; font-family: var(--font-mono); max-width: 560px; line-height: 1.6; }
+.logo-text { font-family: var(--font-mono); font-size: 10px; color: #bbb; letter-spacing: 1px; }
+
+/* Formula callout — plain-English sentence + technical box pairing */
+.formula-box {
+  background: var(--cream); border: 1px solid var(--border); border-radius: 4px;
+  padding: 12px 14px; margin-top: 10px; font-family: var(--font-mono);
+  font-size: 13px; color: var(--ink); text-align: center;
+}
+.formula-box .fnote { display: block; font-family: var(--font-serif); font-size: 11px; color: var(--muted); font-style: italic; margin-top: 6px; }
+
+/* Gauge for sigma_t */
+.gauge-wrap { margin: 6px 0 4px; }
+.gauge-track {
+  position: relative; height: 14px; border-radius: 7px;
+  background: linear-gradient(to right, #1a5494 0%, #d8d2c2 45%, #d8d2c2 55%, var(--gold) 78%, var(--red) 100%);
+}
+.gauge-marker {
+  position: absolute; top: -6px; width: 2px; height: 26px; background: var(--ink);
+}
+.gauge-marker::after {
+  content: attr(data-label); position: absolute; top: -20px; left: 50%; transform: translateX(-50%);
+  font-family: var(--font-mono); font-size: 10px; color: var(--ink); white-space: nowrap;
+}
+.gauge-scale { display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 10px; color: var(--muted); margin-top: 6px; }
+
+/* Simple bell-curve SVG container */
+.svg-wrap { background: #fff; border: 1px solid var(--border); border-radius: 4px; padding: 14px; margin-bottom: 20px; }
+
+@media (max-width: 700px) {
+  .masthead { flex-direction: column; }
+  .datestamp { text-align: left; }
+  .headline { font-size: 20px; }
+  .stat-value { font-size: 20px; }
+  .g4 { grid-template-columns: repeat(2, 1fr); }
+  .g3 { grid-template-columns: repeat(2, 1fr); }
+  .g2 { grid-template-columns: 1fr; }
+  .understanding-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- MASTHEAD -->
+<div class="masthead">
+  <div class="masthead-left">
+    <div class="eyebrow">Personal Investment Research &nbsp;·&nbsp; Systematic Investing</div>
+    <div class="headline">Volatility Is <span>a Signal</span></div>
+    <div class="author-line">by nwchun90</div>
+  </div>
+  <div class="datestamp">
+    July 25, 2026<br>
+    Data: GOOGL · illustrative examples
+  </div>
+</div>
+
+<div class="nav-bar">
+  <a class="nav-btn" id="nav-back" href="#">‹ Previous</a>
+  <a class="nav-btn" id="nav-home" href="index.html">Home</a>
+  <a class="nav-btn" id="nav-next" href="#">Next ›</a>
+</div>
+
+<!-- DECK -->
+<div class="deck">
+  Risk is not a penalty — it is a signal. High volatility means prices are more likely to overshoot, creating mispricings. But before you exploit that, you have to confirm the asset is actually swimming with the market's tide, not against it. This note builds the two tools — beta and sigma — that every later stage of this series leans on.
+</div>
+
+<!-- HOOK -->
+<div class="card" style="border-left:3px solid var(--gold); padding-left:14px;">
+  <div style="font-size:14px; line-height:1.8;">
+    Two stocks each drop 10% in a week. For one, that's a red flag — sell before it gets worse. For the other, it's the best entry point you'll see all quarter. Same move, opposite meaning. Nothing in the price chart alone tells you which is which. You need two other numbers first — and this note is about what they are, and how to read them.
+  </div>
+</div>
+
+<!-- SECTION 1: WHAT IS RISK -->
+<div class="sl">what is risk, really?</div>
+<p style="margin-bottom:14px;">Most people hear "risk" and think "losing money." That's not wrong, but it's incomplete. In investing, risk really means <strong>uncertainty</strong> — how much a price tends to swing around its average, in either direction. A stock that barely moves has low risk. A stock that lurches up and down has high risk. That swinginess has a name: <strong>sigma (σ)</strong>, or volatility.</p>
+
+<p style="margin-bottom:10px;">Picture throwing darts at a board, once a day, where each dart lands wherever the stock's daily price change happens to be. A tight cluster of darts near the center means low volatility. Darts scattered all over the board mean high volatility.</p>
+
+<div class="svg-wrap">
+  <svg viewBox="0 0 640 220" xmlns="http://www.w3.org/2000/svg" width="100%" height="220">
+    <line x1="40" y1="180" x2="600" y2="180" stroke="#ccc" stroke-width="1"/>
+    <line x1="320" y1="20" x2="320" y2="180" stroke="#ddd" stroke-width="1" stroke-dasharray="4 4"/>
+    <!-- wide curve: high volatility -->
+    <path d="M 60 178 C 140 178, 200 40, 320 36 C 440 40, 500 178, 580 178"
+          fill="rgba(184,115,51,0.12)" stroke="var(--gold)" stroke-width="2.5"/>
+    <!-- narrow curve: low volatility -->
+    <path d="M 220 178 C 260 178, 285 40, 320 38 C 355 40, 380 178, 420 178"
+          fill="rgba(26,84,148,0.14)" stroke="var(--blue)" stroke-width="2.5"/>
+    <text x="320" y="196" text-anchor="middle" font-family="Courier New" font-size="10" fill="#888">mean price change (0%)</text>
+    <text x="80" y="165" font-family="Georgia" font-style="italic" font-size="11" fill="var(--red)">← downside overshoot</text>
+    <text x="440" y="165" font-family="Georgia" font-style="italic" font-size="11" fill="var(--green)">upside overshoot →</text>
+    <text x="500" y="60" font-family="Courier New" font-size="10" fill="var(--gold)">wide curve = high σ</text>
+    <text x="252" y="60" font-family="Courier New" font-size="10" fill="var(--blue)">narrow curve = low σ</text>
+  </svg>
+</div>
+
+<div class="formula-box">
+  σ = standard deviation of the asset's periodic returns
+  <span class="fnote">The wider the curve, the further prices tend to stray from their average — in both directions.</span>
+</div>
+
+<div class="card" style="margin-top:16px;">
+  <div class="ev">
+    <div class="dot" style="background: var(--green);"></div>
+    <div><strong>Why this matters:</strong> risk cuts both ways mathematically — a stock can overshoot upward as easily as downward. Investors just feel the downside more.</div>
+  </div>
+  <div class="ev">
+    <div class="dot" style="background: var(--amber);"></div>
+    <div><strong>The systematic view:</strong> a downside overshoot isn't automatically bad news. It can be the market temporarily mispricing something you already believe in.</div>
+  </div>
+  <div class="ev">
+    <div class="dot" style="background: var(--red);"></div>
+    <div><strong>The catch:</strong> that only holds if the asset is actually going up over time in the first place. Buying the dip on a stock in permanent decline just means owning more of a loser. That's what the next section checks.</div>
+  </div>
+</div>
+
+<!-- SECTION 2: BETA -->
+<div class="sl">beta (β) — are you swimming with the tide?</div>
+<p style="margin-bottom:14px;">Before asking "how rough are the waves," ask a simpler question: is this asset even moving in the same direction as the market over time? That's what <strong>beta</strong> measures — whether a stock tends to rise and fall along with the broader market, or against it, and by how much.</p>
+
+<div class="card">
+  <table style="width:100%; border-collapse:collapse; font-size:13px;">
+    <tr style="border-bottom:1px solid var(--border);">
+      <td style="padding:8px 6px; font-family:var(--font-mono); font-size:11px; color:var(--muted);">β = 1.0</td>
+      <td style="padding:8px 6px;">Moves exactly with the market</td>
+      <td style="padding:8px 6px;"><span class="badge b-bl">Eligible</span></td>
+    </tr>
+    <tr style="border-bottom:1px solid var(--border);">
+      <td style="padding:8px 6px; font-family:var(--font-mono); font-size:11px; color:var(--muted);">β &gt; 1.0</td>
+      <td style="padding:8px 6px;">Amplifies market moves — e.g. GOOGL ~1.05, TSLA ~1.8</td>
+      <td style="padding:8px 6px;"><span class="badge b-up">Eligible</span></td>
+    </tr>
+    <tr style="border-bottom:1px solid var(--border);">
+      <td style="padding:8px 6px; font-family:var(--font-mono); font-size:11px; color:var(--muted);">0 &lt; β &lt; 1.0</td>
+      <td style="padding:8px 6px;">Dampens market moves — utilities, staples</td>
+      <td style="padding:8px 6px;"><span class="badge b-up">Eligible</span></td>
+    </tr>
+    <tr style="border-bottom:1px solid var(--border);">
+      <td style="padding:8px 6px; font-family:var(--font-mono); font-size:11px; color:var(--muted);">β = 0</td>
+      <td style="padding:8px 6px;">No relationship to the market at all</td>
+      <td style="padding:8px 6px;"><span class="badge b-dn">Not eligible</span></td>
+    </tr>
+    <tr>
+      <td style="padding:8px 6px; font-family:var(--font-mono); font-size:11px; color:var(--muted);">β &lt; 0</td>
+      <td style="padding:8px 6px;">Moves opposite the market — a hedge</td>
+      <td style="padding:8px 6px;"><span class="badge b-dn">Not eligible</span></td>
+    </tr>
+  </table>
+</div>
+
+<p style="margin:14px 0 6px;">A positive beta confirms the asset shares the market's long-term upward drift — it may be calmer or wilder than the market, but it's fundamentally rowing in the same direction. A beta at or below zero means the asset is a hedge, not a growth position, and the "buy the dip" logic from Section 1 no longer applies.</p>
+
+<div class="g2" style="margin-top:16px;">
+  <div>
+    <div class="ml" style="margin-bottom:6px;">Formula A — the textbook definition</div>
+    <div class="formula-box">
+      β = Cov(R<sub>asset</sub>, R<sub>market</sub>) / Var(R<sub>market</sub>)
+      <span class="fnote">How the asset's returns move together with the market's, scaled by how much the market itself moves.</span>
+    </div>
+  </div>
+  <div>
+    <div class="ml" style="margin-bottom:6px;">Formula B — beta as risk, restated</div>
+    <div class="formula-box">
+      β = ρ<sub>asset,market</sub> × (σ<sub>asset</sub> / σ<sub>market</sub>)
+      <span class="fnote">Correlation × the ratio of the two sigmas — this is where beta and Section 1's volatility connect directly.</span>
+    </div>
+  </div>
+</div>
+
+<div class="understanding">
+  <h3>How Formula B connects the dots</h3>
+  <div class="understanding-grid">
+    <p><strong>ρ (rho), correlation:</strong> a number between −1 and +1 that says how closely the asset's daily moves track the market's, regardless of size. It answers "same direction or not?"</p>
+    <p><strong>σ<sub>asset</sub> / σ<sub>market</sub>:</strong> a ratio of the two sigmas from Section 1 — how wild the asset's swings are relative to the market's own swings. It answers "bigger or smaller moves?"</p>
+    <p><strong>Multiply them together</strong> and you get beta: direction times relative size. A stock can have the exact same sigma as another and still have a completely different beta, if its correlation to the market differs.</p>
+    <p><strong>Why it matters here:</strong> beta isn't a separate idea bolted onto volatility — it <em>is</em> volatility, filtered by direction. That's the mathematical link between "is this asset aligned with the market" and "how rough is this asset's ride," and it's why both numbers feed the same accumulation engine later in this series.</p>
+  </div>
+</div>
+
+<div class="sl">visualizing beta — the slope of the trendline</div>
+<div class="svg-wrap">
+  <svg viewBox="0 0 640 260" xmlns="http://www.w3.org/2000/svg" width="100%" height="260">
+    <line x1="60" y1="230" x2="600" y2="230" stroke="#ccc" stroke-width="1"/>
+    <line x1="330" y1="20" x2="330" y2="230" stroke="#ccc" stroke-width="1"/>
+    <text x="600" y="245" text-anchor="end" font-family="Courier New" font-size="10" fill="#888">market return →</text>
+    <text x="30" y="30" font-family="Courier New" font-size="10" fill="#888" transform="rotate(-90 30 30)">asset return →</text>
+    <!-- GOOGL slope ~1.05 -->
+    <line x1="150" y1="300" x2="510" y2="10" stroke="var(--gold)" stroke-width="2.5" transform="translate(0,-40)"/>
+    <!-- defensive slope ~0.6 -->
+    <line x1="150" y1="270" x2="510" y2="130" stroke="var(--blue)" stroke-width="2.5" transform="translate(0,-40)"/>
+    <!-- inverse ETF slope ~ -1.0 -->
+    <line x1="150" y1="130" x2="510" y2="270" stroke="var(--red)" stroke-width="2.5" transform="translate(0,-40)"/>
+    <text x="500" y="70" font-family="Courier New" font-size="10" fill="var(--gold)">GOOGL, slope ≈ 1.05</text>
+    <text x="500" y="150" font-family="Courier New" font-size="10" fill="var(--blue)">defensive stock, slope ≈ 0.6</text>
+    <text x="470" y="215" font-family="Courier New" font-size="10" fill="var(--red)">inverse ETF, slope ≈ −1.0</text>
+  </svg>
+  <p class="chart-note">Each dot (not drawn) would be one day: market's return on the x-axis, the asset's return on the y-axis. Beta is simply the steepness — the slope — of the line that best fits those dots.</p>
+</div>
+
+<!-- SECTION 3: FROM BETA TO SIGMA -->
+<div class="sl">from beta to sigma — a different question</div>
+<p style="margin-bottom:14px;">Knowing you're in the right boat doesn't tell you how rough the water is today. Beta compares an asset to the <em>market</em>. What we actually need next is something self-relative: how volatile is this asset <strong>compared to its own recent history</strong>? That's a different measurement, and it's the one that decides how aggressively to act right now.</p>
+
+<div class="g2">
+  <div class="met">
+    <div class="ml">σ_current</div>
+    <div class="mv">This month's temperature</div>
+    <div class="ms">A short, recent window of volatility — how jumpy has the price been lately?</div>
+  </div>
+  <div class="met">
+    <div class="ml">σ_baseline</div>
+    <div class="mv">The normal range</div>
+    <div class="ms">A much longer average — what does "normal" volatility look like for this asset?</div>
+  </div>
+</div>
+
+<div class="sl">rolling volatility vs. its own baseline (illustrative)</div>
+<div class="chart-wrap">
+  <div class="chart-legend">
+    <div class="leg-item"><div class="leg-swatch" style="background: var(--gold);"></div>σ_current (60-period, spiky)</div>
+    <div class="leg-item"><div class="leg-swatch" style="background: var(--blue);"></div>σ_baseline (252-period average, smooth)</div>
+  </div>
+  <div class="chart-canvas-wrap"><canvas id="sigmaChart"></canvas></div>
+  <p class="chart-note">Illustrative pattern, not a specific ticker — shown to demonstrate the shape of the relationship, not to forecast any asset.</p>
+</div>
+
+<div class="formula-box">
+  σ_current = StdDev of daily log returns over the last 60 periods, annualised (× √252)<br>
+  σ_baseline = rolling average of σ_current over the last 252 periods
+  <span class="fnote">A single volatility reading means nothing on its own — it only becomes useful once you compare it to what's normal for that same asset.</span>
+</div>
+
+<!-- SECTION 4: SIGMA_T -->
+<div class="sl">the risk throttle — turning volatility into a dial</div>
+<p style="margin-bottom:14px;">Once you know today's volatility relative to normal, you can turn that comparison into a single dial that scales how aggressively a systematic strategy buys. That dial is called <strong>σ_t</strong> — the volatility ratio.</p>
+
+<div class="formula-box">
+  σ_t = clamp( σ_current ÷ σ_baseline , 0.5 , 2.5 )
+  <span class="fnote">Today's volatility divided by normal volatility, capped between half and two-and-a-half times.</span>
+</div>
+
+<div class="gauge-wrap" style="margin-top:18px;">
+  <div class="gauge-track">
+    <div class="gauge-marker" data-label="σ_t = 1.6" style="left:66%;"></div>
+  </div>
+  <div class="gauge-scale">
+    <span>0.5 — calm, scale down</span>
+    <span>1.0 — normal, no scaling</span>
+    <span>2.5 — panic, scale up 2.5×</span>
+  </div>
+</div>
+
+<div class="card" style="margin-top:18px;">
+  <div class="row"><span class="rl">σ_t = 1.0</span><span class="rv">Volatility right at its average — neutral, no scaling</span></div>
+  <div class="row"><span class="rl">σ_t = 1.5</span><span class="rv am">50% above normal — scale up 1.5×</span></div>
+  <div class="row"><span class="rl">σ_t = 2.5</span><span class="rv red">At the maximum clamp — scale up aggressively</span></div>
+  <div class="row"><span class="rl">σ_t = 0.5</span><span class="rv blue">At the minimum clamp — scale down, stand back</span></div>
+</div>
+
+<p style="margin-top:12px; font-size:12px; color:var(--muted); font-style:italic;">The clamp exists so a single freak spike in volatility can't break the system — it caps how far the dial can swing in either direction.</p>
+
+<!-- SECTION 5: COUNTER-CYCLICAL -->
+<div class="sl">buying fear, not chasing calm</div>
+
+<div class="understanding">
+  <h3>The behavioural trap</h3>
+  <div class="understanding-grid">
+    <p><strong>What most people do:</strong> buy when things feel calm and prices are already high — then sell in a panic once prices fall and volatility spikes. That's buying tops and selling bottoms.</p>
+    <p><strong>What a systematic approach does instead:</strong> deploy less capital when volatility is low and complacent, and more capital when volatility spikes — provided the asset still passes the beta check from Section 2.</p>
+  </div>
+</div>
+
+<div class="sl">the four filters this series is building toward</div>
+<div class="story-grid">
+  <div class="story-card" style="border-top-color: var(--gold);">
+    <div class="story-number">FILTER 01 · COVERED HERE</div>
+    <div class="story-title">Beta (β)</div>
+    <div class="story-body">Is this asset aligned with the market's long-term direction at all?</div>
+  </div>
+  <div class="story-card" style="border-top-color: var(--blue);">
+    <div class="story-number">FILTER 02 · SEPARATE NOTE</div>
+    <div class="story-title">State Machine</div>
+    <div class="story-body">Is the price structure currently bullish, bearish, or transitional?</div>
+  </div>
+  <div class="story-card" style="border-top-color: var(--teal);">
+    <div class="story-number">FILTER 03 · SEPARATE NOTE</div>
+    <div class="story-title">IA_Score</div>
+    <div class="story-body">Are institutional flows actually confirming accumulation, or is this a lone retail move?</div>
+  </div>
+  <div class="story-card" style="border-top-color: var(--amber);">
+    <div class="story-number">FILTER 04 · COVERED HERE</div>
+    <div class="story-title">Sigma (σ_t)</div>
+    <div class="story-body">Given current volatility, how aggressively should capital be deployed right now?</div>
+  </div>
+</div>
+
+<div class="card dark">
+  <div style="font-size:13px; line-height:1.85;">
+    <span style="font-family:var(--font-mono); font-size:10px; letter-spacing:2px; color:var(--gold); text-transform:uppercase;">Where this is heading</span><br><br>
+    A future note in this series shows exactly how these four filters combine into one accumulation formula. σ_t becomes a multiplier inside that formula — scaling capital up when volatility is high, and down when it's low. That's the mechanism this whole series has been building toward: turning fear into fuel, systematically rather than emotionally.
+  </div>
+</div>
+
+<!-- SECTION 6: GOOGL CASE STUDY -->
+<div class="sl">case study — googl, may to june 2026</div>
+<div class="stat-row">
+  <div class="stat-card">
+    <div class="stat-label">May 13 close (ATH)</div>
+    <div class="stat-value">$402.38</div>
+    <div class="stat-sub">σ_t near neutral, ≈ 1.0</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">June 26 close</div>
+    <div class="stat-value amber">$337.39</div>
+    <div class="stat-sub">Pulling back toward the averages</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">SMA200 baseline</div>
+    <div class="stat-value blue">~$312</div>
+    <div class="stat-sub">Long-term trend anchor</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Beta</div>
+    <div class="stat-value green">~1.05</div>
+    <div class="stat-sub">Positive, market-aligned</div>
+  </div>
+</div>
+
+<div class="card">
+  <p style="font-size:13px; line-height:1.8;">Ahead of May, GOOGL's current volatility sat close to its own baseline — σ_t hovered near 1.0, meaning a systematic strategy would have been injecting at normal, un-scaled levels. As the stock pulled back roughly 16% from its all-time high into late June, volatility rose along with the drop, pushing σ_t above 1.0 — into the 1.4–1.6 range as an illustrative estimate of the direction of the move, not an exact computed reading.</p>
+</div>
+
+<div class="card alert">
+  <p style="font-size:13px; line-height:1.8;"><strong>Why the beta check still matters here:</strong> a rising σ_t on its own only says "this is moving more than usual." It says nothing about whether that move is a discount worth buying or the start of a structural collapse. GOOGL's positive beta (~1.05) is what tells you this pullback is more likely the former — an asset still fundamentally aligned with the market's long-term growth, currently on sale.</p>
+</div>
+
+<!-- SECTION 7: SUMMARY -->
+<div class="sl">the three-layer risk filter</div>
+<div class="card">
+  <div class="row"><span class="rl">Layer 1 · Beta</span><span class="rv">Structural alignment — is this asset fundamentally aligned with the market? (β &gt; 0 required)</span></div>
+  <div class="row"><span class="rl">Layer 2 · Sigma Ratio</span><span class="rv">Opportunity calibration — is current volatility higher or lower than normal? (σ_t &gt; 1 → scale up)</span></div>
+  <div class="row"><span class="rl">Layer 3 · IA_Score + State</span><span class="rv">Context — does institutional flow confirm the move, and is the price structure deployable?</span></div>
+</div>
+
+<div class="card" style="background: var(--cream); margin-top:18px;">
+  <div style="font-size:14px; line-height:1.85; font-style:italic; text-align:center;">
+    "Beta tells you if you're on the right boat; sigma tells you how rough the sea is; IA_Score tells you if the captain is experienced; and the state machine tells you if you're sailing with or against the current."
+  </div>
+</div>
+
+<div class="nav-bar">
+  <a class="nav-btn" id="nav-back2" href="#">‹ Previous</a>
+  <a class="nav-btn" href="index.html">Home</a>
+  <a class="nav-btn" id="nav-next2" href="#">Next ›</a>
+</div>
+
+<div class="bottom-rule">
+  <p class="disclaimer">For informational and educational purposes only. Not financial advice. GOOGL price levels approximate as of the dates shown, July 2026. Illustrative volatility figures are directional estimates, not precise computed outputs. Past performance does not guarantee future results. Consult a qualified financial advisor before making investment decisions.</p>
+  <div class="logo-text">PERSONAL RESEARCH · 2026 · SYSTEMATIC SERIES</div>
+</div>
+
+</div><!-- /page -->
+
+<script>
+const CHART_DEFAULTS = {
+  tooltip: { backgroundColor: '#1a1a1a', titleColor: '#f0ece4', bodyColor: '#ccc', padding: 12, cornerRadius: 4 },
+  gridColor: 'rgba(0,0,0,0.06)',
+  tickColor: '#888',
+  tickFont: { size: 11, family: "'Courier New', monospace" },
+};
+
+const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const current = [22, 26, 24, 40, 55, 38, 24, 20, 33, 48, 60, 30];
+const baseline = [28, 28, 29, 30, 31, 32, 32, 31, 31, 32, 33, 33];
+
+new Chart(document.getElementById('sigmaChart'), {
+  type: 'line',
+  data: {
+    labels: months,
+    datasets: [
+      {
+        label: 'σ_current', data: current, borderColor: '#B87333', backgroundColor: 'rgba(184,115,51,0.08)',
+        fill: true, tension: 0.35, pointRadius: 3, pointBackgroundColor: '#B87333',
+        pointBorderColor: '#fff', pointBorderWidth: 1.5, pointHoverRadius: 6, borderWidth: 2.5,
+      },
+      {
+        label: 'σ_baseline', data: baseline, borderColor: '#1a5494', backgroundColor: 'rgba(26,84,148,0.05)',
+        fill: false, tension: 0.35, pointRadius: 0, borderWidth: 2, borderDash: [4,3],
+      },
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    interaction: { mode: 'index', intersect: false },
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        ...CHART_DEFAULTS.tooltip,
+        callbacks: { label: ctx => `  ${ctx.dataset.label}: ${ctx.raw}%` }
+      },
+    },
+    scales: {
+      x: { grid: { color: CHART_DEFAULTS.gridColor }, ticks: { color: CHART_DEFAULTS.tickColor, font: CHART_DEFAULTS.tickFont } },
+      y: { grid: { color: CHART_DEFAULTS.gridColor }, ticks: { color: CHART_DEFAULTS.tickColor, font: CHART_DEFAULTS.tickFont, callback: v => v + '%' } },
+    },
+  },
+});
+</script>
+
+<script>
+(function () {
+  const INDEX_URL = 'index.html';
+  const backBtns = [document.getElementById('nav-back'), document.getElementById('nav-back2')];
+  const nextBtns = [document.getElementById('nav-next'), document.getElementById('nav-next2')];
+  const currentFile = window.location.pathname.split('/').pop();
+
+  fetch(INDEX_URL)
+    .then(res => res.text())
+    .then(html => {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, 'text/html');
+      const items = Array.from(doc.querySelectorAll('.content-list .item'))
+        .map(item => ({ href: item.querySelector('a').getAttribute('href'), date: item.getAttribute('data-date') }))
+        .filter(x => x.href);
+      items.sort((a, b) => new Date(a.date) - new Date(b.date));
+      const idx = items.findIndex(x => x.href.endsWith(currentFile));
+      if (idx === -1) {
+        backBtns.forEach(b => b && b.classList.add('disabled'));
+        nextBtns.forEach(b => b && b.classList.add('disabled'));
+        return;
+      }
+      const prev = items[idx - 1];
+      const next = items[idx + 1];
+      backBtns.forEach(b => { if (b) { if (prev) b.href = prev.href; else b.classList.add('disabled'); } });
+      nextBtns.forEach(b => { if (b) { if (next) b.href = next.href; else b.classList.add('disabled'); } });
+    })
+    .catch(() => {
+      backBtns.forEach(b => b && b.classList.add('disabled'));
+      nextBtns.forEach(b => b && b.classList.add('disabled'));
+    });
+})();
+</script>
+
+</body>
+</html>
