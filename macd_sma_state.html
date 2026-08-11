@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MACD + SMA200 State Machine — nwchun90 Research</title>
+
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --gold:        #B87333;
+  --ink:         #1a1a1a;
+  --paper:       #faf9f6;
+  --muted:       #888;
+  --border:      #e0ddd5;
+  --cream:       #f5f3ec;
+
+  --green:       #2e7d32;
+  --amber:       #B87333;
+  --red:         #b71c1c;
+  --blue:        #1a5494;
+  --teal:        #1a7f6e;
+
+  --font-serif:  'Georgia', serif;
+  --font-mono:   'Courier New', monospace;
+}
+
+body { font-family: var(--font-serif); background: var(--paper); color: var(--ink); font-size: 14px; line-height: 1.7; }
+
+.nav-bar { margin: 40px 0 20px; display: flex; justify-content: center; gap: 20px; }
+.nav-btn { font-family: var(--font-mono); font-size: 12px; padding: 6px 14px; border: 1px solid var(--border); background: #fff; color: var(--ink); text-decoration: none; border-radius: 4px; transition: 0.15s; }
+.nav-btn:hover { background: var(--gold); color: #fff; border-color: var(--gold); }
+.nav-btn.disabled { opacity: 0.4; pointer-events: none; }
+
+.page { max-width: 900px; margin: 0 auto; padding: 40px 28px 60px; }
+
+/* MASTHEAD — matches Gold Theme template exactly */
+.masthead { border-top: 3px solid var(--ink); border-bottom: 1px solid var(--ink); padding: 16px 0 14px; margin-bottom: 32px; display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+.eyebrow { font-family: var(--font-mono); font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+.headline { font-size: 26px; font-weight: 400; line-height: 1.2; letter-spacing: -0.5px; font-family: var(--font-serif); }
+.headline span { font-style: italic; color: var(--gold); }
+.author-line { font-family: var(--font-mono); font-size: 11px; color: var(--muted); margin-top: 6px; }
+.datestamp { font-family: var(--font-mono); font-size: 11px; color: var(--muted); text-align: right; line-height: 1.7; }
+
+/* DECK — matches Gold Theme template exactly */
+.deck { font-size: 15px; color: #444; line-height: 1.75; max-width: 680px; margin-bottom: 28px; border-left: 3px solid var(--gold); padding-left: 16px; }
+
+/* SECTION LABELS — matches template */
+.sl { font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); margin: 26px 0 12px; display: flex; align-items: center; gap: 12px; }
+.sl::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+/* CARDS — matches template */
+.card { background: #fff; border: 1px solid var(--border); padding: 16px 18px; margin-bottom: 14px; }
+.card.alert { border-left: 3px solid var(--red); padding-left: 14px; }
+.card.dark { background: var(--ink); color: #f0ece4; border: none; }
+.card.dark .stat-label { color: #888; } .card.dark .stat-sub { color: #888; }
+
+/* STAT tokens — matches template, used inside .card.dark for dynamic outcomes */
+.stat-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: #999; font-family: var(--font-mono); margin-bottom: 4px; }
+.stat-value { font-size: 22px; font-weight: 400; font-family: var(--font-mono); line-height: 1.25; margin-bottom: 6px; }
+.stat-sub { font-size: 12px; color: var(--muted); line-height: 1.6; }
+
+/* STORY GRID — matches template exactly, used for "four things to know" */
+.story-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; margin-bottom: 28px; }
+.story-card { border-top: 2px solid var(--border); padding: 14px 16px; background: #fff; border: 1px solid var(--border); border-top-width: 2px; }
+.story-number { font-family: var(--font-mono); font-size: 10px; color: #aaa; letter-spacing: 2px; margin-bottom: 6px; }
+.story-title { font-size: 14px; font-weight: 700; margin-bottom: 6px; line-height: 1.3; }
+.story-body { font-size: 12px; color: #555; line-height: 1.7; }
+
+/* CHART WRAPPER — matches template exactly */
+.chart-wrap { background: #fff; border: 1px solid var(--border); border-radius: 4px; padding: 20px 16px 14px; margin-bottom: 10px; }
+.chart-legend { display: flex; gap: 18px; margin-bottom: 14px; flex-wrap: wrap; }
+.leg-item { display: flex; align-items: center; gap: 7px; font-size: 11px; color: #555; font-family: var(--font-mono); }
+.leg-swatch { display: inline-block; border-radius: 2px; }
+.chart-note { font-size: 11px; color: #999; font-style: italic; margin: 10px 0 24px; text-align: center; font-family: var(--font-mono); line-height: 1.6; }
+
+/* TABS — new, small addition, styled like nav-btn for consistency */
+.tab-row { display: flex; gap: 10px; margin: 4px 0 16px; flex-wrap: wrap; }
+.tab-btn { font-family: var(--font-mono); font-size: 11px; padding: 7px 14px; border: 1px solid var(--border); background: #fff; color: var(--ink); border-radius: 4px; cursor: pointer; letter-spacing: 0.04em; text-transform: uppercase; transition: 0.15s; }
+.tab-btn:hover { border-color: var(--gold); }
+.tab-btn.active { background: var(--gold); color: #fff; border-color: var(--gold); }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* ROW / key-value — matches template exactly */
+.row { display: flex; justify-content: space-between; align-items: center; padding: 7px 0; border-bottom: 1px solid var(--border); font-size: 13px; gap: 14px; }
+.row:last-child { border-bottom: none; }
+.rl { color: var(--muted); font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; white-space: nowrap; }
+.rv { font-weight: 500; text-align: right; }
+.up { color: var(--green); } .dn { color: var(--red); } .am { color: var(--amber); } .blue { color: var(--blue); }
+
+/* METRIC tiles — matches template, used for act labels */
+.ml { font-family: var(--font-mono); font-size: 10px; color: var(--muted); margin-bottom: 3px; text-transform: uppercase; letter-spacing: 0.08em; }
+
+/* DIAGRAM */
+.diagram-card { background: #fff; border: 1px solid var(--border); padding: 20px; margin: 26px 0; border-radius: 4px; }
+.diagram-card svg { width:100%; height:auto; display:block; }
+
+.arrow-key { background: #fff; border: 1px solid var(--border); padding: 16px 18px; margin-bottom: 30px; }
+.arrow-key .ak-title { font-weight: 700; margin-bottom: 10px; font-size: 14px; }
+
+.bottom-rule { border-top: 1px solid var(--ink); padding-top: 12px; margin-top: 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+.disclaimer { font-size: 10px; color: #aaa; font-style: italic; font-family: var(--font-mono); max-width: 560px; line-height: 1.6; }
+.logo-text { font-family: var(--font-mono); font-size: 10px; color: #bbb; letter-spacing: 1px; }
+
+@media (max-width: 700px) {
+  .masthead { flex-direction: column; } .datestamp { text-align: left; } .headline { font-size: 20px; }
+  .story-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<div class="masthead">
+  <div class="masthead-left">
+    <div class="eyebrow">Personal Investment Research &nbsp;·&nbsp; Systematic Investing</div>
+    <div class="headline">MACD + SMA200 <span>State Machine</span></div>
+    <div class="author-line">by nwchun90</div>
+  </div>
+  <div class="datestamp">
+    11 August 2026<br>
+    Data GOOGL
+  </div>
+</div>
+
+<div class="nav-bar">
+  <a class="nav-btn" id="nav-back" href="#">‹ Previous</a>
+  <a class="nav-btn" id="nav-home" href="index.html">Home</a>
+  <a class="nav-btn" id="nav-next" href="#">Next ›</a>
+</div>
+
+<div class="deck">
+  Most people think investing only comes in two flavors: gambling on a hot stock tip, or handing your money to a fund and hoping for the best. There's a third way, and it starts with one simple question — which way is the tide pulling right now? This note builds that intuition in plain language first. The real indicator names are all real tools used across the industry — you'll meet them properly by the end.
+</div>
+
+<!-- ============ HERO CHARTS (tabbed) ============ -->
+<div class="sl">the picture — googl, two resolutions</div>
+<p style="font-size:14px; color:#444; line-height:1.8; margin-bottom:16px; max-width:680px;">This is Google's stock price. The thick blue line is its 200-day average — think of it as <b>the tide line</b>. Price above it, rising tide. Price below it, falling tide. Everything on this page is really just about that one line, and what two faster-moving lines do around it. The story below walks through exactly what happened here.</p>
+
+<div class="chart-legend">
+  <div class="leg-item"><span class="leg-swatch" style="background:var(--blue); width:22px; height:4px;"></span> the tide line — slow, steady</div>
+  <div class="leg-item"><span class="leg-swatch" style="background:var(--amber); width:22px; height:2.5px;"></span> medium boat</div>
+  <div class="leg-item"><span class="leg-swatch" style="background:var(--teal); width:22px; height:1.5px;"></span> fast boat</div>
+  <div class="leg-item"><span class="leg-swatch" style="background:var(--green); width:8px; height:8px; border-radius:50%;"></span> up bar &nbsp;<span class="leg-swatch" style="background:var(--red); width:8px; height:8px; border-radius:50%;"></span> down bar</div>
+</div>
+
+<div class="tab-row">
+  <button class="tab-btn active" data-tab="daily" type="button">Daily · Jan 2025 – Aug 2026</button>
+  <button class="tab-btn" data-tab="hourly" type="button">Hourly · last 6 months</button>
+</div>
+
+<div class="tab-panel active" id="tab-daily">
+  <div class="chart-wrap"><div id="hero-chart-mount"></div></div>
+  <p class="chart-note">Price data is reconstructed around verified anchor points (2025 low, the Feb 2025 interim high, the May 2026 all-time high, the Jun 2026 pullback low, the Jul 2026 secondary high, and the Aug 10, 2026 close), not pulled from a live tick-by-tick feed. The 200-day average is computed for real, using 200+ prior trading days of history. Numbered markers correspond to the key rows below.</p>
+  <div class="card">
+    <div class="row"><span class="rl">① Feb 4, 2025</span><span class="rv">Interim high — $207.78, tide still rising</span></div>
+    <div class="row"><span class="rl">② May 13, 2026</span><span class="rv up">All-time high — $402.38</span></div>
+    <div class="row"><span class="rl">③ Jun 26, 2026</span><span class="rv dn">Checked itself, first time — $337.39</span></div>
+    <div class="row"><span class="rl">④ Jul 20, 2026</span><span class="rv up">Overreacted again — $384.48</span></div>
+    <div class="row"><span class="rl">⑤ Aug 10, 2026</span><span class="rv dn">Checking itself, now — $357.52</span></div>
+  </div>
+</div>
+
+<div class="tab-panel" id="tab-hourly">
+  <div class="chart-wrap"><div id="hourly-chart-mount"></div></div>
+  <p class="chart-note">A separate hourly reconstruction of the same underlying path, over the six months ending Aug 10, 2026. Still not tick data. The averages use the same bar counts as the daily view (12 / 26 / 200) but computed on hourly bars instead of daily ones — the same rules, a shorter real-world lookback window, which is why the lines react a little faster here.</p>
+  <div class="card">
+    <div class="row"><span class="rl">① May 13, 2026</span><span class="rv up">All-time high — $402.38</span></div>
+    <div class="row"><span class="rl">② Jun 26, 2026</span><span class="rv dn">Checked itself, first time — $337.39</span></div>
+    <div class="row"><span class="rl">③ Jul 20, 2026</span><span class="rv up">Overreacted again — $384.48</span></div>
+    <div class="row"><span class="rl">④ Aug 10, 2026</span><span class="rv dn">Checking itself, now — $357.52</span></div>
+  </div>
+</div>
+
+<!-- ============ FOUR THINGS TO KNOW ============ -->
+<div class="sl">four things to know before any of this makes sense</div>
+<div class="story-grid">
+  <div class="story-card" style="border-top-color: var(--blue);">
+    <div class="story-number">RULE 01</div>
+    <div class="story-title">The tide line moves slow, on purpose</div>
+    <div class="story-body">It's the average price over the last 200 days. One good day, or one bad week, barely nudges it. That's the point — it only cares about the big picture.</div>
+  </div>
+  <div class="story-card" style="border-top-color: var(--teal);">
+    <div class="story-number">RULE 02</div>
+    <div class="story-title">The fast boat overreacts to everything</div>
+    <div class="story-body">It's an average of just the last 12 days, and it swings with every mood swing of the market — useful for noticing change early, useless for judging what's actually important. Its slightly steadier cousin is the "medium boat" you'll see next to it throughout.</div>
+  </div>
+  <div class="story-card" style="border-top-color: var(--gold);">
+    <div class="story-number">RULE 03</div>
+    <div class="story-title">A crossing isn't a signal — it's a symptom</div>
+    <div class="story-body">When the fast boat crosses the medium boat, all that means is recent momentum shifted. It's a headline, not a verdict. What matters is which side of the tide line it happened on.</div>
+  </div>
+  <div class="story-card" style="border-top-color: var(--red);">
+    <div class="story-number">RULE 04</div>
+    <div class="story-title">A pullback is a question, not an answer</div>
+    <div class="story-body">Price dipping toward the medium boat or the tide line doesn't mean the tide turned. It might just mean the boat is catching its breath. The rest of this page is about telling those two apart.</div>
+  </div>
+</div>
+
+<!-- ============ THE STORY ============ -->
+<div class="sl">the story — how price actually moves through this</div>
+<div style="max-width:680px; margin-bottom: 22px;">
+  <p style="font-size:14px; color:#333; line-height:1.85; margin-bottom:16px;"><b>The tide turns</b> — price crosses the tide line from one side to the other. That alone tells you which direction the wind is generally blowing. <b>The boat notices</b> — the fast boat starts agreeing or disagreeing with the medium boat on that direction. Sometimes <b>the boat overreacts</b> — price sails way out from where the two boats are clustered, further and faster than makes sense, and every stretched-too-far move eventually needs to catch its breath. That's when <b>the boat checks itself</b> — price drifts back toward the medium boat or the tide line, and what happens next tells you almost everything: does it settle back onto its old course, does it just stumble and recover, or has the tide itself actually turned underneath it?</p>
+  <p style="font-size:14px; color:#333; line-height:1.85;">That four-part rhythm — <i>tide turns, boat notices, boat overreacts, boat checks itself</i> — is the entire idea, and it has a formal name: a <b>state machine</b>, moving through four states. Here's what it looks like mapped out:</p>
+</div>
+
+<div class="diagram-card">
+  <div id="diagram-mount"></div>
+</div>
+
+<div class="arrow-key">
+  <div class="ak-title">How to read the diagram above</div>
+  <div class="row"><span class="rl">Grey, numbered</span><span class="rv">The plain path every move follows: tide turns → boat notices → boat overreacts → boat checks itself.</span></div>
+  <div class="row"><span class="rl">Green — Loop A</span><span class="rv up">Holds firm: price stays above the medium boat. The tide hasn't turned — the boat just picks the story back up where it left off.</span></div>
+  <div class="row"><span class="rl">Red — Loop B</span><span class="rv dn">Tide flips: price closes below the tide line. The whole story resets, in the other direction.</span></div>
+  <div class="row"><span class="rl">Amber — shallow break</span><span class="rv am">Below the medium boat, still above the tide line — a stumble, not a reversal. The boat lost its footing but the tide is still the same. Wait and see.</span></div>
+  <div class="row"><span class="rl">Gold band + arrow — Loop C</span><span class="rv">Not a path of its own — the background field and the long arrow around it mark that all three lines quietly redraw themselves every single day, cycling through tide turns, boat notices, and boat overreacts.</span></div>
+</div>
+
+<!-- ============ THE ACTS — REAL GOOGL WALKTHROUGH ============ -->
+<div class="sl">how this actually played out — google, over the last year</div>
+<p style="font-size:14px; color:#444; line-height:1.8; margin-bottom:16px; max-width:680px;">The chart above is this exact story, in real numbers. Here's the same four-part rhythm, told with what actually happened.</p>
+
+<div class="card">
+  <div class="ml">ACT ONE · 2025</div>
+  <div style="font-size:15px; font-weight:700; margin:4px 0 8px;">The tide was rising</div>
+  <div style="font-size:13px; color:#444; line-height:1.75;">Google's stock spent 2025 climbing off its lows — briefly touching a then-record closing high near <b>$207.78</b> in early February, cooling off through the spring, then grinding back up through the back half of the year toward new highs, comfortably above the tide line the whole way. This is the calmest, least interesting-looking part of the story, and also the part that made everything after it possible.</div>
+</div>
+
+<div class="card">
+  <div class="ml">ACT TWO · May 13, 2026</div>
+  <div style="font-size:15px; font-weight:700; margin:4px 0 8px;">The boat sailed too far, too fast</div>
+  <div style="font-size:13px; color:#444; line-height:1.75;">Price hit an all-time closing high of <b>$402.38</b> — stretched noticeably far above both boats. Not a warning sign by itself, just a move that had gotten ahead of itself, the way sprints eventually need a breath.</div>
+</div>
+
+<div class="card">
+  <div class="ml">ACT THREE · mid–late June 2026</div>
+  <div style="font-size:15px; font-weight:700; margin:4px 0 8px;">The pullback</div>
+  <div style="font-size:13px; color:#444; line-height:1.75;">Price drifted back down, closing at <b>$337.39</b> on June 26 — down roughly 13% over the trailing month. This is the exact moment the story asks its question: is this just the boat catching its breath, or has the tide underneath it actually turned?</div>
+</div>
+
+<div class="card">
+  <div class="ml">ACT FOUR · Jun 26, 2026</div>
+  <div style="font-size:15px; font-weight:700; margin:4px 0 8px;">Checking itself — the first time</div>
+  <div style="font-size:13px; color:#444; line-height:1.75;">The tide line itself sat around <span id="act4-sma">~$310</span> — and price never got close to it. The pullback was real, but the tide never turned:</div>
+</div>
+
+<div class="card dark">
+  <div class="stat-label">What happened, Jun 26, 2026</div>
+  <div class="stat-value" id="act4-outcome">—</div>
+  <div class="stat-sub" id="act4-walk">—</div>
+</div>
+
+<div class="card">
+  <div class="ml">ACT FIVE · mid–late July 2026</div>
+  <div style="font-size:15px; font-weight:700; margin:4px 0 8px;">The boat overreacts again</div>
+  <div style="font-size:13px; color:#444; line-height:1.75;">Loop A held — price picked the old story back up, rallying to a secondary high near <b>$384</b> in the back half of July before easing off again. Same rhythm, second lap: this is Loop C in practice, the averages quietly redrawing themselves day after day underneath a market that keeps having the same argument with itself.</div>
+</div>
+
+<div class="card">
+  <div class="ml">ACT SIX · Aug 10, 2026</div>
+  <div style="font-size:15px; font-weight:700; margin:4px 0 8px;">Checking itself — again, right now</div>
+  <div style="font-size:13px; color:#444; line-height:1.75;">Price closed at <b>$357.52</b>, easing back roughly 7% off that July high. Here's where things stand as of the last completed close:</div>
+</div>
+
+<div class="card dark">
+  <div class="stat-label">What's happening now, Aug 10, 2026 close</div>
+  <div class="stat-value" id="stat-outcome">—</div>
+  <div class="stat-sub" id="walk-outcome">—</div>
+</div>
+
+<div class="card">
+  <div class="row"><span class="rl">If the tide turns from here</span><span class="rv dn">A close below the current tide line would flip the whole story — the loop that starts everything over, in the other direction. As of Aug 10, that hasn't happened.</span></div>
+</div>
+
+<!-- ============ REFERENCE ============ -->
+<div class="sl">the whole thing, one more time</div>
+<div class="card">
+  <div class="row"><span class="rl">Tide turns</span><span class="rv">Price crosses the tide line. Sets the general direction, nothing more.</span></div>
+  <div class="row"><span class="rl">Boat notices</span><span class="rv">The fast boat agrees or disagrees with the medium boat on that direction.</span></div>
+  <div class="row"><span class="rl">Boat overreacts</span><span class="rv">Price stretches unusually far from where the two boats are clustered.</span></div>
+  <div class="row"><span class="rl">Boat checks itself</span><span class="rv">Price pulls back toward the medium boat or the tide line — and one of three things happens next:</span></div>
+  <div class="row"><span class="rl">— holds firm</span><span class="rv up">Above the medium boat, same tide, story continues (Loop A).</span></div>
+  <div class="row"><span class="rl">— stumbles</span><span class="rv am">Below the medium boat, above the tide line — not a reversal, just a wobble (shallow break).</span></div>
+  <div class="row"><span class="rl">— truly breaks</span><span class="rv dn">Below the tide line — the tide itself turns, everything resets (Loop B).</span></div>
+</div>
+
+<div class="card" style="border-left: 3px solid var(--amber); background:#fdf9f2;">
+  <b style="color:var(--amber);">Worth remembering.</b> Everything above has a real name. "The medium boat" and "the fast boat" — their crossover is the MACD line (Moving Average Convergence Divergence), one of the most widely used momentum indicators in investing. "The tide line" is the 200-day simple moving average, the classic long-term trend filter traders pair MACD with. Put together — MACD for momentum, SMA200 for the tide — and you have the exact framework this whole page just walked through in plain language.
+</div>
+
+<div style="font-size:16px; font-style:italic; text-align:center; color:var(--ink); max-width:560px; margin:36px auto 20px; line-height:1.6; border-top:1px solid var(--border); border-bottom:1px solid var(--border); padding:24px 0;">
+  "The tide doesn't ask what you think about it. It only asks which side you're standing on."
+</div>
+
+<div class="nav-bar">
+  <a class="nav-btn" id="nav-back2" href="#">‹ Previous</a>
+  <a class="nav-btn" id="nav-home2" href="index.html">Home</a>
+  <a class="nav-btn" id="nav-next2" href="#">Next ›</a>
+</div>
+
+<div class="bottom-rule">
+  <p class="disclaimer">For informational and educational purposes only. Not financial advice. This is a plain-English framework for reading trend and regime, not a trading system, and not a buy/sell signal generator. Price data is reconstructed around verified anchor points, not sourced from a live feed. Consult a qualified financial advisor before making investment decisions.</p>
+  <div class="logo-text">PERSONAL RESEARCH · AUG 2026 · GOOGL</div>
+</div>
+
+</div><!-- /page -->
+
+<script>
+/* ================= utilities ================= */
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+
+function ema(values, period){
+  const k = 2/(period+1); let out=[]; let prev=values[0];
+  values.forEach((v,i)=>{ prev = i===0? v : v*k + prev*(1-k); out.push(prev); });
+  return out;
+}
+function rollingSma(values, period){
+  let out=[];
+  for(let i=0;i<values.length;i++){
+    const start = Math.max(0, i-period+1);
+    const slice = values.slice(start, i+1);
+    out.push(slice.reduce((a,b)=>a+b,0)/slice.length);
+  }
+  return out;
+}
+function isWeekday(d){ const wd=d.getUTCDay(); return wd!==0 && wd!==6; }
+function tradingDays(start, end){
+  const out=[]; let d = new Date(start);
+  while(d <= end){ if(isWeekday(d)) out.push(new Date(d)); d.setUTCDate(d.getUTCDate()+1); }
+  return out;
+}
+function toTS(dateStr){ return new Date(dateStr+'T00:00:00Z').getTime(); }
+function interp(waypoints, ts){
+  if(ts <= waypoints[0][0]) return waypoints[0][1];
+  if(ts >= waypoints[waypoints.length-1][0]) return waypoints[waypoints.length-1][1];
+  for(let i=0;i<waypoints.length-1;i++){
+    const [t0,v0]=waypoints[i], [t1,v1]=waypoints[i+1];
+    if(ts>=t0 && ts<=t1){ const f=(ts-t0)/(t1-t0); return v0+(v1-v0)*f; }
+  }
+  return waypoints[waypoints.length-1][1];
+}
+
+/* ================= FULL DAILY SERIES =================
+   Hidden warm-up (2024-03 -> 2024-12) exists only so SMA200 has
+   genuine 200+ trading days of history by the display window start
+   (2025-01-01). Display window: Jan 2025 - Aug 10, 2026.
+   Nothing after Aug 10, 2026 exists anywhere in this dataset.
+
+   Verified anchors used below (checked against public price-history
+   sources at time of writing):
+   - 2025-02-04 close $207.78  (interim all-time-high close at the time)
+   - 2025-08-01 close ~$180    (approx. 2025 low, trailing-52-week low)
+   - 2025-10-24 close $259.92  (confirmed close)
+   - 2026-05-13 close $402.38  (all-time closing high — confirmed)
+   - 2026-06-26 close $337.39  (-13.23% trailing 30d pullback low)
+   - 2026-07-20 close ~$384.48 (secondary high, per trailing-30d range)
+   - 2026-08-10 close $357.52  (latest confirmed close — confirmed)
+   All other points are reconstructed interpolation, not tick data.
+*/
+const WAYPOINTS_RAW = [
+  ['2024-03-01',148], ['2024-06-01',175], ['2024-09-01',165], ['2024-11-01',172],
+  ['2025-01-01',190], ['2025-02-04',207.78], ['2025-03-01',185], ['2025-04-01',155],
+  ['2025-06-01',172], ['2025-08-01',180], ['2025-09-01',205], ['2025-10-24',259.92],
+  ['2025-12-01',285], ['2026-01-01',300], ['2026-02-01',320], ['2026-03-01',335],
+  ['2026-03-15',350], ['2026-04-01',340], ['2026-04-15',360], ['2026-05-01',385],
+  ['2026-05-13',402.38], ['2026-05-25',385], ['2026-06-01',372], ['2026-06-15',355],
+  ['2026-06-19',352], ['2026-06-26',337.39], ['2026-07-06',345], ['2026-07-20',384.48],
+  ['2026-07-28',372], ['2026-08-04',362], ['2026-08-10',357.52],
+];
+const WAYPOINTS = WAYPOINTS_RAW.map(([d,v])=>[toTS(d),v]);
+const LAST_DATE = '2026-08-10';
+const LAST_CLOSE = 357.52;
+
+function buildFullDaily(){
+  const rnd = mulberry32(20260627);
+  const genDays = tradingDays(new Date('2024-03-01T00:00:00Z'), new Date(LAST_DATE+'T00:00:00Z'));
+  const bars = [];
+  let prevClose = 148;
+
+  genDays.forEach(d=>{
+    const key = d.toISOString().slice(0,10);
+    const isLast = key === LAST_DATE;
+    const target = isLast ? LAST_CLOSE : interp(WAYPOINTS, d.getTime());
+    const open = prevClose + (rnd()-0.5)*1.4;
+    const close = isLast ? LAST_CLOSE : target + (rnd()-0.5)*2.0;
+    const high = Math.max(open,close) + rnd()*2.2;
+    const low = Math.min(open,close) - rnd()*2.2;
+    bars.push({t:new Date(d), o:open, h:high, l:low, c:close});
+    prevClose = close;
+  });
+
+  return bars;
+}
+
+const FULL_DAILY = buildFullDaily();
+const FULL_CLOSES = FULL_DAILY.map(b=>b.c);
+const FULL_SMA200 = rollingSma(FULL_CLOSES, 200);
+const FULL_EMA26 = ema(FULL_CLOSES, 26);
+const FULL_EMA12 = ema(FULL_CLOSES, 12);
+
+const VISIBLE_START = FULL_DAILY.findIndex(b => b.t.getTime() >= toTS('2025-01-01'));
+const DAILY = FULL_DAILY.slice(VISIBLE_START);
+const D_SMA200 = FULL_SMA200.slice(VISIBLE_START);
+const D_EMA26 = FULL_EMA26.slice(VISIBLE_START);
+const D_EMA12 = FULL_EMA12.slice(VISIBLE_START);
+
+/* ================= FULL HOURLY SERIES =================
+   Same underlying path (same WAYPOINTS), reconstructed at hourly
+   resolution — 7 synthetic bars per trading day. Warm-up starts well
+   before the 6-month display window so SMA200 (200 hourly bars) has
+   genuine history by 2026-02-11. Same bar counts as daily (12/26/200),
+   just computed on hourly bars, so each average covers a shorter
+   real-world span — that's the only difference in the math.
+*/
+function buildFullHourly(){
+  const rnd = mulberry32(20260811);
+  const barsPerDay = 7;
+  const start = new Date('2025-12-01T00:00:00Z');
+  const days = tradingDays(start, new Date(LAST_DATE+'T00:00:00Z'));
+  const bars = [];
+  let prevClose = interp(WAYPOINTS, start.getTime());
+  const lastDayIdx = days.length-1;
+
+  days.forEach((d,di)=>{
+    for(let h=0; h<barsPerDay; h++){
+      const ts = d.getTime() + h*(24*3600*1000/barsPerDay);
+      const isVeryLast = (di===lastDayIdx && h===barsPerDay-1);
+      const target = isVeryLast ? LAST_CLOSE : interp(WAYPOINTS, ts);
+      const open = prevClose + (rnd()-0.5)*0.55;
+      const close = isVeryLast ? LAST_CLOSE : target + (rnd()-0.5)*0.8;
+      const high = Math.max(open,close) + rnd()*0.75;
+      const low = Math.min(open,close) - rnd()*0.75;
+      bars.push({t:new Date(ts), o:open, h:high, l:low, c:close});
+      prevClose = close;
+    }
+  });
+  return bars;
+}
+
+const FULL_HOURLY = buildFullHourly();
+const FH_CLOSES = FULL_HOURLY.map(b=>b.c);
+const FH_SMA200 = rollingSma(FH_CLOSES, 200);
+const FH_EMA26 = ema(FH_CLOSES, 26);
+const FH_EMA12 = ema(FH_CLOSES, 12);
+
+const H_START_IDX = FULL_HOURLY.findIndex(b => b.t.getTime() >= toTS('2026-02-11'));
+const HOURLY = FULL_HOURLY.slice(H_START_IDX);
+const H_SMA200 = FH_SMA200.slice(H_START_IDX);
+const H_EMA26 = FH_EMA26.slice(H_START_IDX);
+const H_EMA12 = FH_EMA12.slice(H_START_IDX);
+
+/* ================= BAR CHART RENDERER (OHLC bars, numbered markers) ================= */
+function renderBars(mount, data, series, opts){
+  const W = 1080, H = 420, padL=54, padR=16, padT=16, padB=32;
+  const plotW = W-padL-padR, plotH = H-padT-padB;
+  const smaSeries = series.sma;
+  const allVals = data.flatMap(d=>[d.h,d.l]).concat(smaSeries || []);
+  const vMin = Math.min(...allVals) - 3, vMax = Math.max(...allVals) + 3;
+  const x = i => padL + (i+0.5) * (plotW/data.length);
+  const y = v => padT + (1 - (v-vMin)/(vMax-vMin)) * plotH;
+  const spacing = plotW/data.length;
+  const tick = Math.max(1.2, Math.min(4, spacing*0.4));
+
+  let svg = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">`;
+
+  const gridSteps = 5;
+  for(let g=0; g<=gridSteps; g++){
+    const gv = vMin + (vMax-vMin)*g/gridSteps;
+    const gy = y(gv);
+    svg += `<line x1="${padL}" y1="${gy}" x2="${W-padR}" y2="${gy}" stroke="#efece4" stroke-width="1"/>`;
+    svg += `<text x="6" y="${gy+4}" font-size="10" fill="#999" font-family="Courier New, monospace">${gv.toFixed(0)}</text>`;
+  }
+
+  if(smaSeries){
+    let p = smaSeries.map((v,i)=> `${i===0?'M':'L'} ${x(i)} ${y(v)}`).join(' ');
+    svg += `<path d="${p}" fill="none" stroke="#1a5494" stroke-width="3.5" opacity="0.9"/>`;
+  }
+  function pathFor(arr, color, width){
+    let p = arr.map((v,i)=> `${i===0?'M':'L'} ${x(i)} ${y(v)}`).join(' ');
+    return `<path d="${p}" fill="none" stroke="${color}" stroke-width="${width}" opacity="0.95"/>`;
+  }
+  svg += pathFor(series.ema26, '#B87333', 2.2);
+  svg += pathFor(series.ema12, '#1a7f6e', 1.3);
+
+  data.forEach((d,i)=>{
+    const up = d.c >= d.o;
+    const color = up ? '#2e7d32' : '#b71c1c';
+    const cx = x(i);
+    svg += `<line x1="${cx}" y1="${y(d.h)}" x2="${cx}" y2="${y(d.l)}" stroke="${color}" stroke-width="1.4"/>`;
+    svg += `<line x1="${cx-tick}" y1="${y(d.o)}" x2="${cx}" y2="${y(d.o)}" stroke="${color}" stroke-width="1.4"/>`;
+    svg += `<line x1="${cx}" y1="${y(d.c)}" x2="${cx+tick}" y2="${y(d.c)}" stroke="${color}" stroke-width="1.4"/>`;
+  });
+
+  const labelEvery = Math.ceil(data.length/8);
+  data.forEach((d,i)=>{
+    if(i%labelEvery===0){
+      const lbl = d.t.toISOString().slice(2,10);
+      svg += `<text x="${x(i)}" y="${H-8}" font-size="9.5" fill="#999" text-anchor="middle" font-family="Courier New, monospace">${lbl}</text>`;
+    }
+  });
+
+  /* Numbered circular markers, keyed to the card list below the chart —
+     replaces free-floating text labels so nothing overlaps or runs off
+     the plot area, no matter how tightly events cluster on the right. */
+  (opts.markers||[]).forEach((m,idx)=>{
+    const cx = x(m.i), cy = y(m.v);
+    svg += `<circle cx="${cx}" cy="${cy}" r="10" fill="#fff" stroke="${m.color}" stroke-width="2.4"/>`;
+    svg += `<text x="${cx}" y="${cy+4}" text-anchor="middle" font-size="11" font-weight="700" fill="${m.color}" font-family="Courier New, monospace">${idx+1}</text>`;
+  });
+
+  svg += `</svg>`;
+  mount.innerHTML = svg;
+}
+
+const heroN = DAILY.length;
+renderBars(document.getElementById('hero-chart-mount'), DAILY,
+  {sma:D_SMA200, ema26:D_EMA26, ema12:D_EMA12}, {
+  markers:[
+    {i:DAILY.findIndex(b=>b.t.toISOString().slice(0,10)==='2025-02-04'), v:207.78, color:'#1a5494'},
+    {i:DAILY.findIndex(b=>b.t.toISOString().slice(0,10)==='2026-05-13'), v:402.38, color:'#2e7d32'},
+    {i:DAILY.findIndex(b=>b.t.toISOString().slice(0,10)==='2026-06-26'), v:337.39, color:'#b71c1c'},
+    {i:DAILY.findIndex(b=>b.t.toISOString().slice(0,10)==='2026-07-20'), v:384.48, color:'#2e7d32'},
+    {i:heroN-1, v:357.52, color:'#b71c1c'},
+  ]
+});
+
+const hourlyN = HOURLY.length;
+renderBars(document.getElementById('hourly-chart-mount'), HOURLY,
+  {sma:H_SMA200, ema26:H_EMA26, ema12:H_EMA12}, {
+  markers:[
+    {i:HOURLY.findIndex(b=>b.t.toISOString().slice(0,10)==='2026-05-13'), v:402.38, color:'#2e7d32'},
+    {i:HOURLY.findIndex(b=>b.t.toISOString().slice(0,10)==='2026-06-26'), v:337.39, color:'#b71c1c'},
+    {i:HOURLY.findIndex(b=>b.t.toISOString().slice(0,10)==='2026-07-20'), v:384.48, color:'#2e7d32'},
+    {i:hourlyN-1, v:357.52, color:'#b71c1c'},
+  ]
+});
+
+/* ---- tab switching ---- */
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-'+btn.dataset.tab).classList.add('active');
+  });
+});
+
+/* ---- dynamic outcome, computed from the same series driving the daily chart ---- */
+(function(){
+  function outcomeAt(idx){
+    const lastClose = DAILY[idx].c, lastSma = D_SMA200[idx], lastEma26 = D_EMA26[idx];
+    let outcome, walkText;
+    if(lastClose >= lastEma26){
+      outcome = 'Holds firm — same story continues';
+      walkText = 'Price (~$'+lastClose.toFixed(2)+') held above the medium boat (~$'+lastEma26.toFixed(0)+') and stayed well clear of the tide line (~$'+lastSma.toFixed(0)+'). Nothing changed — the tide is still rising.';
+    } else if(lastClose >= lastSma){
+      outcome = 'A stumble, not a reversal';
+      walkText = 'Price (~$'+lastClose.toFixed(2)+') slipped below the medium boat (~$'+lastEma26.toFixed(0)+') but never got close to the tide line (~$'+lastSma.toFixed(0)+"). That's a wobble, not a turned tide — the story is on pause, not over.";
+    } else {
+      outcome = 'The tide turned';
+      walkText = 'Price (~$'+lastClose.toFixed(2)+') closed below the tide line (~$'+lastSma.toFixed(0)+') — the whole story resets, in the other direction.';
+    }
+    return {outcome, walkText, sma: lastSma};
+  }
+
+  const act4Idx = DAILY.findIndex(b=>b.t.toISOString().slice(0,10)==='2026-06-26');
+  const act4 = outcomeAt(act4Idx);
+  document.getElementById('act4-sma').textContent = '~$' + act4.sma.toFixed(0);
+  document.getElementById('act4-outcome').textContent = act4.outcome;
+  document.getElementById('act4-walk').textContent = act4.walkText;
+
+  const now = outcomeAt(heroN-1);
+  document.getElementById('stat-outcome').textContent = now.outcome;
+  document.getElementById('walk-outcome').textContent = now.walkText;
+})();
+
+/* ================= LOOP DIAGRAM ================= */
+function renderDiagram(mount){
+  const W=1040,H=820;
+  const nodes = {
+    s0:{x:540,y:170, label:'TIDE TURNS', sub:['SMA200 —', 'sets the bias'], color:'#1a5494'},
+    s1:{x:880,y:390, label:'BOAT NOTICES', sub:['EMA12 vs EMA26', 'momentum check'], color:'#B87333'},
+    s2:{x:680,y:610, label:'BOAT OVERREACTS', sub:['stretched from', 'its own averages'], color:'#2e7d32'},
+    s3:{x:260,y:610, label:'CHECKS ITSELF', sub:['pulls back toward', 'EMA26 / SMA200'], color:'#b71c1c'},
+  };
+  const R = 84;
+
+  function edge(node, tx, ty, gap){
+    const dx = tx-node.x, dy = ty-node.y;
+    const d = Math.sqrt(dx*dx+dy*dy) || 1;
+    const r = R + gap;
+    return { x: node.x + dx/d*r, y: node.y + dy/d*r };
+  }
+  function controlPoint(start, end, curve){
+    return curve
+      ? { x: (start.x+end.x)/2 + curve[0], y: (start.y+end.y)/2 + curve[1] }
+      : { x: (start.x+end.x)/2, y: (start.y+end.y)/2 };
+  }
+  function quadPoint(p0, p1, p2, t){
+    const mt = 1-t;
+    return { x: mt*mt*p0.x + 2*mt*t*p1.x + t*t*p2.x, y: mt*mt*p0.y + 2*mt*t*p1.y + t*t*p2.y };
+  }
+  function arrowGeom(fromNode, toNode, curve){
+    const start = edge(fromNode, toNode.x, toNode.y, 6);
+    const end = edge(toNode, fromNode.x, fromNode.y, 10);
+    const cp = controlPoint(start, end, curve);
+    const mid = quadPoint(start, cp, end, 0.5);
+    return {start, end, cp, mid};
+  }
+
+  function node(n){
+    return `<g>
+      <circle cx="${n.x}" cy="${n.y}" r="${R}" fill="#fff" stroke="${n.color}" stroke-width="3"/>
+      <text x="${n.x}" y="${n.y-6}" text-anchor="middle" font-size="14.5" font-weight="700" fill="${n.color}" font-family="Courier New, monospace">${n.label}</text>
+      <text x="${n.x}" y="${n.y+17}" text-anchor="middle" font-size="12" fill="#666" font-family="Georgia, serif"><tspan x="${n.x}" dy="0">${n.sub[0]}</tspan><tspan x="${n.x}" dy="15">${n.sub[1]}</tspan></text>
+    </g>`;
+  }
+  function arrow(fromNode, toNode, color, curve, dashed){
+    const g = arrowGeom(fromNode, toNode, curve);
+    const mid = curve ? `Q ${g.cp.x} ${g.cp.y}, ${g.end.x} ${g.end.y}` : `L ${g.end.x} ${g.end.y}`;
+    return `<path d="M ${g.start.x} ${g.start.y} ${mid}" fill="none" stroke="${color}" stroke-width="3" ${dashed?'stroke-dasharray="7 6"':''} marker-end="url(#a-${color.replace('#','')})"/>`;
+  }
+
+  let svg = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">`;
+  ['1a5494','B87333','2e7d32','b71c1c','999999'].forEach(c=>{
+    svg += `<marker id="a-${c}" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="10" markerHeight="10" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#${c}"/></marker>`;
+  });
+
+  // Loop C — shaded band behind States 0-1-2, with one continuous arrow
+  // traced just outside the band's own boundary (not a tiny corner icon).
+  // The arrow leaves a gap at the top-right, where the label sits.
+  const bandX=430, bandY=50, bandW=560, bandH=660, bandR=44;
+  svg += `<rect x="${bandX}" y="${bandY}" width="${bandW}" height="${bandH}" rx="${bandR}" fill="#B87333" opacity="0.055"/>`;
+  svg += `<rect x="${bandX}" y="${bandY}" width="${bandW}" height="${bandH}" rx="${bandR}" fill="none" stroke="#B87333" stroke-width="2" stroke-dasharray="3 9" opacity="0.55"/>`;
+
+  const ox=bandX-14, oy=bandY-14, ow=bandW+28, oh=bandH+28;
+  const p1={x:ox+ow-110, y:oy}, p2={x:ox+34, y:oy}, p3={x:ox, y:oy+34}, p4={x:ox, y:oy+oh-34},
+        p5={x:ox+34, y:oy+oh}, p6={x:ox+ow-34, y:oy+oh}, p7={x:ox+ow, y:oy+oh-34}, p8={x:ox+ow, y:oy+34};
+  svg += `<path d="M ${p1.x} ${p1.y} L ${p2.x} ${p2.y} L ${p3.x} ${p3.y} L ${p4.x} ${p4.y} L ${p5.x} ${p5.y} L ${p6.x} ${p6.y} L ${p7.x} ${p7.y} L ${p8.x} ${p8.y}"
+    fill="none" stroke="#B87333" stroke-width="2.6" opacity="0.75" marker-end="url(#a-B87333)"/>`;
+  svg += `<text x="${ox+ow-6}" y="${oy-20}" text-anchor="end" font-size="16" fill="#B87333" font-weight="700" font-family="Courier New, monospace">LOOP C</text>`;
+  svg += `<text x="${ox+ow-6}" y="${oy-3}" text-anchor="end" font-size="11.5" fill="#8a6428" font-family="Georgia, serif">SMA200 / EMA12 / EMA26 redraw</text>`;
+  svg += `<text x="${ox+ow-6}" y="${oy+12}" text-anchor="end" font-size="11.5" fill="#8a6428" font-family="Georgia, serif">daily, through all three states</text>`;
+
+  svg += node(nodes.s0) + node(nodes.s1) + node(nodes.s2) + node(nodes.s3);
+
+  function badge(x,y,txt){
+    return `<circle cx="${x}" cy="${y}" r="17" fill="#f2f0ea" stroke="#999" stroke-width="1.5"/>
+      <text x="${x}" y="${y+7}" text-anchor="middle" font-size="19" font-weight="700" fill="#666" font-family="Courier New, monospace">${txt}</text>`;
+  }
+
+  svg += arrow(nodes.s0, nodes.s1, '#999999');
+  svg += badge(775, 245, '1');
+  svg += arrow(nodes.s1, nodes.s2, '#999999');
+  svg += badge(825, 505, '2');
+  svg += arrow(nodes.s2, nodes.s3, '#999999');
+  svg += badge(470, 595, '3');
+
+  // Loop A and Loop B — label position computed from the actual curve
+  // midpoint, so the text always sits next to its own arrow.
+  const loopA = arrowGeom(nodes.s3, nodes.s1, [0,-300]);
+  svg += arrow(nodes.s3, nodes.s1, '#2e7d32', [0,-300]);
+  svg += `<text x="${loopA.mid.x}" y="${loopA.mid.y-6}" text-anchor="middle" font-size="17" fill="#2e7d32" font-weight="700" font-family="Courier New, monospace">HOLDS FIRM</text>`;
+  svg += `<text x="${loopA.mid.x}" y="${loopA.mid.y+14}" text-anchor="middle" font-size="12.5" fill="#2e7d32" font-family="Courier New, monospace">(Loop A)</text>`;
+
+  const loopB = arrowGeom(nodes.s3, nodes.s0, [-300,-40]);
+  svg += arrow(nodes.s3, nodes.s0, '#b71c1c', [-300,-40]);
+  svg += `<text x="${loopB.mid.x}" y="${loopB.mid.y-6}" text-anchor="middle" font-size="17" fill="#b71c1c" font-weight="700" font-family="Courier New, monospace">TIDE FLIPS</text>`;
+  svg += `<text x="${loopB.mid.x}" y="${loopB.mid.y+14}" text-anchor="middle" font-size="12.5" fill="#b71c1c" font-family="Courier New, monospace">(Loop B)</text>`;
+
+  // Self-loop off State 3 — both ends anchored on the node's own circle,
+  // bulging into the open space to its lower-left, arrowhead pointing
+  // back into the node.
+  const a0 = 100*Math.PI/180, a1 = 175*Math.PI/180;
+  const sStart = { x: nodes.s3.x + R*Math.cos(a0), y: nodes.s3.y + R*Math.sin(a0) };
+  const sEnd   = { x: nodes.s3.x + R*Math.cos(a1), y: nodes.s3.y + R*Math.sin(a1) };
+  const c1 = { x: nodes.s3.x + 170*Math.cos(85*Math.PI/180), y: nodes.s3.y + 170*Math.sin(85*Math.PI/180) };
+  const c2 = { x: nodes.s3.x + 170*Math.cos(190*Math.PI/180), y: nodes.s3.y + 170*Math.sin(190*Math.PI/180) };
+  svg += `<path d="M ${sStart.x} ${sStart.y} C ${c1.x} ${c1.y}, ${c2.x} ${c2.y}, ${sEnd.x} ${sEnd.y}" fill="none" stroke="#B87333" stroke-width="3" stroke-dasharray="7 6" marker-end="url(#a-B87333)"/>`;
+  svg += `<text x="112" y="762" text-anchor="start" font-size="14.5" fill="#B87333" font-weight="700" font-family="Courier New, monospace"><tspan x="112" dy="0">STUMBLES,</tspan><tspan x="112" dy="17">NOT A REVERSAL</tspan><tspan x="112" dy="18" font-size="11.5" font-weight="400">(Shallow Break)</tspan></text>`;
+
+  svg += `</svg>`;
+  mount.innerHTML = svg;
+}
+renderDiagram(document.getElementById('diagram-mount'));
+</script>
+
+<script>
+(function () {
+  const INDEX_URL = 'index.html';
+  [['nav-back','nav-next'],['nav-back2','nav-next2']].forEach(([backId,nextId])=>{
+    const backBtn = document.getElementById(backId);
+    const nextBtn = document.getElementById(nextId);
+    const currentFile = window.location.pathname.split('/').pop();
+    fetch(INDEX_URL).then(res => res.text()).then(html => {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, 'text/html');
+      const items = Array.from(doc.querySelectorAll('.content-list .item'))
+        .map(item => ({ href: item.querySelector('a').getAttribute('href'), date: item.getAttribute('data-date') }))
+        .filter(x => x.href);
+      items.sort((a, b) => new Date(a.date) - new Date(b.date));
+      const idx = items.findIndex(x => x.href.endsWith(currentFile));
+      if (idx === -1) { backBtn.classList.add('disabled'); nextBtn.classList.add('disabled'); return; }
+      const prev = items[idx - 1], next = items[idx + 1];
+      if (prev) backBtn.href = prev.href; else backBtn.classList.add('disabled');
+      if (next) nextBtn.href = next.href; else nextBtn.classList.add('disabled');
+    }).catch(() => { backBtn.classList.add('disabled'); nextBtn.classList.add('disabled'); });
+  });
+})();
+</script>
+
+</body>
+</html>
